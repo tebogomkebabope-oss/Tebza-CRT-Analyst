@@ -52,10 +52,11 @@ function connect(){
  if(ws){try{ws.close()}catch(e){}}
  $("connBadge").textContent="CONNECTING"; setStatus("Opening Deriv public WebSocket…");
  ws=new WebSocket(WS_URL);
- ws.onopen=()=>{ $("connBadge").textContent="CONNECTED"; $("connBadge").style.color="var(--green)";setStatus("Connected. Discovering all active Deriv symbols…");send({active_symbols:"full"});};
+ ws.onopen=()=>{ $("connBadge").textContent="CONNECTED"; $("connBadge").style.color="var(--green)";setStatus("Socket open. Requesting Deriv active-symbol list…");send({active_symbols:"brief"});setTimeout(()=>{if(!symbols.length && ws && ws.readyState===1)setStatus("Socket is open, but no active-symbol reply has arrived. Check the API response or endpoint compatibility.")},10000);};
  ws.onmessage=e=>{let d;try{d=JSON.parse(e.data)}catch(_){return}
-  if(d.error){setStatus("Deriv API: "+d.error.message);return}
-  if(d.msg_type==="active_symbols"){symbols=d.active_symbols||[];renderSymbols();$("marketCount").textContent=symbols.length+" active instruments returned by Deriv";if(symbols.length){let chosen=symbols.some(x=>x.symbol===selected)?selected:symbols[0].symbol;selected=chosen;$("symbol").value=chosen;loadMarket(chosen)}}
+  if(d.error || (Array.isArray(d.errors) && d.errors.length)){let msg=d.error?.message || d.errors.map(x=>x.message||x.code||"API error").join("; ");setStatus("Deriv API error: "+msg);$("marketCount").textContent="Deriv rejected the market-list request";return}
+  if(d.msg_type==="active_symbols" || Array.isArray(d.active_symbols)){symbols=d.active_symbols||[];renderSymbols();$("marketCount").textContent=symbols.length+" active instruments returned by Deriv";if(symbols.length){let chosen=symbols.some(x=>x.symbol===selected)?selected:symbols[0].symbol;selected=chosen;$("symbol").value=chosen;loadMarket(chosen)}else{setStatus("Deriv replied, but returned no active symbols. Check the API response and try again.")}}
+  else if(d.msg_type){setStatus("Deriv response received: "+d.msg_type+(d.echo_req?.active_symbols?" (symbol request acknowledged)":""));}
   if(d.msg_type==="tick"&&d.tick&&d.tick.symbol===selected){quote=d.tick.quote;$("quote").textContent=Number(quote).toFixed(d.tick.quote===undefined?5:Math.min(8,Math.max(2,String(d.tick.quote).split(".")[1]?.length||2)));$("symbolName").textContent=(findSymbol(selected)?.display_name||selected)+" · live tick";}
   if(d.msg_type==="candles"&&d.echo_req&&d.echo_req.granularity){let g=Number(d.echo_req.granularity);candles[g]=d.candles||[];if(g===300)analyse();}
   if(d.msg_type==="ohlc"&&d.ohlc){let g=Number(d.echo_req?.granularity||300);if(candles[g]?.length){candles[g][candles[g].length-1]=d.ohlc;if(g===300)analyse();}}
@@ -103,7 +104,7 @@ function analyse(){
 }
 $("symbol").addEventListener("change",()=>loadMarket($("symbol").value));
 $("category").addEventListener("change",()=>{renderSymbols();loadMarket($("symbol").value)});
-$("refresh").onclick=()=>{send({active_symbols:"full"});if(selected)loadMarket(selected)};
+$("refresh").onclick=()=>{send({active_symbols:"brief"});if(selected)loadMarket(selected)};
 $("reconnect").onclick=connect;
 $("notify").onclick=async()=>{if(!("Notification"in window)){$("notifyStatus").textContent="This browser does not support notifications.";return}let p=await Notification.requestPermission();$("notifyStatus").textContent="Browser notification permission: "+p+". Background push requires deployment and a push server."};
 if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
