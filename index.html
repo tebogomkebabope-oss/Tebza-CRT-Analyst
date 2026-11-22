@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080f1c"><link rel="manifest" href="manifest.webmanifest">
-<title>CRT Deriv Analyst</title>
+<title>TEBZA CRT ANALYST</title>
 <style>
 :root{--bg:#080f1c;--panel:#111d30;--panel2:#0b1627;--line:#263952;--txt:#edf4ff;--muted:#93a7c2;--green:#25d3a0;--red:#ff637d;--amber:#f4bd50;--blue:#76aaff}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172b47 0,#080f1c 55%);color:var(--txt);font:14px system-ui,-apple-system,Segoe UI,sans-serif;padding-bottom:30px}
@@ -14,9 +14,11 @@ select,button{background:#182942;color:var(--txt);border:1px solid #344c6c;borde
 .notice{background:#382d18;border:1px solid #755b29;color:#f5dca4;border-radius:11px;padding:11px;font-size:11px;line-height:1.45;margin-bottom:12px}
 table{width:100%;border-collapse:collapse;font-size:12px}td,th{text-align:left;padding:9px 5px;border-bottom:1px solid #263952}th{font-size:10px;color:var(--muted);text-transform:uppercase}
 #status{font-size:11px;color:var(--muted);margin-top:8px}.signal{font-size:25px;font-weight:900}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{flex:1}.foot{text-align:center;color:#70839d;font-size:10px;padding:10px}
+.scoreValue{font-size:28px;font-weight:900;letter-spacing:-.5px}.scoreTrack{height:9px;background:#263952;border-radius:20px;overflow:hidden;margin:8px 0 12px}.scoreFill{height:100%;width:0;background:linear-gradient(90deg,#d59c3a,#25d3a0);border-radius:20px;transition:width .25s}.checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.checkItem{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 9px;border:1px solid #263952;background:#0b1627;border-radius:9px;font-size:11px;min-width:0}.checkItem span:first-child{overflow-wrap:anywhere}.checkState{font-weight:800;white-space:nowrap}.checkState.ok{color:var(--green)}.checkState.pending{color:var(--amber)}.checkState.bad{color:var(--red)}.sectionNote{font-size:11px;line-height:1.5;color:var(--muted);margin:10px 0 0}.tag{display:inline-block;padding:3px 7px;border-radius:20px;background:#1d304a;color:#c8d8ef;font-size:10px;margin:2px 3px 2px 0}
+@media(max-width:430px){.checklist{grid-template-columns:1fr}}
 @media(min-width:600px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style></head><body>
-<header><div><div class="brand">CRT <em>DERIV ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
+<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.4 · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
 <main>
 <div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket. No Deriv password or account token is required. Market data and CRT conditions are for analysis only; signals are preliminary and this app never places trades.</div>
 <section class="card">
@@ -35,12 +37,27 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{text-align:left;p
  <div class="tile"><small>Reference high</small><b id="hi">—</b></div><div class="tile"><small>Reference low</small><b id="lo">—</b></div>
  <div class="tile"><small>50% equilibrium</small><b id="mid">—</b></div><div class="tile"><small>Liquidity event</small><b id="liq">—</b></div>
 </div></section>
+<section class="card"><h2>Range position & dealing range</h2><div class="grid">
+ <div class="tile"><small>Current range location</small><b id="rangeLocation">Waiting</b></div>
+ <div class="tile"><small>Range width</small><b id="rangeWidth">—</b></div>
+ <div class="tile"><small>Price position in range</small><b id="rangePosition">—</b></div>
+ <div class="tile"><small>Reference timeframe</small><b>Previous completed 1H</b></div>
+</div><p class="sectionNote">Premium and discount are measured against the previous completed 1H candle's high-to-low range. They describe location, not a trade signal by themselves.</p></section>
+<section class="card"><h2>15M market structure & liquidity map</h2><div class="grid">
+ <div class="tile"><small>Structure bias</small><b id="structureBias">Waiting</b></div>
+ <div class="tile"><small>Latest structure event</small><b id="structureEvent">—</b></div>
+ <div class="tile"><small>Buy-side liquidity</small><b id="buyLiquidity">—</b></div>
+ <div class="tile"><small>Sell-side liquidity</small><b id="sellLiquidity">—</b></div>
+ <div class="tile"><small>Equal highs (EQH)</small><b id="equalHighs">Not detected</b></div>
+ <div class="tile"><small>Equal lows (EQL)</small><b id="equalLows">Not detected</b></div>
+</div><p class="sectionNote">Swing points are confirmed only after two completed 15M candles have formed to their right. Equal-high/low detection uses an adaptive tolerance, so levels are approximate liquidity zones rather than exact prices.</p></section>
+<section class="card"><h2>Setup confirmation score</h2><div class="row between"><div><div class="scoreValue" id="scoreValue">0/100</div><div class="muted tiny" id="scoreLabel">Waiting for sufficient candle history</div></div><span class="tag">Quality checklist · not win probability</span></div><div class="scoreTrack"><div id="scoreFill" class="scoreFill"></div></div><div id="confirmationList" class="checklist"></div><p class="sectionNote" id="scoreNote">The score measures how many defined conditions currently agree. It is not a forecast or a probability of profit.</p></section>
 <section class="card"><h2>Analysis summary</h2><div class="grid">
  <div class="tile"><small>Potential direction</small><b id="direction">WAIT</b></div><div class="tile"><small>Entry reference</small><b id="entry">—</b></div>
  <div class="tile"><small>Invalidation reference</small><b id="stop">—</b></div><div class="tile"><small>Opposing range target</small><b id="target">—</b></div>
-</div><p class="muted tiny">Preliminary rules only: previous completed 1H range, completed 4H and 15M context, and a completed 5M sweep/reclaim with displacement. Full swing MSS/CHoCH, FVG lifecycle, equal highs/lows, session filters, and backtesting are not yet implemented.</p></section>
+</div><p class="muted tiny">V1.4 analytical foundation: completed 1H dealing range, premium/discount location, confirmed 15M swing structure, equal-high/low zones, 5M sweep/reclaim and displacement checklist. BOS/CHoCH event classification is preliminary; FVG lifecycle, order blocks, session filters and historical backtesting are future modules. WATCH labels are analysis candidates only.</p></section>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">CRT DERIV ANALYST · Live public data · No trade execution · Verify all signals independently</div>
+<div class="foot">TEBZA CRT ANALYST V1.4 · Live public data · Analysis only · Verify all conditions independently</div>
 </main>
 <script>
 "use strict";
@@ -295,6 +312,14 @@ function loadMarket(code) {
   $("decision").textContent = "WAIT";
   $("decision").className = "signal amber";
   $("symbolName").textContent = displayName(findSymbol(code)) + " · loading market data";
+  ["tf4","tf1","tf15","tf5","hi","lo","mid","liq","rangeLocation","rangeWidth","rangePosition","structureBias","structureEvent","buyLiquidity","sellLiquidity","equalHighs","equalLows","entry","stop","target"].forEach(id => setText(id, "—"));
+  ["scoreValue"].forEach(id => setText(id, "0/100"));
+  setText("scoreLabel", "Loading fresh candle history for selected market");
+  setText("decision", "WAIT");
+  $("decision").className = "signal amber";
+  setText("direction", "WAIT");
+  $("scoreFill").style.width = "0%";
+  $("confirmationList").innerHTML = "";
   [300, 900, 3600, 14400].forEach(granularity => {
     const meta = {kind: "candles", granularity, symbol: code};
     const request = {ticks_history: code, adjust_start_time: 1, count: 250, end: "latest", style: "candles", granularity};
@@ -344,54 +369,245 @@ function decimalPlacesFromPip(pipSize, fallback) {
 function granularityLabel(value) {
   return ({300: "5M", 900: "15M", 3600: "1H", 14400: "4H"})[value] || String(value);
 }
+function averageTrueRange(list, period = 14) {
+  if (!Array.isArray(list) || list.length < period + 1) return null;
+  const values = [];
+  for (let i = Math.max(1, list.length - period); i < list.length; i++) {
+    const current = list[i], previous = list[i - 1];
+    const high = num(current.high), low = num(current.low), previousClose = num(previous.close);
+    const tr = Math.max(high - low, Math.abs(high - previousClose), Math.abs(low - previousClose));
+    if (Number.isFinite(tr)) values.push(tr);
+  }
+  if (!values.length) return null;
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+function confirmedSwings(list, left = 2, right = 2) {
+  const highs = [], lows = [];
+  if (!Array.isArray(list) || list.length < left + right + 3) return {highs, lows};
+  for (let i = left; i < list.length - right; i++) {
+    const point = list[i], high = num(point.high), low = num(point.low);
+    let isHigh = Number.isFinite(high), isLow = Number.isFinite(low);
+    for (let j = i - left; j <= i + right; j++) {
+      if (j === i) continue;
+      if (num(list[j].high) >= high) isHigh = false;
+      if (num(list[j].low) <= low) isLow = false;
+      if (!isHigh && !isLow) break;
+    }
+    if (isHigh) highs.push({price: high, epoch: Number(point.epoch), index: i});
+    if (isLow) lows.push({price: low, epoch: Number(point.epoch), index: i});
+  }
+  return {highs, lows};
+}
+function latestEqualLevel(points, tolerance) {
+  if (!Array.isArray(points) || points.length < 2) return null;
+  const recent = points.slice(-12);
+  for (let i = recent.length - 1; i >= 1; i--) {
+    for (let j = i - 1; j >= 0; j--) {
+      if (Math.abs(recent[i].price - recent[j].price) <= tolerance) {
+        return {price: (recent[i].price + recent[j].price) / 2, first: recent[j], second: recent[i]};
+      }
+    }
+  }
+  return null;
+}
+function classifyMarketStructure(list, swings, tolerance) {
+  const highs = swings.highs, lows = swings.lows;
+  const last = list[list.length - 1];
+  let trend = "Neutral / developing";
+  if (highs.length >= 2 && lows.length >= 2) {
+    const higherHigh = highs[highs.length - 1].price > highs[highs.length - 2].price + tolerance;
+    const lowerHigh = highs[highs.length - 1].price < highs[highs.length - 2].price - tolerance;
+    const higherLow = lows[lows.length - 1].price > lows[lows.length - 2].price + tolerance;
+    const lowerLow = lows[lows.length - 1].price < lows[lows.length - 2].price - tolerance;
+    if (higherHigh && higherLow) trend = "Bullish structure (HH + HL)";
+    else if (lowerHigh && lowerLow) trend = "Bearish structure (LH + LL)";
+  }
+  const lastHigh = highs.length ? highs[highs.length - 1] : null;
+  const lastLow = lows.length ? lows[lows.length - 1] : null;
+  const close = num(last.close);
+  const previousClose = list.length > 1 ? num(list[list.length - 2].close) : close;
+  const breakUp = !!lastHigh && previousClose <= lastHigh.price + tolerance && close > lastHigh.price + tolerance;
+  const breakDown = !!lastLow && previousClose >= lastLow.price - tolerance && close < lastLow.price - tolerance;
+  let event = "No confirmed break of the latest swing";
+  let direction = trend.startsWith("Bullish") ? "Bullish" : trend.startsWith("Bearish") ? "Bearish" : "Neutral";
+  if (breakUp && breakDown) {
+    event = "Conflicting structure breaks";
+    direction = "Neutral";
+  } else if (breakUp) {
+    event = trend.startsWith("Bearish") ? "Bullish CHoCH / MSS candidate" : "Bullish BOS candidate";
+    direction = "Bullish";
+  } else if (breakDown) {
+    event = trend.startsWith("Bullish") ? "Bearish CHoCH / MSS candidate" : "Bearish BOS candidate";
+    direction = "Bearish";
+  }
+  return {trend, direction, event, lastHigh, lastLow, breakUp, breakDown};
+}
+function setText(id, value) { const element = $(id); if (element) element.textContent = value; }
+function renderConfirmationChecks(items) {
+  const host = $("confirmationList");
+  host.innerHTML = "";
+  items.forEach(item => {
+    const row = document.createElement("div");
+    row.className = "checkItem";
+    const label = document.createElement("span");
+    label.textContent = item.label;
+    const state = document.createElement("span");
+    state.className = "checkState " + (item.ok ? "ok" : "pending");
+    state.textContent = item.ok ? "CONFIRMED" : "PENDING";
+    row.appendChild(label);
+    row.appendChild(state);
+    host.appendChild(row);
+  });
+}
 function analyse() {
   const meta = findSymbol(selected);
   const c5 = completedCandles(candles[300], 300);
   const c15 = completedCandles(candles[900], 900);
   const c1 = completedCandles(candles[3600], 3600);
   const c4 = completedCandles(candles[14400], 14400);
-  if (c5.length < 2 || !c15.length || !c1.length || !c4.length) {
-    const ready = [c4.length ? "4H ready" : "4H waiting", c1.length ? "1H ready" : "1H waiting", c15.length ? "15M ready" : "15M waiting", c5.length ? "5M ready" : "5M waiting"];
+  const ready = [c4.length ? "4H ready" : "4H waiting", c1.length ? "1H ready" : "1H waiting", c15.length ? "15M ready" : "15M waiting", c5.length ? "5M ready" : "5M waiting"];
+  if (c5.length < 15 || c15.length < 8 || c1.length < 1 || c4.length < 1) {
     setStatus("Connected to " + selected + ". Waiting for completed candles: " + ready.join(" · "));
+    setText("scoreValue", "0/100");
+    setText("scoreLabel", "Insufficient history for the V1.4 confirmation checks");
+    setText("scoreFill", "");
+    $("scoreFill").style.width = "0%";
+    setText("structureBias", "Waiting for confirmed swings");
+    setText("structureEvent", "—");
+    setText("rangeLocation", "Waiting");
+    setText("rangeWidth", "—");
+    setText("rangePosition", "—");
+    setText("buyLiquidity", "—");
+    setText("sellLiquidity", "—");
+    setText("equalHighs", "Not enough history");
+    setText("equalLows", "Not enough history");
+    renderConfirmationChecks([
+      {label:"1H reference range",ok:c1.length>0},
+      {label:"4H context",ok:c4.length>0},
+      {label:"15M swing history",ok:c15.length>=8},
+      {label:"5M trigger history",ok:c5.length>=15}
+    ]);
     return;
   }
+
+  // The latest item in each list is the most recent fully completed candle.
   const reference1h = c1[c1.length - 1];
   const last5 = c5[c5.length - 1];
   const last15 = c15[c15.length - 1];
   const last4 = c4[c4.length - 1];
   const hi = num(reference1h.high), lo = num(reference1h.low), mid = (hi + lo) / 2;
+  const price = Number.isFinite(Number(quote)) ? Number(quote) : num(last5.close);
+  const decimals = decimalPlacesFromPip(meta?.pip_size, price);
+  const minTick = Math.pow(10, -decimals);
+  const atr15 = averageTrueRange(c15, 14);
+  const tolerance = Math.max(minTick * 2, (atr15 || 0) * 0.08, Math.abs(price) * 0.000002);
   const bias4 = num(last4.close) > num(last4.open) ? "Bullish" : num(last4.close) < num(last4.open) ? "Bearish" : "Neutral";
-  const sellSideSweep = num(last5.low) < lo && num(last5.close) > lo;
-  const buySideSweep = num(last5.high) > hi && num(last5.close) < hi;
-  const liquidity = sellSideSweep ? "Sell-side sweep / reclaim" : buySideSweep ? "Buy-side sweep / rejection" : "No 5M sweep";
-  const structure15 = num(last15.close) > num(last15.open) ? "15M bullish candle" : num(last15.close) < num(last15.open) ? "15M bearish candle" : "15M neutral";
+  const swings = confirmedSwings(c15, 2, 2);
+  const structure = classifyMarketStructure(c15, swings, tolerance);
+  const eqh = latestEqualLevel(swings.highs, tolerance);
+  const eql = latestEqualLevel(swings.lows, tolerance);
+  const latestSwingHigh = swings.highs.length ? swings.highs[swings.highs.length - 1].price : null;
+  const latestSwingLow = swings.lows.length ? swings.lows[swings.lows.length - 1].price : null;
+  const buySideLevel = eqh ? eqh.price : latestSwingHigh;
+  const sellSideLevel = eql ? eql.price : latestSwingLow;
+
+  const location = price > mid + tolerance ? (price > hi + tolerance ? "Above reference range" : "Premium")
+    : price < mid - tolerance ? (price < lo - tolerance ? "Below reference range" : "Discount") : "Equilibrium";
+  const width = hi - lo;
+  const rangePercent = width > 0 ? Math.max(0, Math.min(100, ((price - lo) / width) * 100)) : null;
+
+  // Build candidate liquidity levels from the 1H range and confirmed 15M swing pools.
+  const lowLevels = [{label:"1H reference low", price:lo}];
+  const highLevels = [{label:"1H reference high", price:hi}];
+  if (sellSideLevel !== null) lowLevels.push({label:eql ? "15M equal-low pool" : "15M swing low", price:sellSideLevel});
+  if (buySideLevel !== null) highLevels.push({label:eqh ? "15M equal-high pool" : "15M swing high", price:buySideLevel});
+  const sweptLow = lowLevels.filter(level => num(last5.low) < level.price - tolerance && num(last5.close) > level.price);
+  const sweptHigh = highLevels.filter(level => num(last5.high) > level.price + tolerance && num(last5.close) < level.price);
+  const bullishSweep = sweptLow.length > 0;
+  const bearishSweep = sweptHigh.length > 0;
+  const ambiguousSweep = bullishSweep && bearishSweep;
+  const bullishLevel = bullishSweep ? sweptLow.reduce((a,b) => a.price < b.price ? a : b) : null;
+  const bearishLevel = bearishSweep ? sweptHigh.reduce((a,b) => a.price > b.price ? a : b) : null;
+
   const body = Math.abs(num(last5.close) - num(last5.open));
-  const range = num(last5.high) - num(last5.low);
-  const displacement = range > 0 && body / range >= 0.65;
-  const m5 = displacement ? (num(last5.close) > num(last5.open) ? "Bullish displacement" : "Bearish displacement") : "No displacement";
+  const candleRange = num(last5.high) - num(last5.low);
+  const atr5 = averageTrueRange(c5, 14);
+  const bodyRatio = candleRange > 0 ? body / candleRange : 0;
+  const bullishDisplacement = num(last5.close) > num(last5.open) && bodyRatio >= 0.60 && (!atr5 || body >= atr5 * 0.70);
+  const bearishDisplacement = num(last5.close) < num(last5.open) && bodyRatio >= 0.60 && (!atr5 || body >= atr5 * 0.70);
+  const displacementDirection = bullishDisplacement ? "Bullish displacement" : bearishDisplacement ? "Bearish displacement" : "No confirmed displacement";
+
+  const structureBull = structure.direction === "Bullish";
+  const structureBear = structure.direction === "Bearish";
+  const bullLocation = location === "Discount" || location === "Below reference range";
+  const bearLocation = location === "Premium" || location === "Above reference range";
+  const bullComponents = [
+    {label:"Completed 1H CRT range", ok:width > 0, weight:10},
+    {label:"Sell-side liquidity sweep + reclaim", ok:bullishSweep && !ambiguousSweep, weight:25},
+    {label:"15M bullish structure", ok:structureBull, weight:20},
+    {label:"5M bullish displacement", ok:bullishDisplacement, weight:20},
+    {label:"4H bullish context", ok:bias4 === "Bullish", weight:15},
+    {label:"Price in discount area", ok:bullLocation, weight:10}
+  ];
+  const bearComponents = [
+    {label:"Completed 1H CRT range", ok:width > 0, weight:10},
+    {label:"Buy-side liquidity sweep + reclaim", ok:bearishSweep && !ambiguousSweep, weight:25},
+    {label:"15M bearish structure", ok:structureBear, weight:20},
+    {label:"5M bearish displacement", ok:bearishDisplacement, weight:20},
+    {label:"4H bearish context", ok:bias4 === "Bearish", weight:15},
+    {label:"Price in premium area", ok:bearLocation, weight:10}
+  ];
+  const bullScore = bullComponents.reduce((sum,item) => sum + (item.ok ? item.weight : 0), 0);
+  const bearScore = bearComponents.reduce((sum,item) => sum + (item.ok ? item.weight : 0), 0);
+  const candidateScore = Math.max(bullScore, bearScore);
   let direction = "WAIT", entry = null, stop = null, target = null;
-  if (sellSideSweep && bias4 === "Bullish" && num(last15.close) > num(last15.open) && displacement && num(last5.close) > num(last5.open)) {
-    direction = "WATCH BUY"; entry = num(last5.close); stop = num(last5.low); target = hi;
-  } else if (buySideSweep && bias4 === "Bearish" && num(last15.close) < num(last15.open) && displacement && num(last5.close) < num(last5.open)) {
-    direction = "WATCH SELL"; entry = num(last5.close); stop = num(last5.high); target = lo;
-  }
-  $("hi").textContent = formatPrice(hi, meta);
-  $("lo").textContent = formatPrice(lo, meta);
-  $("mid").textContent = formatPrice(mid, meta);
-  $("liq").textContent = liquidity;
-  $("tf4").textContent = bias4;
-  $("tf1").textContent = "Previous completed candle";
-  $("tf15").textContent = structure15;
-  $("tf5").textContent = m5;
-  $("decision").textContent = direction;
+  const bullReady = bullishSweep && !ambiguousSweep && bullishDisplacement && structureBull && bias4 === "Bullish" && bullScore >= 80;
+  const bearReady = bearishSweep && !ambiguousSweep && bearishDisplacement && structureBear && bias4 === "Bearish" && bearScore >= 80;
+  if (bullReady) { direction = "WATCH BUY"; entry = num(last5.close); stop = num(last5.low); target = hi; }
+  else if (bearReady) { direction = "WATCH SELL"; entry = num(last5.close); stop = num(last5.high); target = lo; }
+
+  const liquidity = ambiguousSweep ? "Two-sided sweep · ambiguous"
+    : bullishSweep ? "Sell-side sweep + reclaim · " + (bullishLevel.label)
+    : bearishSweep ? "Buy-side sweep + rejection · " + (bearishLevel.label)
+    : "No completed 5M sweep/reclaim";
+  const structureCandle = num(last15.close) > num(last15.open) ? "15M bullish candle" : num(last15.close) < num(last15.open) ? "15M bearish candle" : "15M neutral candle";
+
+  setText("hi", formatPrice(hi, meta));
+  setText("lo", formatPrice(lo, meta));
+  setText("mid", formatPrice(mid, meta));
+  setText("liq", liquidity);
+  setText("tf4", bias4);
+  setText("tf1", "Previous completed candle");
+  setText("tf15", structureCandle + " · " + structure.direction);
+  setText("tf5", displacementDirection);
+  setText("rangeLocation", location);
+  setText("rangeWidth", formatPrice(width, meta));
+  setText("rangePosition", rangePercent === null ? "—" : rangePercent.toFixed(1) + "% from range low");
+  setText("structureBias", structure.trend);
+  setText("structureEvent", structure.event);
+  setText("buyLiquidity", buySideLevel === null ? "Insufficient swing history" : formatPrice(buySideLevel, meta) + (eqh ? " · EQH" : " · swing high"));
+  setText("sellLiquidity", sellSideLevel === null ? "Insufficient swing history" : formatPrice(sellSideLevel, meta) + (eql ? " · EQL" : " · swing low"));
+  setText("equalHighs", eqh ? formatPrice(eqh.price, meta) + " · zone" : "Not detected");
+  setText("equalLows", eql ? formatPrice(eql.price, meta) + " · zone" : "Not detected");
+  setText("decision", direction);
   $("decision").className = "signal " + (direction.includes("BUY") ? "green" : direction.includes("SELL") ? "red" : "amber");
-  $("direction").textContent = direction;
-  $("entry").textContent = entry === null ? "—" : formatPrice(entry, meta);
-  $("stop").textContent = stop === null ? "—" : formatPrice(stop, meta);
-  $("target").textContent = target === null ? "—" : formatPrice(target, meta);
-  setStatus("Completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  setText("direction", direction);
+  setText("entry", entry === null ? "—" : formatPrice(entry, meta));
+  setText("stop", stop === null ? "—" : formatPrice(stop, meta));
+  setText("target", target === null ? "—" : formatPrice(target, meta));
+
+  const chooseBull = bullScore > bearScore || (bullScore === bearScore && (bullishSweep && !bearishSweep || (!bearishSweep && bias4 === "Bullish")));
+  const chosenComponents = chooseBull ? bullComponents : bearComponents;
+  const chosenSide = chooseBull ? "Bullish" : "Bearish";
+  setText("scoreValue", candidateScore + "/100");
+  setText("scoreLabel", direction !== "WAIT" ? direction + " conditions aligned · " + chosenSide : chosenSide + " checklist · WAIT for missing confirmations");
+  $("scoreFill").style.width = candidateScore + "%";
+  $("scoreFill").style.background = candidateScore >= 80 ? "linear-gradient(90deg,#178c70,#25d3a0)" : candidateScore >= 50 ? "linear-gradient(90deg,#b17a27,#f4bd50)" : "linear-gradient(90deg,#7a4d36,#cf8159)";
+  renderConfirmationChecks(chosenComponents);
+  setText("scoreNote", ambiguousSweep ? "Both sides were swept in the same completed 5M candle. Treat the event as ambiguous and wait for fresh structure." : direction !== "WAIT" ? "A WATCH candidate is present, not an execution instruction. Review the chart, spread, market conditions and invalidation before making any decision." : "At least one essential confirmation is missing. A high partial score alone does not create a setup.");
+  setStatus("V1.4 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
   if (direction !== "WAIT" && "Notification" in window && Notification.permission === "granted") {
-    new Notification("CRT " + direction + " · " + selected, {body: "A preliminary CRT condition aligned. Review the chart independently; no trade was placed."});
+    new Notification("CRT " + direction + " · " + selected, {body: "A preliminary CRT confirmation checklist aligned. Review independently; no trade was placed."});
   }
 }
 
