@@ -18,12 +18,12 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{text-align:left;p
 </style></head><body>
 <header><div><div class="brand">CRT <em>DERIV ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
 <main>
-<div class="notice"><b>Data status:</b> This version connects to Deriv's public market-data WebSocket. It does not need your Deriv password or account token. CRT labels are preliminary rule-based analysis, not guaranteed trade signals. It does not place trades.</div>
+<div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket. No Deriv password or account token is required. Market data and CRT conditions are for analysis only; signals are preliminary and this app never places trades.</div>
 <section class="card">
  <div class="row between"><div><h2 style="margin:0">Market selector</h2><div class="muted tiny" id="marketCount">Loading Deriv instruments…</div></div><button id="refresh" class="primary">Refresh</button></div>
  <div class="row" style="margin-top:12px"><select id="category"><option value="all">All markets</option><option value="synthetic">Synthetic / Derived</option><option value="forex">Forex</option><option value="commodities">Commodities / Metals</option><option value="indices">Stock indices</option><option value="crypto">Cryptocurrencies</option><option value="shares">Shares / ETFs</option></select><select id="symbol"><option>Loading…</option></select></div>
  <div class="row between" style="margin-top:16px"><div><div class="muted tiny">LIVE QUOTE</div><div class="big" id="quote">—</div></div><div style="text-align:right"><div class="muted tiny">CRT STATUS</div><div class="signal amber" id="decision">WAIT</div></div></div>
- <div class="muted tiny" id="symbolName">Waiting for active symbols…</div><div id="status">Connecting to Deriv public market data…</div>
+ <div class="muted tiny" id="symbolName">Waiting for active symbols…</div><div id="status">Connecting to Deriv public market data…</div><div id="apiDiagnostic" class="tiny muted" style="margin-top:6px;overflow-wrap:anywhere">API diagnostic: waiting for first response</div>
 </section>
 <section class="card"><h2>Multi-timeframe analysis</h2><div class="grid">
  <div class="tile"><small>4H directional context</small><b id="tf4">Loading</b></div>
@@ -38,75 +38,395 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{text-align:left;p
 <section class="card"><h2>Analysis summary</h2><div class="grid">
  <div class="tile"><small>Potential direction</small><b id="direction">WAIT</b></div><div class="tile"><small>Entry reference</small><b id="entry">—</b></div>
  <div class="tile"><small>Invalidation reference</small><b id="stop">—</b></div><div class="tile"><small>Opposing range target</small><b id="target">—</b></div>
-</div><p class="muted tiny">This first live-data build identifies a previous 1H candle range and checks for a 5M wick sweep/reclaim. It does not yet claim full MSS, CHoCH or FVG confirmation.</p></section>
+</div><p class="muted tiny">Preliminary rules only: previous completed 1H range, completed 4H and 15M context, and a completed 5M sweep/reclaim with displacement. Full swing MSS/CHoCH, FVG lifecycle, equal highs/lows, session filters, and backtesting are not yet implemented.</p></section>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
 <div class="foot">CRT DERIV ANALYST · Live public data · No trade execution · Verify all signals independently</div>
 </main>
 <script>
-const WS_URL="wss://api.derivws.com/trading/v1/options/ws/public";
-let ws=null, symbols=[], candles={300:[],900:[],3600:[],14400:[]}, selected="", quote=null, req=10, reconnectTimer=null;
-const $=id=>document.getElementById(id);
-function setStatus(s){$("status").textContent=s}
-function send(o){if(ws&&ws.readyState===1)ws.send(JSON.stringify({...o,req_id:req++}));}
-function connect(){
- if(ws){try{ws.close()}catch(e){}}
- $("connBadge").textContent="CONNECTING"; setStatus("Opening Deriv public WebSocket…");
- ws=new WebSocket(WS_URL);
- ws.onopen=()=>{ $("connBadge").textContent="CONNECTED"; $("connBadge").style.color="var(--green)";setStatus("Socket open. Requesting Deriv active-symbol list…");send({active_symbols:"brief"});setTimeout(()=>{if(!symbols.length && ws && ws.readyState===1)setStatus("Socket is open, but no active-symbol reply has arrived. Check the API response or endpoint compatibility.")},10000);};
- ws.onmessage=e=>{let d;try{d=JSON.parse(e.data)}catch(_){return}
-  if(d.error || (Array.isArray(d.errors) && d.errors.length)){let msg=d.error?.message || d.errors.map(x=>x.message||x.code||"API error").join("; ");setStatus("Deriv API error: "+msg);$("marketCount").textContent="Deriv rejected the market-list request";return}
-  if(d.msg_type==="active_symbols" || Array.isArray(d.active_symbols)){symbols=d.active_symbols||[];renderSymbols();$("marketCount").textContent=symbols.length+" active instruments returned by Deriv";if(symbols.length){let chosen=symbols.some(x=>x.symbol===selected)?selected:symbols[0].symbol;selected=chosen;$("symbol").value=chosen;loadMarket(chosen)}else{setStatus("Deriv replied, but returned no active symbols. Check the API response and try again.")}}
-  else if(d.msg_type){setStatus("Deriv response received: "+d.msg_type+(d.echo_req?.active_symbols?" (symbol request acknowledged)":""));}
-  if(d.msg_type==="tick"&&d.tick&&d.tick.symbol===selected){quote=d.tick.quote;$("quote").textContent=Number(quote).toFixed(d.tick.quote===undefined?5:Math.min(8,Math.max(2,String(d.tick.quote).split(".")[1]?.length||2)));$("symbolName").textContent=(findSymbol(selected)?.display_name||selected)+" · live tick";}
-  if(d.msg_type==="candles"&&d.echo_req&&d.echo_req.granularity){let g=Number(d.echo_req.granularity);candles[g]=d.candles||[];if(g===300)analyse();}
-  if(d.msg_type==="ohlc"&&d.ohlc){let g=Number(d.echo_req?.granularity||300);if(candles[g]?.length){candles[g][candles[g].length-1]=d.ohlc;if(g===300)analyse();}}
- };
- ws.onerror=()=>{setStatus("Connection error. Check internet and reconnect.");$("connBadge").textContent="ERROR"};
- ws.onclose=()=>{$("connBadge").textContent="DISCONNECTED";if(!reconnectTimer)reconnectTimer=setTimeout(()=>{reconnectTimer=null;connect()},5000)};
+"use strict";
+const WS_URL = "wss://api.derivws.com/trading/v1/options/ws/public";
+const GRANULARITIES = [300, 900, 3600, 14400];
+let ws = null;
+let symbols = [];
+let candles = {300: [], 900: [], 3600: [], 14400: []};
+let selected = "";
+let quote = null;
+let reqCounter = 100;
+let activeSymbolsTimer = null;
+let reconnectTimer = null;
+let candleRefreshTimer = null;
+let socketGeneration = 0;
+let subscriptions = new Set();
+let requestMeta = new Map();
+let lastMessageAt = 0;
+let messageCount = 0;
+const $ = id => document.getElementById(id);
+
+function setStatus(message) { $("status").textContent = message; }
+function setDiagnostic(message) { $("apiDiagnostic").textContent = "API diagnostic: " + message; }
+function socketOpen() { return !!ws && ws.readyState === WebSocket.OPEN; }
+function send(payload, meta) {
+  if (!socketOpen()) return null;
+  const id = reqCounter++;
+  const request = Object.assign({}, payload, {req_id: id});
+  if (meta) requestMeta.set(id, meta);
+  try { ws.send(JSON.stringify(request)); return id; }
+  catch (error) { setDiagnostic("Send failed: " + error.message); return null; }
 }
-function findSymbol(s){return symbols.find(x=>x.symbol===s)}
-function categoryOf(s){let x=(s.market||"").toLowerCase(),d=(s.submarket||"").toLowerCase(),name=(s.display_name||"").toLowerCase();
- if(x.includes("forex")||d.includes("forex"))return "forex";
- if(x.includes("synthetic")||x.includes("derived")||d.includes("synthetic")||d.includes("derived")||name.includes("volatility")||name.includes("boom")||name.includes("crash")||name.includes("jump")||name.includes("step")||name.includes("range break")||name.includes("drift"))return "synthetic";
- if(x.includes("commodit")||name.includes("gold")||name.includes("silver")||name.includes("oil"))return "commodities";
- if(x.includes("indices")||x.includes("index"))return "indices";
- if(x.includes("crypto"))return "crypto";
- if(x.includes("stock")||x.includes("etf")||x.includes("share"))return "shares";
- return "other";
+function clearTimers() {
+  if (activeSymbolsTimer) clearTimeout(activeSymbolsTimer);
+  activeSymbolsTimer = null;
+  if (candleRefreshTimer) clearInterval(candleRefreshTimer);
+  candleRefreshTimer = null;
 }
-function renderSymbols(){let cat=$("category").value,arr=symbols.filter(s=>cat==="all"||categoryOf(s)===cat);arr.sort((a,b)=>(a.display_name||a.symbol).localeCompare(b.display_name||b.symbol));let sel=$("symbol"),old=selected;sel.innerHTML="";arr.forEach(s=>{let o=document.createElement("option");o.value=s.symbol;o.textContent=(s.display_name||s.symbol)+" ["+s.symbol+"]";sel.appendChild(o)});if(arr.some(s=>s.symbol===old))sel.value=old;else if(arr.length){sel.value=arr[0].symbol;selected=arr[0].symbol}}
-function loadMarket(s){if(!s)return;selected=s;candles={300:[],900:[],3600:[],14400:[]};let meta=findSymbol(s);$("symbolName").textContent=(meta?.display_name||s)+" · loading candles";$("quote").textContent="—";$("decision").textContent="WAIT";$("decision").className="signal amber";send({forget_all:"ticks"});send({ticks:s,subscribe:1});[300,900,3600,14400].forEach(g=>send({ticks_history:s,adjust_start_time:1,count:250,end:"latest",style:"candles",granularity:g}));setStatus("Loading 5M, 15M, 1H and 4H candle history for "+s+"…")}
-function num(v){return Number(v)}
-function analyse(){
- let c5=candles[300],c15=candles[900],c1=candles[3600],c4=candles[14400];
- if(!c5?.length||!c15?.length||!c1?.length||!c4?.length){setStatus("Connected; waiting for candle history on all four timeframes…");return}
- // Historical candle arrays are oldest-to-newest. Previous completed 1H is the penultimate candle.
- let ref=c1.length>=2?c1[c1.length-2]:null, last5=c5[c5.length-1], prev5=c5[c5.length-2], last15=c15[c15.length-1], prev4=c4[c4.length-2];
- if(!ref||!last5||!last15||!prev4)return;
- let hi=num(ref.high),lo=num(ref.low),mid=(hi+lo)/2;
- let b4=num(prev4.close)>num(prev4.open)?"Bullish":num(prev4.close)<num(prev4.open)?"Bearish":"Neutral";
- let ssl=num(last5.low)<lo&&num(last5.close)>lo, bsl=num(last5.high)>hi&&num(last5.close)<hi;
- let sweep=ssl?"Sell-side sweep / reclaim":bsl?"Buy-side sweep / rejection":"No 5M sweep";
- let struct15=num(last15.close)>num(last15.open)?"15M bullish candle":num(last15.close)<num(last15.open)?"15M bearish candle":"15M neutral";
- let body=Math.abs(num(last5.close)-num(last5.open)),range=num(last5.high)-num(last5.low);
- let disp=range>0&&body/range>=0.65;
- let m5=disp?(num(last5.close)>num(last5.open)?"Bullish displacement":"Bearish displacement"):"No displacement";
- let dir="WAIT",entry="—",stop="—",target="—";
- if(ssl&&b4==="Bullish"&&num(last15.close)>num(last15.open)&&disp&&num(last5.close)>num(last5.open)){dir="WATCH BUY";entry=num(last5.close);stop=num(last5.low);target=hi}
- if(bsl&&b4==="Bearish"&&num(last15.close)<num(last15.open)&&disp&&num(last5.close)<num(last5.open)){dir="WATCH SELL";entry=num(last5.close);stop=num(last5.high);target=lo}
- let fmt=x=>Number(x).toFixed(Math.min(8,Math.max(2,String(x).split(".")[1]?.length||2)));
- $("hi").textContent=fmt(hi);$("lo").textContent=fmt(lo);$("mid").textContent=fmt(mid);$("liq").textContent=sweep;
- $("tf4").textContent=b4;$("tf1").textContent="Previous completed candle";$("tf15").textContent=struct15;$("tf5").textContent=m5;
- $("decision").textContent=dir;$("decision").className="signal "+(dir.includes("BUY")?"green":dir.includes("SELL")?"red":"amber");
- $("direction").textContent=dir;$("entry").textContent=entry==="—"?"—":fmt(entry);$("stop").textContent=stop==="—"?"—":fmt(stop);$("target").textContent=target==="—"?"—":fmt(target);
- setStatus("Live feed connected · Candle history loaded · Last analysis: "+new Date().toLocaleTimeString());
- if(dir!=="WAIT"&&Notification.permission==="granted")new Notification("CRT "+dir+" · "+selected,{body:"A preliminary CRT condition aligned. Open the dashboard to review; this is not an execution instruction."});
+function connect() {
+  clearTimers();
+  if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
+  const generation = ++socketGeneration;
+  subscriptions.clear();
+  requestMeta.clear();
+  symbols = [];
+  selected = "";
+  candles = {300: [], 900: [], 3600: [], 14400: []};
+  $("symbol").innerHTML = '<option value="">Waiting for Deriv…</option>';
+  $("marketCount").textContent = "Connecting to Deriv instruments…";
+  $("quote").textContent = "—";
+  $("connBadge").textContent = "CONNECTING";
+  $("connBadge").style.color = "var(--amber)";
+  setStatus("Opening Deriv public market-data connection…");
+  setDiagnostic("No messages received yet");
+  if (ws) { try { ws.onclose = null; ws.close(); } catch (_) {} }
+  try { ws = new WebSocket(WS_URL); }
+  catch (error) {
+    $("connBadge").textContent = "ERROR";
+    setStatus("Could not create WebSocket: " + error.message);
+    setDiagnostic("Browser could not create the connection");
+    return;
+  }
+  ws.onopen = () => {
+    if (generation !== socketGeneration) return;
+    $("connBadge").textContent = "CONNECTED";
+    $("connBadge").style.color = "var(--green)";
+    setStatus("WebSocket open. Requesting the Deriv active-symbol list…");
+    const id = send({active_symbols: "brief"}, {kind: "active_symbols"});
+    setDiagnostic("Sent active_symbols=brief (request " + id + ") to " + WS_URL);
+    activeSymbolsTimer = setTimeout(() => {
+      if (generation !== socketGeneration || symbols.length) return;
+      setStatus("The socket is open, but Deriv has not returned the instrument list. A diagnostic ping will be sent next.");
+      setDiagnostic("No active_symbols reply after 10 seconds; testing whether the server responds to ping");
+      send({ping: 1}, {kind: "ping"});
+      setTimeout(() => {
+        if (generation !== socketGeneration || symbols.length) return;
+        if (lastMessageAt) {
+          setStatus("The server replied, but no active-symbol list was received. Check the API diagnostic below.");
+        } else {
+          setStatus("No server messages received. The WebSocket handshake succeeded, but API requests are unanswered. This is an endpoint/protocol or network issue, not a CRT signal.");
+        }
+        setDiagnostic("Messages received: " + messageCount + ". Last response: " + (lastMessageAt ? new Date(lastMessageAt).toLocaleTimeString() : "none"));
+      }, 6000);
+    }, 10000);
+  };
+  ws.onmessage = event => {
+    if (generation !== socketGeneration) return;
+    lastMessageAt = Date.now();
+    messageCount++;
+    let data;
+    try { data = JSON.parse(event.data); }
+    catch (_) {
+      setDiagnostic("Received a non-JSON frame: " + String(event.data).slice(0, 160));
+      return;
+    }
+    handleMessage(data);
+  };
+  ws.onerror = () => {
+    if (generation !== socketGeneration) return;
+    $("connBadge").textContent = "ERROR";
+    $("connBadge").style.color = "var(--red)";
+    setStatus("WebSocket transport error. Check your internet connection and try Reconnect data.");
+    setDiagnostic("Browser reported a WebSocket error. Detailed server reason is not exposed by the browser.");
+  };
+  ws.onclose = event => {
+    if (generation !== socketGeneration) return;
+    clearTimers();
+    $("connBadge").textContent = "DISCONNECTED";
+    $("connBadge").style.color = "var(--red)";
+    setStatus("Connection closed (code " + event.code + "). Reconnecting in 5 seconds…");
+    setDiagnostic("Close code: " + event.code + (event.reason ? "; reason: " + event.reason : ""));
+    if (!reconnectTimer) reconnectTimer = setTimeout(() => { reconnectTimer = null; connect(); }, 5000);
+  };
 }
-$("symbol").addEventListener("change",()=>loadMarket($("symbol").value));
-$("category").addEventListener("change",()=>{renderSymbols();loadMarket($("symbol").value)});
-$("refresh").onclick=()=>{send({active_symbols:"brief"});if(selected)loadMarket(selected)};
-$("reconnect").onclick=connect;
-$("notify").onclick=async()=>{if(!("Notification"in window)){$("notifyStatus").textContent="This browser does not support notifications.";return}let p=await Notification.requestPermission();$("notifyStatus").textContent="Browser notification permission: "+p+". Background push requires deployment and a push server."};
-if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+
+function handleMessage(data) {
+  if (data.error || (Array.isArray(data.errors) && data.errors.length)) {
+    const parts = [];
+    if (data.error) parts.push(data.error.message || data.error.code || "API error");
+    if (Array.isArray(data.errors)) data.errors.forEach(error => parts.push(error.message || error.code || "API error"));
+    const msg = parts.join("; ") || "Unknown Deriv API error";
+    setStatus("Deriv API rejected a request: " + msg);
+    setDiagnostic("API error response: " + msg + (data.req_id ? " (request " + data.req_id + ")" : ""));
+    $("marketCount").textContent = "Deriv returned an API error";
+    return;
+  }
+
+  if (data.subscription && data.subscription.id) subscriptions.add(data.subscription.id);
+
+  const activeList = Array.isArray(data.active_symbols) ? data.active_symbols : null;
+  if (data.msg_type === "active_symbols" || activeList) {
+    if (activeSymbolsTimer) { clearTimeout(activeSymbolsTimer); activeSymbolsTimer = null; }
+    symbols = (activeList || []).filter(item => symbolCode(item));
+    if (!symbols.length) {
+      $("marketCount").textContent = "Deriv returned an empty or unrecognised instrument list";
+      setStatus("Deriv replied to active_symbols, but no usable symbol identifiers were found.");
+      setDiagnostic("Active-symbol response received; first record keys: " + (activeList && activeList[0] ? Object.keys(activeList[0]).join(", ") : "no records"));
+      return;
+    }
+    renderSymbols();
+    $("marketCount").textContent = symbols.length + " active instruments returned by Deriv";
+    setDiagnostic("Active-symbol response received: " + symbols.length + " instruments; fields parsed using current/legacy compatibility");
+    const selectedItem = symbols.find(item => symbolCode(item) === selected) || symbols[0];
+    selected = symbolCode(selectedItem);
+    $("symbol").value = selected;
+    loadMarket(selected);
+    return;
+  }
+
+  if (data.msg_type === "ping") {
+    setDiagnostic("Deriv ping response received. WebSocket/API server is responding, but active_symbols is still outstanding.");
+    if (!symbols.length) setStatus("The server responds to ping, but has not returned the instrument list. This isolates the problem to the active-symbol request/response.");
+    return;
+  }
+
+  if (data.msg_type === "tick" && data.tick) {
+    const tickSymbol = data.tick.symbol || data.echo_req?.ticks;
+    if (tickSymbol === selected && data.tick.quote !== undefined) {
+      quote = Number(data.tick.quote);
+      const decimals = Number.isInteger(Number(data.tick.pip_size)) ? Math.max(0, Math.min(8, Number(data.tick.pip_size))) : decimalPlaces(data.tick.quote);
+      $("quote").textContent = quote.toFixed(decimals);
+      const meta = findSymbol(selected);
+      $("symbolName").textContent = displayName(meta) + " · live tick";
+      setDiagnostic("Live tick received for " + selected + " at " + new Date().toLocaleTimeString());
+    }
+    return;
+  }
+
+  if (data.msg_type === "candles" && Array.isArray(data.candles)) {
+    const granularity = Number(data.echo_req?.granularity || requestMeta.get(data.req_id)?.granularity);
+    const requestSymbol = data.echo_req?.ticks_history || requestMeta.get(data.req_id)?.symbol;
+    if (granularity && requestSymbol === selected) {
+      candles[granularity] = data.candles;
+      setDiagnostic("Received " + data.candles.length + " candles for " + granularityLabel(granularity));
+      analyse();
+    }
+    return;
+  }
+
+  if (data.msg_type === "ohlc" && data.ohlc) {
+    const granularity = Number(data.echo_req?.granularity || 300);
+    const requestSymbol = data.echo_req?.ticks_history || selected;
+    if (requestSymbol === selected && GRANULARITIES.includes(granularity)) {
+      upsertCandle(granularity, data.ohlc);
+      analyse();
+    }
+    return;
+  }
+
+  if (data.msg_type) {
+    setDiagnostic("Deriv response received: " + data.msg_type + (data.req_id ? " (request " + data.req_id + ")" : ""));
+  } else {
+    setDiagnostic("Received a JSON response without msg_type. Keys: " + Object.keys(data).join(", "));
+  }
+}
+
+function symbolCode(item) { return item?.underlying_symbol || item?.symbol || item?.symbol_code || ""; }
+function displayName(item) { return item?.underlying_symbol_name || item?.display_name || item?.symbol_name || symbolCode(item) || "Unknown instrument"; }
+function findSymbol(code) { return symbols.find(item => symbolCode(item) === code); }
+function decimalPlaces(value) {
+  const text = String(value);
+  return text.includes(".") ? Math.min(8, text.split(".")[1].length) : 2;
+}
+function categoryOf(item) {
+  const market = String(item?.market || "").toLowerCase();
+  const subgroup = String(item?.subgroup || "").toLowerCase();
+  const submarket = String(item?.submarket || "").toLowerCase();
+  const type = String(item?.underlying_symbol_type || item?.symbol_type || "").toLowerCase();
+  const name = displayName(item).toLowerCase();
+  const all = [market, subgroup, submarket, type, name].join(" ");
+  if (/forex|currency/.test(all)) return "forex";
+  if (/synthetic|derived|volatility|boom|crash|jump|step|range.?break|drift|dex|1hz|1s/.test(all)) return "synthetic";
+  if (/commodit|metal|gold|silver|oil|energy/.test(all)) return "commodities";
+  if (/indices|index|stock.?index/.test(all)) return "indices";
+  if (/crypto|bitcoin|ethereum|litecoin|dogecoin/.test(all)) return "crypto";
+  if (/stock|share|equity|etf/.test(all)) return "shares";
+  return "other";
+}
+function renderSymbols() {
+  const category = $("category").value;
+  const filtered = symbols.filter(item => category === "all" || categoryOf(item) === category);
+  filtered.sort((a, b) => displayName(a).localeCompare(displayName(b)));
+  const select = $("symbol");
+  const previous = selected;
+  select.innerHTML = "";
+  if (!filtered.length) {
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = category === "all" ? "No instruments returned" : "No instruments in this category";
+    select.appendChild(option);
+    return;
+  }
+  filtered.forEach(item => {
+    const code = symbolCode(item);
+    const option = document.createElement("option");
+    option.value = code;
+    option.textContent = displayName(item) + " [" + code + "]";
+    select.appendChild(option);
+  });
+  if (filtered.some(item => symbolCode(item) === previous)) select.value = previous;
+  else select.value = symbolCode(filtered[0]);
+}
+
+function loadMarket(code) {
+  if (!code || !socketOpen()) return;
+  subscriptions.forEach(id => send({forget: id}));
+  subscriptions.clear();
+  selected = code;
+  candles = {300: [], 900: [], 3600: [], 14400: []};
+  quote = null;
+  $("quote").textContent = "—";
+  $("decision").textContent = "WAIT";
+  $("decision").className = "signal amber";
+  $("symbolName").textContent = displayName(findSymbol(code)) + " · loading market data";
+  [300, 900, 3600, 14400].forEach(granularity => {
+    const meta = {kind: "candles", granularity, symbol: code};
+    const request = {ticks_history: code, adjust_start_time: 1, count: 250, end: "latest", style: "candles", granularity};
+    if (granularity === 300) request.subscribe = 1;
+    send(request, meta);
+  });
+  send({ticks: code, subscribe: 1}, {kind: "ticks", symbol: code});
+  setStatus("Requesting live quote and 5M, 15M, 1H and 4H candle history for " + code + "…");
+  if (candleRefreshTimer) clearInterval(candleRefreshTimer);
+  candleRefreshTimer = setInterval(() => {
+    if (!socketOpen() || !selected) return;
+    [900, 3600, 14400].forEach(granularity => send({
+      ticks_history: selected, adjust_start_time: 1, count: 250, end: "latest", style: "candles", granularity
+    }, {kind: "candles", granularity, symbol: selected}));
+  }, 90000);
+}
+
+function upsertCandle(granularity, ohlc) {
+  if (!candles[granularity]) candles[granularity] = [];
+  const list = candles[granularity];
+  const epoch = Number(ohlc.epoch);
+  const existing = list.findIndex(candle => Number(candle.epoch) === epoch);
+  const normalized = {epoch, open: Number(ohlc.open), high: Number(ohlc.high), low: Number(ohlc.low), close: Number(ohlc.close)};
+  if (existing >= 0) list[existing] = normalized;
+  else { list.push(normalized); list.sort((a, b) => Number(a.epoch) - Number(b.epoch)); }
+  if (list.length > 300) list.splice(0, list.length - 300);
+}
+function completedCandles(list, granularity) {
+  if (!Array.isArray(list) || !list.length) return [];
+  const now = Date.now() / 1000;
+  const withEpoch = list.filter(candle => Number.isFinite(Number(candle.epoch)) && Number(candle.epoch) > 0);
+  if (withEpoch.length) return withEpoch.filter(candle => Number(candle.epoch) + granularity <= now);
+  return list.length > 1 ? list.slice(0, -1) : [];
+}
+function num(value) { return Number(value); }
+function formatPrice(value, meta) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "—";
+  const decimals = decimalPlacesFromPip(meta?.pip_size, n);
+  return n.toFixed(decimals);
+}
+function decimalPlacesFromPip(pipSize, fallback) {
+  const n = Number(pipSize);
+  if (Number.isInteger(n) && n >= 0 && n <= 8) return n;
+  return decimalPlaces(fallback);
+}
+function granularityLabel(value) {
+  return ({300: "5M", 900: "15M", 3600: "1H", 14400: "4H"})[value] || String(value);
+}
+function analyse() {
+  const meta = findSymbol(selected);
+  const c5 = completedCandles(candles[300], 300);
+  const c15 = completedCandles(candles[900], 900);
+  const c1 = completedCandles(candles[3600], 3600);
+  const c4 = completedCandles(candles[14400], 14400);
+  if (c5.length < 2 || !c15.length || !c1.length || !c4.length) {
+    const ready = [c4.length ? "4H ready" : "4H waiting", c1.length ? "1H ready" : "1H waiting", c15.length ? "15M ready" : "15M waiting", c5.length ? "5M ready" : "5M waiting"];
+    setStatus("Connected to " + selected + ". Waiting for completed candles: " + ready.join(" · "));
+    return;
+  }
+  const reference1h = c1[c1.length - 1];
+  const last5 = c5[c5.length - 1];
+  const last15 = c15[c15.length - 1];
+  const last4 = c4[c4.length - 1];
+  const hi = num(reference1h.high), lo = num(reference1h.low), mid = (hi + lo) / 2;
+  const bias4 = num(last4.close) > num(last4.open) ? "Bullish" : num(last4.close) < num(last4.open) ? "Bearish" : "Neutral";
+  const sellSideSweep = num(last5.low) < lo && num(last5.close) > lo;
+  const buySideSweep = num(last5.high) > hi && num(last5.close) < hi;
+  const liquidity = sellSideSweep ? "Sell-side sweep / reclaim" : buySideSweep ? "Buy-side sweep / rejection" : "No 5M sweep";
+  const structure15 = num(last15.close) > num(last15.open) ? "15M bullish candle" : num(last15.close) < num(last15.open) ? "15M bearish candle" : "15M neutral";
+  const body = Math.abs(num(last5.close) - num(last5.open));
+  const range = num(last5.high) - num(last5.low);
+  const displacement = range > 0 && body / range >= 0.65;
+  const m5 = displacement ? (num(last5.close) > num(last5.open) ? "Bullish displacement" : "Bearish displacement") : "No displacement";
+  let direction = "WAIT", entry = null, stop = null, target = null;
+  if (sellSideSweep && bias4 === "Bullish" && num(last15.close) > num(last15.open) && displacement && num(last5.close) > num(last5.open)) {
+    direction = "WATCH BUY"; entry = num(last5.close); stop = num(last5.low); target = hi;
+  } else if (buySideSweep && bias4 === "Bearish" && num(last15.close) < num(last15.open) && displacement && num(last5.close) < num(last5.open)) {
+    direction = "WATCH SELL"; entry = num(last5.close); stop = num(last5.high); target = lo;
+  }
+  $("hi").textContent = formatPrice(hi, meta);
+  $("lo").textContent = formatPrice(lo, meta);
+  $("mid").textContent = formatPrice(mid, meta);
+  $("liq").textContent = liquidity;
+  $("tf4").textContent = bias4;
+  $("tf1").textContent = "Previous completed candle";
+  $("tf15").textContent = structure15;
+  $("tf5").textContent = m5;
+  $("decision").textContent = direction;
+  $("decision").className = "signal " + (direction.includes("BUY") ? "green" : direction.includes("SELL") ? "red" : "amber");
+  $("direction").textContent = direction;
+  $("entry").textContent = entry === null ? "—" : formatPrice(entry, meta);
+  $("stop").textContent = stop === null ? "—" : formatPrice(stop, meta);
+  $("target").textContent = target === null ? "—" : formatPrice(target, meta);
+  setStatus("Completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  if (direction !== "WAIT" && "Notification" in window && Notification.permission === "granted") {
+    new Notification("CRT " + direction + " · " + selected, {body: "A preliminary CRT condition aligned. Review the chart independently; no trade was placed."});
+  }
+}
+
+$("symbol").addEventListener("change", () => loadMarket($("symbol").value));
+$("category").addEventListener("change", () => {
+  const before = selected;
+  renderSymbols();
+  const next = $("symbol").value;
+  if (next && next !== before) loadMarket(next);
+});
+$("refresh").addEventListener("click", () => {
+  if (!socketOpen()) { connect(); return; }
+  if (symbols.length) {
+    const current = selected;
+    loadMarket(current);
+    setStatus("Refreshing market data for " + current + "…");
+  } else {
+    setStatus("Re-requesting Deriv active-symbol list…");
+    const id = send({active_symbols: "brief"}, {kind: "active_symbols"});
+    setDiagnostic("Manual active_symbols request sent (request " + id + ")");
+    if (activeSymbolsTimer) clearTimeout(activeSymbolsTimer);
+    activeSymbolsTimer = setTimeout(() => {
+      if (!symbols.length) {
+        send({ping: 1}, {kind: "ping"});
+        setStatus("Still waiting for active_symbols. The diagnostic line above shows whether the server has replied.");
+      }
+    }, 10000);
+  }
+});
+$("reconnect").addEventListener("click", connect);
+$("notify").addEventListener("click", async () => {
+  if (!("Notification" in window)) { $("notifyStatus").textContent = "This browser does not support notifications."; return; }
+  const permission = await Notification.requestPermission();
+  $("notifyStatus").textContent = "Browser notification permission: " + permission + ". True background push requires a separate push service.";
+});
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(error => setDiagnostic("Service worker registration unavailable: " + error.message));
 connect();
 </script></body></html>
