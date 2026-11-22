@@ -17,8 +17,12 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{text-align:left;p
 .scoreValue{font-size:28px;font-weight:900;letter-spacing:-.5px}.scoreTrack{height:9px;background:#263952;border-radius:20px;overflow:hidden;margin:8px 0 12px}.scoreFill{height:100%;width:0;background:linear-gradient(90deg,#d59c3a,#25d3a0);border-radius:20px;transition:width .25s}.checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.checkItem{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 9px;border:1px solid #263952;background:#0b1627;border-radius:9px;font-size:11px;min-width:0}.checkItem span:first-child{overflow-wrap:anywhere}.checkState{font-weight:800;white-space:nowrap}.checkState.ok{color:var(--green)}.checkState.pending{color:var(--amber)}.checkState.bad{color:var(--red)}.sectionNote{font-size:11px;line-height:1.5;color:var(--muted);margin:10px 0 0}.tag{display:inline-block;padding:3px 7px;border-radius:20px;background:#1d304a;color:#c8d8ef;font-size:10px;margin:2px 3px 2px 0}
 @media(max-width:430px){.checklist{grid-template-columns:1fr}}
 @media(min-width:600px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+.chartToolbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:10px}.chartToolbar button{padding:8px 11px;font-size:11px}.chartToolbar button.active{background:#14795f;border-color:#25d3a0}.chartToolbar select{flex:0 1 105px;padding:8px;font-size:11px}.chartWrap{background:#081321;border:1px solid #263952;border-radius:11px;overflow:hidden;position:relative}.chartSvg{display:block;width:100%;height:auto;min-height:250px;touch-action:pan-y}.chartLegend{display:flex;gap:9px;flex-wrap:wrap;color:var(--muted);font-size:10px;margin-top:8px}.legendDot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}.chartInfo{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.45}.chartGrid{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}.chartSplit .chartGrid{grid-template-columns:minmax(0,1.7fr) minmax(190px,1fr);align-items:start}.chartMini{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.chartMini .tile{padding:8px}.chartMini .tile b{font-size:12px}.overlayControls{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin:8px 0}.overlayControls label{display:flex;gap:5px;align-items:center}.overlayControls input{accent-color:#25d3a0}
+@media(max-width:600px){.chartSplit .chartGrid{grid-template-columns:1fr}.chartSvg{min-height:235px}}
+
 </style></head><body>
-<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.4 · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
+<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.5 · LIVE CHARTS · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
 <main>
 <div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket. No Deriv password or account token is required. Market data and CRT conditions are for analysis only; signals are preliminary and this app never places trades.</div>
 <section class="card">
@@ -26,6 +30,31 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{text-align:left;p
  <div class="row" style="margin-top:12px"><select id="category"><option value="all">All markets</option><option value="synthetic">Synthetic / Derived</option><option value="forex">Forex</option><option value="commodities">Commodities / Metals</option><option value="indices">Stock indices</option><option value="crypto">Cryptocurrencies</option><option value="shares">Shares / ETFs</option></select><select id="symbol"><option>Loading…</option></select></div>
  <div class="row between" style="margin-top:16px"><div><div class="muted tiny">LIVE QUOTE</div><div class="big" id="quote">—</div></div><div style="text-align:right"><div class="muted tiny">CRT STATUS</div><div class="signal amber" id="decision">WAIT</div></div></div>
  <div class="muted tiny" id="symbolName">Waiting for active symbols…</div><div id="status">Connecting to Deriv public market data…</div><div id="apiDiagnostic" class="tiny muted" style="margin-top:6px;overflow-wrap:anywhere">API diagnostic: waiting for first response</div>
+</section>
+<section class="card" id="chartCard">
+ <div class="row between"><h2 style="margin:0">Live annotated chart</h2><span class="tag" id="chartLiveState">Waiting for candles</span></div>
+ <div class="chartToolbar" style="margin-top:10px">
+  <select id="chartTf" aria-label="Chart timeframe"><option value="300">5M</option><option value="900">15M</option><option value="3600">1H</option><option value="14400">4H</option></select>
+  <button id="layoutChart" class="active" type="button">Chart first</button><button id="layoutSplit" type="button">Split view</button>
+ </div>
+ <div class="overlayControls">
+  <label><input type="checkbox" id="ovRange" checked> CRT range</label>
+  <label><input type="checkbox" id="ovLiquidity" checked> Liquidity levels</label>
+  <label><input type="checkbox" id="ovStructure" checked> Swing structure</label>
+ </div>
+ <div class="chartGrid" id="chartGrid">
+  <div>
+   <div class="chartWrap"><svg id="liveChart" class="chartSvg" viewBox="0 0 900 430" role="img" aria-label="Live Deriv candlestick chart with CRT overlays"><text x="450" y="210" fill="#93a7c2" text-anchor="middle" font-size="18">Waiting for candle history…</text></svg></div>
+   <div class="chartLegend"><span><i class="legendDot" style="background:#25d3a0"></i>Bullish candle</span><span><i class="legendDot" style="background:#ff637d"></i>Bearish candle</span><span><i class="legendDot" style="background:#f4bd50"></i>CRT range</span><span><i class="legendDot" style="background:#76aaff"></i>Liquidity / structure</span></div>
+   <div class="chartInfo" id="chartExplanation">Chart overlays will appear when Deriv candle history is available. The chart uses the same public feed as the analysis engine.</div>
+  </div>
+  <aside class="chartMini" id="chartMini">
+   <div class="tile"><small>Market</small><b id="chartMarket">—</b></div><div class="tile"><small>Last price</small><b id="chartPrice">—</b></div>
+   <div class="tile"><small>CRT location</small><b id="chartLocation">—</b></div><div class="tile"><small>Structure</small><b id="chartStructure">—</b></div>
+   <div class="tile"><small>Liquidity event</small><b id="chartLiquidity">—</b></div><div class="tile"><small>Assessment</small><b id="chartAssessment">WAIT</b></div>
+  </aside>
+ </div>
+ <p class="sectionNote">Candles and live price use Deriv public market data. CRT high/low/equilibrium are taken from the previous completed 1H candle. Swing levels are confirmed 15M pivots. Labels are analytical references, not trade instructions.</p>
 </section>
 <section class="card"><h2>Multi-timeframe analysis</h2><div class="grid">
  <div class="tile"><small>4H directional context</small><b id="tf4">Loading</b></div>
@@ -57,7 +86,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{text-align:left;p
  <div class="tile"><small>Invalidation reference</small><b id="stop">—</b></div><div class="tile"><small>Opposing range target</small><b id="target">—</b></div>
 </div><p class="muted tiny">V1.4 analytical foundation: completed 1H dealing range, premium/discount location, confirmed 15M swing structure, equal-high/low zones, 5M sweep/reclaim and displacement checklist. BOS/CHoCH event classification is preliminary; FVG lifecycle, order blocks, session filters and historical backtesting are future modules. WATCH labels are analysis candidates only.</p></section>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.4 · Live public data · Analysis only · Verify all conditions independently</div>
+<div class="foot">TEBZA CRT ANALYST V1.5 · Live public data · Analysis only · Verify all conditions independently</div>
 </main>
 <script>
 "use strict";
@@ -77,6 +106,8 @@ let subscriptions = new Set();
 let requestMeta = new Map();
 let lastMessageAt = 0;
 let messageCount = 0;
+let latestAnalysis = null;
+let chartLayout = "chart";
 const $ = id => document.getElementById(id);
 
 function setStatus(message) { $("status").textContent = message; }
@@ -222,6 +253,7 @@ function handleMessage(data) {
       const meta = findSymbol(selected);
       $("symbolName").textContent = displayName(meta) + " · live tick";
       setDiagnostic("Live tick received for " + selected + " at " + new Date().toLocaleTimeString());
+      renderChart();
     }
     return;
   }
@@ -307,7 +339,9 @@ function loadMarket(code) {
   subscriptions.clear();
   selected = code;
   candles = {300: [], 900: [], 3600: [], 14400: []};
+  latestAnalysis = null;
   quote = null;
+  renderChart();
   $("quote").textContent = "—";
   $("decision").textContent = "WAIT";
   $("decision").className = "signal amber";
@@ -466,6 +500,7 @@ function analyse() {
   const c1 = completedCandles(candles[3600], 3600);
   const c4 = completedCandles(candles[14400], 14400);
   const ready = [c4.length ? "4H ready" : "4H waiting", c1.length ? "1H ready" : "1H waiting", c15.length ? "15M ready" : "15M waiting", c5.length ? "5M ready" : "5M waiting"];
+  renderChart();
   if (c5.length < 15 || c15.length < 8 || c1.length < 1 || c4.length < 1) {
     setStatus("Connected to " + selected + ". Waiting for completed candles: " + ready.join(" · "));
     setText("scoreValue", "0/100");
@@ -572,6 +607,8 @@ function analyse() {
     : "No completed 5M sweep/reclaim";
   const structureCandle = num(last15.close) > num(last15.open) ? "15M bullish candle" : num(last15.close) < num(last15.open) ? "15M bearish candle" : "15M neutral candle";
 
+  latestAnalysis = {meta, price, hi, lo, mid, location, rangePercent, structure, buySideLevel, sellSideLevel, eqh, eql, bullishSweep, bearishSweep, bullishLevel, bearishLevel, direction, entry, stop, target};
+  renderChart();
   setText("hi", formatPrice(hi, meta));
   setText("lo", formatPrice(lo, meta));
   setText("mid", formatPrice(mid, meta));
@@ -610,6 +647,42 @@ function analyse() {
     new Notification("CRT " + direction + " · " + selected, {body: "A preliminary CRT confirmation checklist aligned. Review independently; no trade was placed."});
   }
 }
+
+
+function svgEsc(value){return String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
+function chartLine(y,label,color,dash="6 5",x1=12,x2=820){return `<line x1="${x1}" x2="${x2}" y1="${y}" y2="${y}" stroke="${color}" stroke-width="1.5" stroke-dasharray="${dash}"/><text x="${x2+8}" y="${y+4}" fill="${color}" font-size="12">${svgEsc(label)}</text>`;}
+function renderChart(){
+ const svg=$("liveChart"); if(!svg) return;
+ const tf=Number($("chartTf")?.value||300), list=completedCandles(candles[tf]||[],tf);
+ const meta=findSymbol(selected); const fmt=v=>formatPrice(v,meta);
+ $("chartMarket").textContent=displayName(meta); $("chartPrice").textContent=quote==null?"—":fmt(quote);
+ $("chartLocation").textContent=latestAnalysis?.location||"Waiting";
+ $("chartStructure").textContent=latestAnalysis?.structure?.direction||"Waiting";
+ $("chartLiquidity").textContent=latestAnalysis?(latestAnalysis.bullishSweep?"Sell-side swept":latestAnalysis.bearishSweep?"Buy-side swept":"No confirmed sweep"):"Waiting";
+ $("chartAssessment").textContent=latestAnalysis?.direction||"WAIT";
+ if(!list.length){svg.innerHTML='<text x="450" y="210" fill="#93a7c2" text-anchor="middle" font-size="18">Waiting for '+granularityLabel(tf)+' candle history…</text>';$("chartLiveState").textContent="Waiting for candles";return;}
+ const data=list.slice(-65); const live=Number.isFinite(Number(quote))?Number(quote):Number(data[data.length-1].close);
+ const highs=data.map(c=>Number(c.high)).concat([live]), lows=data.map(c=>Number(c.low)).concat([live]);
+ const a=latestAnalysis; if(a && $("ovRange").checked){highs.push(a.hi);lows.push(a.lo);}
+ if(a && $("ovLiquidity").checked){if(a.buySideLevel!=null)highs.push(a.buySideLevel);if(a.sellSideLevel!=null)lows.push(a.sellSideLevel);}
+ let min=Math.min(...lows),max=Math.max(...highs); if(!(max>min)){max+=1;min-=1;} const pad=(max-min)*.09;min-=pad;max+=pad;
+ const left=22,right=820,top=24,bottom=365,w=right-left,h=bottom-top;
+ const y=v=>bottom-(v-min)/(max-min)*h; const x=i=>left+(i+.5)*w/data.length; const bodyW=Math.max(3,Math.min(10,w/data.length*.58));
+ let out=[];
+ for(let i=0;i<5;i++){const yy=top+i*h/4;const val=max-(max-min)*i/4;out.push(`<line x1="${left}" x2="${right}" y1="${yy}" y2="${yy}" stroke="#29405c" stroke-width="1"/><text x="${left}" y="${yy-4}" fill="#8196b2" font-size="10">${fmt(val)}</text>`);}
+ if(a && $("ovRange").checked){const yh=y(a.hi),yl=y(a.lo),ym=y(a.mid);out.push(`<rect x="${left}" y="${Math.min(yh,yl)}" width="${w}" height="${Math.abs(yl-yh)}" fill="#f4bd50" opacity=".045"/>`);out.push(chartLine(yh,"1H HIGH", "#f4bd50"));out.push(chartLine(ym,"50% EQ", "#d8ad62","3 5"));out.push(chartLine(yl,"1H LOW", "#f4bd50"));}
+ if(a && $("ovLiquidity").checked){if(a.buySideLevel!=null)out.push(chartLine(y(a.buySideLevel),"BUY-SIDE LIQ.","#76aaff","3 5"));if(a.sellSideLevel!=null)out.push(chartLine(y(a.sellSideLevel),"SELL-SIDE LIQ.","#76aaff","3 5"));}
+ if(a && $("ovStructure").checked && (tf===300||tf===900)){const swings=confirmedSwings(completedCandles(candles[900],900),2,2);swings.highs.slice(-5).forEach(p=>{if(p.price>=min&&p.price<=max){const idx=data.findIndex(c=>Number(c.epoch)===p.epoch);const xx=idx>=0?x(idx):right-18;out.push(`<path d="M${xx-6} ${y(p.price)-7} l6 -7 l6 7" fill="none" stroke="#ff9c67" stroke-width="1.7"/><text x="${xx+8}" y="${y(p.price)-8}" fill="#ff9c67" font-size="10">SH</text>`);}});swings.lows.slice(-5).forEach(p=>{if(p.price>=min&&p.price<=max){const idx=data.findIndex(c=>Number(c.epoch)===p.epoch);const xx=idx>=0?x(idx):right-18;out.push(`<path d="M${xx-6} ${y(p.price)+7} l6 7 l6 -7" fill="none" stroke="#76aaff" stroke-width="1.7"/><text x="${xx+8}" y="${y(p.price)+15}" fill="#76aaff" font-size="10">SL</text>`);}});}
+ data.forEach((c,i)=>{const xx=x(i),yo=y(Number(c.open)),yc=y(Number(c.close)),yh=y(Number(c.high)),yl=y(Number(c.low)),bull=Number(c.close)>=Number(c.open),color=bull?"#25d3a0":"#ff637d";out.push(`<line x1="${xx}" x2="${xx}" y1="${yh}" y2="${yl}" stroke="${color}" stroke-width="1.5"/>`);out.push(`<rect x="${xx-bodyW/2}" y="${Math.min(yo,yc)}" width="${bodyW}" height="${Math.max(1.5,Math.abs(yc-yo))}" fill="${color}" rx="1"/>`);});
+ const py=y(live);out.push(`<line x1="${left}" x2="${right}" y1="${py}" y2="${py}" stroke="#edf4ff" stroke-width="1" stroke-dasharray="2 4" opacity=".8"/><rect x="${right+3}" y="${py-10}" width="72" height="20" rx="4" fill="#edf4ff"/><text x="${right+39}" y="${py+4}" text-anchor="middle" fill="#081321" font-size="11" font-weight="700">${fmt(live)}</text>`);
+ const lastEpoch=Number(data[data.length-1].epoch);out.push(`<text x="${left}" y="405" fill="#8196b2" font-size="11">${new Date(Number(data[0].epoch)*1000).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}</text><text x="${right}" y="405" text-anchor="end" fill="#8196b2" font-size="11">${new Date(lastEpoch*1000).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}</text>`);
+ svg.innerHTML=out.join("");$("chartLiveState").textContent="LIVE · "+granularityLabel(tf)+" · "+data.length+" candles";
+ $("chartExplanation").textContent="Showing "+granularityLabel(tf)+" candles for "+selected+". The dotted white line is the latest quote; amber lines show the previous completed 1H CRT range; blue levels show confirmed 15M liquidity references. Chart is analysis-only.";
+}
+function setChartLayout(mode){chartLayout=mode;$("chartCard").classList.toggle("chartSplit",mode==="split");$("layoutChart").classList.toggle("active",mode==="chart");$("layoutSplit").classList.toggle("active",mode==="split");}
+$("chartTf").addEventListener("change",renderChart);
+["ovRange","ovLiquidity","ovStructure"].forEach(id=>$(id).addEventListener("change",renderChart));
+$("layoutChart").addEventListener("click",()=>setChartLayout("chart"));$("layoutSplit").addEventListener("click",()=>setChartLayout("split"));
 
 $("symbol").addEventListener("change", () => loadMarket($("symbol").value));
 $("category").addEventListener("change", () => {
