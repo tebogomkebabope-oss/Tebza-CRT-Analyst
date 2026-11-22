@@ -1,0 +1,62 @@
+CRT DERIV PROJECT — DEPLOYMENT AND BUILD GUIDE
+Version: 1.1
+
+WHAT YOU HAVE
+- index.html: Android-friendly CRT dashboard prototype.
+- manifest.webmanifest: installable PWA metadata.
+- sw.js: minimal service worker.
+- This app connects directly to Deriv's public market-data WebSocket for public prices/candles.
+- It does not request Deriv login details and does not place trades.
+
+FREE HOSTING RECOMMENDATION
+Recommended first choice: Cloudflare Pages (static site).
+Alternative: GitHub Pages.
+Both can host the static PWA over HTTPS. This front end does not require a server-side secret.
+For production push notifications, secure user accounts, signal persistence and a broker bridge,
+we will add a backend later. Do not place API secrets, account tokens or passwords in index.html.
+
+DEPLOY WITH CLOUDFLARE PAGES (DESKTOP)
+1. On your desktop, extract CRT_Deriv_Project_V1_1.zip.
+2. Create/sign in to a Cloudflare account.
+3. Open Workers & Pages > Create > Pages > Upload assets (the exact labels may change).
+4. Give the project a name such as crt-deriv-analyst.
+5. Upload the extracted folder's contents: index.html, manifest.webmanifest, sw.js.
+6. Deploy. Cloudflare should provide an HTTPS pages.dev address.
+7. Open that HTTPS address on your Android phone in Chrome.
+8. Chrome menu > Install app or Add to Home screen.
+9. Check the connection badge and compare displayed quotes/candles against Deriv MT5 demo.
+
+GITHUB PAGES ALTERNATIVE
+1. Create a GitHub repository.
+2. Upload index.html, manifest.webmanifest and sw.js to the repository root.
+3. Repository Settings > Pages > deploy from branch > main / root.
+4. Wait for the HTTPS GitHub Pages URL, then open it on Android Chrome.
+Cloudflare Pages is simpler for a drag-and-drop first deployment.
+
+IMPORTANT VALIDATION BEFORE CLAIMING LIVE CRT SIGNALS
+- Confirm the WebSocket endpoint and API schema remain supported by Deriv.
+- Confirm active_symbols returns all desired symbols and classification labels.
+- Confirm candle history ordering and the last candle's completion status.
+- Exclude the still-forming candle from completed-candle calculations.
+- Compare OHLC values with Deriv MT5 demo for the same symbol/time and timezone.
+- Validate symbol aliases/suffixes and market availability.
+- Test reconnect, browser background/foreground, and data gaps.
+- Do not interpret synthetic-index price patterns as evidence of an exchange order book or
+  institutional stop orders.
+- A signal must remain WAIT unless the full agreed ruleset confirms it.
+
+NEXT DEVELOPMENT MILESTONES
+1. Hosting and first live connection smoke test.
+2. Candle integrity and MT5 parity validation.
+3. Full CRT engine: reference candle selection, sweep/reclaim, swing-based MSS/CHoCH,
+   displacement, FVG, premium/discount, targets, invalidation.
+4. Instrument auto-discovery and verified category mapping for Deriv's entire catalogue.
+5. Signal ledger, replay/backtesting, and outcome statistics.
+6. Backend for user settings, persistent signals and push notification subscriptions.
+7. PWA push notifications (HTTPS + server-side push service); browser permission alone
+   is not background push.
+8. Security review, rate/reconnect handling and demo forward testing.
+
+TEST ACCOUNT
+Use Deriv demo for chart comparison and forward testing. Never send your Deriv password,
+one-time code, API token or account login to ChatGPT or paste it into the website.

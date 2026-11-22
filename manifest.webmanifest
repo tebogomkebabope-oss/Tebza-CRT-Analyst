@@ -1,0 +1,9 @@
+{
+  "name": "CRT Deriv Analyst",
+  "short_name": "CRT Deriv",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#080f1c",
+  "theme_color": "#080f1c",
+  "description": "Deriv live market data and preliminary multi-timeframe CRT analysis"
+}
