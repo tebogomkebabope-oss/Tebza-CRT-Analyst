@@ -62,10 +62,21 @@ body.chartNoScroll{overflow:hidden!important}
 @media(min-width:900px){.chartSplit .chartGrid{grid-template-columns:minmax(0,1.8fr) minmax(225px,1fr)}}
 @media(max-width:430px){.planTargets{grid-template-columns:1fr}.chartToolbar button{padding:8px 9px}.chartFullscreen{padding:9px!important}.chartFullscreen .chartWrap{height:calc(100dvh - 190px)}}
 
+
+/* V1.7 responsive TradingView Lightweight Charts workspace */
+.chartWrap{height:430px;min-height:320px;overflow:hidden}
+.chartCanvas{width:100%;height:100%;min-height:320px;position:relative;touch-action:pan-y}
+.chartLoading{display:flex;align-items:center;justify-content:center;height:100%;min-height:320px;color:#93a7c2;font-size:13px;text-align:center;padding:20px}
+.chartFullscreen .chartWrap{height:calc(100dvh - 190px)!important;min-height:calc(100dvh - 190px)!important;max-height:calc(100dvh - 190px)!important}
+.chartFullscreen .chartCanvas{height:100%!important;min-height:0!important}
+.chartFullscreen #chartMini,.chartFullscreen #chartExplanation,.chartFullscreen .chartLegend,.chartFullscreen .chartHints,.chartFullscreen .sectionNote{display:none!important}
+.chartFullscreen .chartToolbar{position:sticky;top:0;background:#080f1c;padding:5px 0;z-index:2}
+.chartFullscreen .overlayControls{position:sticky;top:44px;background:#080f1c;padding:4px 0;z-index:2}
+@media(max-width:600px){.chartWrap{height:390px;min-height:340px}.chartFullscreen{padding:9px!important}.chartFullscreen .chartWrap{height:calc(100dvh - 180px)!important;min-height:calc(100dvh - 180px)!important;max-height:calc(100dvh - 180px)!important}}
 </style></head><body>
-<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.6 · LIVE CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
+<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.7 · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
 <main>
-<div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket. No Deriv password or account token is required. Market data and CRT conditions are for analysis only; signals are preliminary and this app never places trades.</div>
+<div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for ticks and native OHLC candles. No Deriv password or account token is required. Market data and CRT conditions are for analysis only; signals are preliminary and this app never places trades.</div>
 <section class="card">
  <div class="row between"><div><h2 style="margin:0">Market selector</h2><div class="muted tiny" id="marketCount">Loading Deriv instruments…</div></div><button id="refresh" class="primary">Refresh</button></div>
  <div class="row" style="margin-top:12px"><select id="category"><option value="all">All markets</option><option value="synthetic">Synthetic / Derived</option><option value="forex">Forex</option><option value="commodities">Commodities / Metals</option><option value="indices">Stock indices</option><option value="crypto">Cryptocurrencies</option><option value="shares">Shares / ETFs</option></select><select id="symbol"><option>Loading…</option></select></div>
@@ -87,7 +98,7 @@ body.chartNoScroll{overflow:hidden!important}
  </div>
  <div class="chartGrid" id="chartGrid">
   <div>
-   <div class="chartWrap" id="chartWrap"><svg id="liveChart" class="chartSvg" viewBox="0 0 900 430" role="img" aria-label="Live Deriv candlestick chart with CRT overlays"><text x="450" y="210" fill="#93a7c2" text-anchor="middle" font-size="18">Waiting for candle history…</text></svg></div>
+   <div class="chartWrap" id="chartWrap"><div id="liveChart" class="chartCanvas" role="img" aria-label="Live Deriv candlestick chart with CRT overlays"><div class="chartLoading">Connecting the live chart…</div></div></div>
    <div id="chartReadout" class="chartReadout">Touch and drag to pan · Pinch to zoom · Use the buttons for precise zoom</div>
    <div class="chartHints">Phone: drag the chart to move through candles; pinch with two fingers to zoom. Desktop: drag to pan and use the mouse wheel to zoom.</div>
    <div class="chartLegend"><span><i class="legendDot" style="background:#25d3a0"></i>Bullish candle</span><span><i class="legendDot" style="background:#ff637d"></i>Bearish candle</span><span><i class="legendDot" style="background:#f4bd50"></i>CRT range</span><span><i class="legendDot" style="background:#76aaff"></i>Liquidity / structure</span></div>
@@ -157,8 +168,9 @@ body.chartNoScroll{overflow:hidden!important}
  <div class="tile"><small>Invalidation reference</small><b id="stop">—</b></div><div class="tile"><small>Opposing range target</small><b id="target">—</b></div>
 </div><p class="muted tiny">V1.4 analytical foundation: completed 1H dealing range, premium/discount location, confirmed 15M swing structure, equal-high/low zones, 5M sweep/reclaim and displacement checklist. BOS/CHoCH event classification is preliminary; FVG lifecycle, order blocks, session filters and historical backtesting are future modules. WATCH labels are analysis candidates only.</p></section>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.6 · Live public data · Analysis only · Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+<div class="foot">TEBZA CRT ANALYST V1.7 · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.3.0/dist/lightweight-charts.standalone.production.js" onerror="document.getElementById('chartLiveState').textContent='Chart library failed to load'"></script>
 <script>
 "use strict";
 const WS_URL = "wss://api.derivws.com/trading/v1/options/ws/public";
@@ -167,6 +179,7 @@ let ws = null;
 let symbols = [];
 let candles = {300: [], 900: [], 3600: [], 14400: []};
 let selected = "";
+let preferredSymbol = "";
 let quote = null;
 let reqCounter = 100;
 let activeSymbolsTimer = null;
@@ -179,12 +192,17 @@ let lastMessageAt = 0;
 let messageCount = 0;
 let latestAnalysis = null;
 let chartLayout = "chart";
-let chartView = {bars: 65, offset: 0};
-let chartPointerPoints = new Map();
-let chartGesture = null;
-let chartWindowInfo = null;
-let chartHoverIndex = -1;
+let chartApi = null;
+let candleSeries = null;
+let chartPriceLine = null;
+let chartOverlayLines = [];
+let chartOverlaySignature = "";
+let chartDataCache = {symbol:"", timeframe:0, length:0, firstEpoch:0, lastEpoch:0, lastBar:null};
 let chartSubscribedTimeframes = new Set([300]);
+let subscriptionMeta = new Map();
+let latestTickEpoch = 0;
+let candleUpdateAt = {300:0,900:0,3600:0,14400:0};
+let chartLibraryUnavailable = false;
 const $ = id => document.getElementById(id);
 
 function setStatus(message) { $("status").textContent = message; }
@@ -208,11 +226,20 @@ function connect() {
   clearTimers();
   if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
   const generation = ++socketGeneration;
+  if(selected) preferredSymbol=selected;
   subscriptions.clear();
   requestMeta.clear();
+  subscriptionMeta.clear();
   symbols = [];
   selected = "";
   candles = {300: [], 900: [], 3600: [], 14400: []};
+  chartDataCache = {symbol:"", timeframe:0, length:0, firstEpoch:0, lastEpoch:0, lastBar:null};
+  if(candleSeries)candleSeries.setData([]);
+  if(candleSeries&&chartPriceLine){try{candleSeries.removePriceLine(chartPriceLine);}catch(_){}}
+  chartPriceLine=null;
+  chartRemoveOverlayLines();
+  latestTickEpoch=0;
+  candleUpdateAt={300:0,900:0,3600:0,14400:0};
   $("symbol").innerHTML = '<option value="">Waiting for Deriv…</option>';
   $("marketCount").textContent = "Connecting to Deriv instruments…";
   $("quote").textContent = "—";
@@ -233,8 +260,8 @@ function connect() {
     $("connBadge").textContent = "CONNECTED";
     $("connBadge").style.color = "var(--green)";
     setStatus("WebSocket open. Requesting the Deriv active-symbol list…");
-    const id = send({active_symbols: "brief"}, {kind: "active_symbols"});
-    setDiagnostic("Sent active_symbols=brief (request " + id + ") to " + WS_URL);
+    const id = send({active_symbols: "full"}, {kind: "active_symbols"});
+    setDiagnostic("Sent active_symbols=full (request " + id + ") to " + WS_URL);
     activeSymbolsTimer = setTimeout(() => {
       if (generation !== socketGeneration || symbols.length) return;
       setStatus("The socket is open, but Deriv has not returned the instrument list. A diagnostic ping will be sent next.");
@@ -293,7 +320,11 @@ function handleMessage(data) {
     return;
   }
 
-  if (data.subscription && data.subscription.id) subscriptions.add(data.subscription.id);
+  const responseInfo = requestMeta.get(data.req_id) || null;
+  if (data.subscription && data.subscription.id) {
+    subscriptions.add(data.subscription.id);
+    if (responseInfo) subscriptionMeta.set(data.subscription.id, responseInfo);
+  }
 
   const activeList = Array.isArray(data.active_symbols) ? data.active_symbols : null;
   if (data.msg_type === "active_symbols" || activeList) {
@@ -307,8 +338,8 @@ function handleMessage(data) {
     }
     renderSymbols();
     $("marketCount").textContent = symbols.length + " active instruments returned by Deriv";
-    setDiagnostic("Active-symbol response received: " + symbols.length + " instruments; fields parsed using current/legacy compatibility");
-    const selectedItem = symbols.find(item => symbolCode(item) === selected) || symbols[0];
+    setDiagnostic("Active-symbol response received: " + symbols.length + " instruments; full metadata loaded");
+    const selectedItem = symbols.find(item => symbolCode(item) === preferredSymbol) || symbols.find(item => symbolCode(item) === selected) || symbols[0];
     selected = symbolCode(selectedItem);
     $("symbol").value = selected;
     loadMarket(selected);
@@ -322,37 +353,48 @@ function handleMessage(data) {
   }
 
   if (data.msg_type === "tick" && data.tick) {
-    const tickSymbol = data.tick.symbol || data.echo_req?.ticks;
-    if (tickSymbol === selected && data.tick.quote !== undefined) {
-      quote = Number(data.tick.quote);
+    const tickInfo = responseInfo || (data.subscription?.id ? subscriptionMeta.get(data.subscription.id) : null);
+    const tickSymbol = data.tick.symbol || data.echo_req?.ticks || tickInfo?.symbol;
+    if (tickSymbol && tickSymbol === selected && data.tick.quote !== undefined) {
+      const nextQuote = Number(data.tick.quote);
+      if (!Number.isFinite(nextQuote)) return;
+      quote = nextQuote;
+      latestTickEpoch = Number(data.tick.epoch) || latestTickEpoch;
       const decimals = Number.isInteger(Number(data.tick.pip_size)) ? Math.max(0, Math.min(8, Number(data.tick.pip_size))) : decimalPlaces(data.tick.quote);
       $("quote").textContent = quote.toFixed(decimals);
       const meta = findSymbol(selected);
       $("symbolName").textContent = displayName(meta) + " · live tick";
-      setDiagnostic("Live tick received for " + selected + " at " + new Date().toLocaleTimeString());
-      syncLiveChartCandle(data.tick.epoch); updateLiveRangeFromQuote(); renderChart();
+      setDiagnostic("Live tick received for " + selected + " at " + (latestTickEpoch ? new Date(latestTickEpoch*1000).toLocaleTimeString() : new Date().toLocaleTimeString()));
+      updateLiveRangeFromQuote();
+      updateChartLivePrice();
+      renderChart(false);
     }
     return;
   }
 
   if (data.msg_type === "candles" && Array.isArray(data.candles)) {
-    const granularity = Number(data.echo_req?.granularity || requestMeta.get(data.req_id)?.granularity);
-    const requestSymbol = data.echo_req?.ticks_history || requestMeta.get(data.req_id)?.symbol;
-    if (granularity && requestSymbol === selected) {
-      candles[granularity] = data.candles;
-      setDiagnostic("Received " + data.candles.length + " candles for " + granularityLabel(granularity));
+    const info = responseInfo || (data.subscription?.id ? subscriptionMeta.get(data.subscription.id) : null);
+    const granularity = Number(data.echo_req?.granularity || info?.granularity);
+    const requestSymbol = data.echo_req?.ticks_history || info?.symbol;
+    if (granularity && GRANULARITIES.includes(granularity) && requestSymbol === selected) {
+      candles[granularity] = normalizeDerivCandles(data.candles);
+      candleUpdateAt[granularity] = Date.now();
+      setDiagnostic("Received " + candles[granularity].length + " validated candles for " + granularityLabel(granularity) + " · " + selected);
+      if (granularity === Number($("chartTf")?.value || 300)) renderChart(true);
       analyse();
     }
+    if (data.req_id) requestMeta.delete(data.req_id);
     return;
   }
 
   if (data.msg_type === "ohlc" && data.ohlc) {
-    const requestInfo = requestMeta.get(data.req_id) || {};
-    const granularity = Number(data.echo_req?.granularity || requestInfo.granularity || 300);
-    const requestSymbol = data.echo_req?.ticks_history || requestInfo.symbol || selected;
+    const info = responseInfo || (data.subscription?.id ? subscriptionMeta.get(data.subscription.id) : null);
+    const granularity = Number(data.echo_req?.granularity || info?.granularity);
+    const requestSymbol = data.echo_req?.ticks_history || info?.symbol;
     if (requestSymbol === selected && GRANULARITIES.includes(granularity)) {
       upsertCandle(granularity, data.ohlc);
-      if (granularity === Number($("chartTf")?.value || 300)) renderChart();
+      candleUpdateAt[granularity] = Date.now();
+      if (granularity === Number($("chartTf")?.value || 300)) renderChart(false);
       analyse();
     }
     return;
@@ -416,12 +458,21 @@ function loadMarket(code) {
   if (!code || !socketOpen()) return;
   subscriptions.forEach(id => send({forget: id}));
   subscriptions.clear();
+  subscriptionMeta.clear();
+  requestMeta.clear();
   selected = code;
+  preferredSymbol = code;
   candles = {300: [], 900: [], 3600: [], 14400: []};
-  chartView = {bars: 65, offset: 0}; chartHoverIndex = -1; chartSubscribedTimeframes = new Set([300]);
+  chartSubscribedTimeframes = new Set();
+  chartDataCache = {symbol:"", timeframe:0, length:0, firstEpoch:0, lastEpoch:0, lastBar:null};
+  if(candleSeries)candleSeries.setData([]);
+  if(candleSeries&&chartPriceLine){try{candleSeries.removePriceLine(chartPriceLine);}catch(_){}}
+  chartPriceLine=null;
+  chartRemoveOverlayLines();
+  latestTickEpoch = 0;
+  candleUpdateAt = {300:0,900:0,3600:0,14400:0};
   latestAnalysis = null;
   quote = null;
-  chartView = {bars:65,offset:0}; chartHoverIndex=-1;
   $("narrativeState").textContent="WAIT";$("narrativeLead").textContent="Loading fresh candles to generate current price analysis.";
   $("narrativeDetails").innerHTML="<div class=\"narrativeItem\"><b>Market data</b>Waiting for 4H, 1H, 15M and 5M candles.</div>";
   renderTradePlan();renderChart();
@@ -441,13 +492,14 @@ function loadMarket(code) {
     const meta = {kind: "candles", granularity, symbol: code};
     const request = {ticks_history: code, adjust_start_time: 1, count: 250, end: "latest", style: "candles", granularity};
     if (granularity === 300) request.subscribe = 1;
-    send(request, meta);
+    const reqId=send(request, meta);
+    if(granularity===300 && reqId!==null) chartSubscribedTimeframes.add(300);
   });
   const activeChartTf = Number($("chartTf")?.value || 300);
   if (activeChartTf !== 300) {
     const chartReq = {ticks_history: code, adjust_start_time: 1, count: 250, end: "latest", style: "candles", granularity: activeChartTf, subscribe: 1};
-    send(chartReq, {kind: "chart_candles", granularity: activeChartTf, symbol: code});
-    chartSubscribedTimeframes.add(activeChartTf);
+    const chartReqId=send(chartReq, {kind: "chart_candles", granularity: activeChartTf, symbol: code});
+    if(chartReqId!==null) chartSubscribedTimeframes.add(activeChartTf);
   }
   send({ticks: code, subscribe: 1}, {kind: "ticks", symbol: code});
   setStatus("Requesting live quote and 5M, 15M, 1H and 4H candle history for " + code + "…");
@@ -460,22 +512,36 @@ function loadMarket(code) {
   }, 90000);
 }
 
-function syncLiveChartCandle(tickEpoch){
-  const tf=Number($("chartTf")?.value||300);if(!Number.isFinite(Number(quote))||!candles[tf])return;
-  const now=Number.isFinite(Number(tickEpoch))?Number(tickEpoch):Date.now()/1000,epoch=Math.floor(now/tf)*tf,list=candles[tf];let current=list.find(c=>Number(c.epoch)===epoch);
-  if(current){current.close=Number(quote);current.high=Math.max(Number(current.high),Number(quote));current.low=Math.min(Number(current.low),Number(quote));}
-  else{const previous=list.length?Number(list[list.length-1].close):Number(quote);upsertCandle(tf,{epoch,open:previous,high:Math.max(previous,Number(quote)),low:Math.min(previous,Number(quote)),close:Number(quote)});}
+function syncLiveChartCandle(){
+  // Live ticks update the quote line only. Candlestick OHLC must come from Deriv's
+  // ticks_history candle stream; never construct an incomplete candle from a tick.
+  updateChartLivePrice();
 }
+function normalizeDerivCandles(items){
+  const byEpoch=new Map();
+  (Array.isArray(items)?items:[]).forEach(c=>{
+    const epoch=Number(c.epoch ?? c.open_time);
+    const open=Number(c.open),high=Number(c.high),low=Number(c.low),close=Number(c.close);
+    if(!Number.isFinite(epoch)||epoch<=0||![open,high,low,close].every(Number.isFinite))return;
+    if(high<Math.max(open,close)||low>Math.min(open,close)||high<low)return;
+    byEpoch.set(Math.floor(epoch),{epoch:Math.floor(epoch),open,high,low,close});
+  });
+  return [...byEpoch.values()].sort((a,b)=>a.epoch-b.epoch).slice(-300);
+}
+
 function upsertCandle(granularity, ohlc) {
   if (!candles[granularity]) candles[granularity] = [];
   const list = candles[granularity];
-  const epoch = Number(ohlc.epoch);
+  const epoch = Math.floor(Number(ohlc.epoch ?? ohlc.open_time));
+  const open=Number(ohlc.open),high=Number(ohlc.high),low=Number(ohlc.low),close=Number(ohlc.close);
+  if(!Number.isFinite(epoch)||epoch<=0||![open,high,low,close].every(Number.isFinite)||high<Math.max(open,close)||low>Math.min(open,close)||high<low)return;
+  const normalized = {epoch, open, high, low, close};
   const existing = list.findIndex(candle => Number(candle.epoch) === epoch);
-  const normalized = {epoch, open: Number(ohlc.open), high: Number(ohlc.high), low: Number(ohlc.low), close: Number(ohlc.close)};
   if (existing >= 0) list[existing] = normalized;
   else { list.push(normalized); list.sort((a, b) => Number(a.epoch) - Number(b.epoch)); }
   if (list.length > 300) list.splice(0, list.length - 300);
 }
+
 function completedCandles(list, granularity) {
   if (!Array.isArray(list) || !list.length) return [];
   const now = Date.now() / 1000;
@@ -764,7 +830,8 @@ function analyse() {
   setText("scoreNote", ambiguousSweep ? "Both sides were swept in the same completed 5M candle. Treat the event as ambiguous and wait for fresh structure." : direction !== "WAIT" ? "A WATCH candidate is present, not an execution instruction. Review the chart, spread, market conditions and invalidation before making any decision." : "At least one essential confirmation is missing. A high partial score alone does not create a setup.");
   updateMarketNarrative();
   renderTradePlan();
-  setStatus("V1.6 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  renderChart(false);
+  setStatus("V1.7 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
   if (direction !== "WAIT" && "Notification" in window && Notification.permission === "granted") {
     new Notification("CRT " + direction + " · " + selected, {body: "A preliminary CRT confirmation checklist aligned. Review independently; no trade was placed."});
   }
@@ -773,46 +840,119 @@ function analyse() {
 
 function svgEsc(value){return String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
 function clamp(value,min,max){return Math.max(min,Math.min(max,value));}
-function chartLine(y,label,color,dash="6 5",x1=18,x2=760){return `<line x1="${x1}" x2="${x2}" y1="${y}" y2="${y}" stroke="${color}" stroke-width="1.5" stroke-dasharray="${dash}"/><text x="${x2+8}" y="${y+4}" fill="${color}" font-size="11">${svgEsc(label)}</text>`;}
 function currentChartCandles(tf){
- const raw=(candles[tf]||[]).filter(c=>Number.isFinite(Number(c.epoch))&&[c.open,c.high,c.low,c.close].every(v=>Number.isFinite(Number(v)))).map(c=>({epoch:Number(c.epoch),open:Number(c.open),high:Number(c.high),low:Number(c.low),close:Number(c.close)})).sort((a,b)=>a.epoch-b.epoch);
+ const raw=normalizeDerivCandles(candles[tf]||[]);
  return raw;
 }
-function renderChart(){
- const svg=$("liveChart"); if(!svg) return;
- const tf=Number($("chartTf")?.value||300), all=currentChartCandles(tf), meta=findSymbol(selected), fmt=v=>formatPrice(v,meta), a=latestAnalysis;
- $("chartMarket").textContent=displayName(meta); $("chartPrice").textContent=quote==null?"—":fmt(quote);
- $("chartLocation").textContent=a?.location||"Waiting"; $("chartStructure").textContent=a?.structure?.direction||"Waiting";
+function chartLibrary(){return window.LightweightCharts||null;}
+function initTradingChart(){
+ const lib=chartLibrary(),container=$("liveChart");
+ if(!container)return false;
+ if(!lib||typeof lib.createChart!=="function"||!lib.CandlestickSeries){
+   chartLibraryUnavailable=true;
+   container.innerHTML='<div class="chartLoading">The chart library could not load. Check your internet connection and reload the page. Deriv market analysis remains available.</div>';
+   $("chartLiveState").textContent="Chart library unavailable";
+   return false;
+ }
+ if(chartApi)return true;
+ chartApi=lib.createChart(container,{
+   autoSize:true,
+   layout:{background:{type:lib.ColorType?.Solid??'solid',color:'#081321'},textColor:'#9cb0cb',fontFamily:'system-ui,-apple-system,Segoe UI,sans-serif',fontSize:11,attributionLogo:true},
+   grid:{vertLines:{color:'#172a40'},horzLines:{color:'#172a40'}},
+   rightPriceScale:{borderColor:'#263952',scaleMargins:{top:0.10,bottom:0.12},autoScale:true},
+   leftPriceScale:{visible:false},
+   timeScale:{borderColor:'#263952',timeVisible:true,secondsVisible:false,rightOffset:7,barSpacing:8,minBarSpacing:2,lockVisibleTimeRangeOnResize:true},
+   crosshair:{mode:lib.CrosshairMode?.Normal??0,vertLine:{color:'#8095b0',width:1,style:lib.LineStyle?.Dashed??2,labelBackgroundColor:'#263952'},horzLine:{color:'#8095b0',width:1,style:lib.LineStyle?.Dashed??2,labelBackgroundColor:'#263952'}},
+   handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:false},
+   handleScale:{mouseWheel:true,pinch:true,axisPressedMouseMove:true,axisDoubleClickReset:true}
+ });
+ candleSeries=chartApi.addSeries(lib.CandlestickSeries,{
+   upColor:'#25d3a0',downColor:'#ff637d',borderUpColor:'#25d3a0',borderDownColor:'#ff637d',wickUpColor:'#25d3a0',wickDownColor:'#ff637d',
+   borderVisible:false,priceLineVisible:false,lastValueVisible:false,priceFormat:{type:'price',precision:2,minMove:0.01}
+ });
+ chartApi.subscribeCrosshairMove(param=>{
+   if(!param||!param.time||!param.seriesData)return;
+   const bar=param.seriesData.get(candleSeries);
+   if(!bar)return;
+   const t=typeof param.time==='number'?new Date(param.time*1000):null;
+   const when=t?t.toLocaleString():'';
+   const fmt=v=>formatPrice(v,findSymbol(selected));
+   $("chartReadout").textContent=when+"  O "+fmt(bar.open)+"  H "+fmt(bar.high)+"  L "+fmt(bar.low)+"  C "+fmt(bar.close);
+ });
+ chartApi.timeScale().subscribeVisibleLogicalRangeChange(()=>{});
+ return true;
+}
+function chartFormatOptions(){
+ const meta=findSymbol(selected),pip=Number(meta?.pip_size),precision=Number.isInteger(pip)?clamp(pip,0,8):decimalPlaces(quote??(candles[Number($("chartTf").value)]||[]).at(-1)?.close??0);
+ return {type:'price',precision,minMove:Math.pow(10,-precision)};
+}
+function chartRemoveOverlayLines(){
+ if(!candleSeries)return;
+ chartOverlayLines.forEach(line=>{try{candleSeries.removePriceLine(line);}catch(_){}});
+ chartOverlayLines=[];
+ chartOverlaySignature="";
+}
+function chartAddLine(price,title,color,style){
+ if(!candleSeries||!Number.isFinite(Number(price)))return;
+ const lib=chartLibrary();
+ try{chartOverlayLines.push(candleSeries.createPriceLine({price:Number(price),title,color:color,lineWidth:1,lineStyle:style??lib?.LineStyle?.Dashed??2,axisLabelVisible:true,axisLabelColor:color,axisLabelTextColor:'#081321'}));}catch(_){ }
+}
+function updateChartLivePrice(){
+ if(!candleSeries||!Number.isFinite(Number(quote)))return;
+ if(chartPriceLine){try{candleSeries.removePriceLine(chartPriceLine);}catch(_){}}
+ const lib=chartLibrary();
+ try{chartPriceLine=candleSeries.createPriceLine({price:Number(quote),title:'LIVE',color:'#edf4ff',lineWidth:1,lineStyle:lib?.LineStyle?.Dotted??1,axisLabelVisible:true,axisLabelColor:'#edf4ff',axisLabelTextColor:'#081321'});}catch(_){chartPriceLine=null;}
+ $("chartPrice").textContent=formatPrice(quote,findSymbol(selected));
+}
+function renderChart(force){
+ if(!initTradingChart())return;
+ const tf=Number($("chartTf")?.value||300),all=currentChartCandles(tf),meta=findSymbol(selected),a=latestAnalysis;
+ $("chartMarket").textContent=displayName(meta);
+ $("chartLocation").textContent=a?.location||"Waiting";
+ $("chartStructure").textContent=a?.structure?.direction||"Waiting";
  $("chartLiquidity").textContent=a?(a.bullishSweep?"Sell-side swept":a.bearishSweep?"Buy-side swept":"No confirmed sweep"):"Waiting";
  $("chartAssessment").textContent=a?.direction||"WAIT";
- if(!all.length){svg.innerHTML='<text x="450" y="210" fill="#93a7c2" text-anchor="middle" font-size="18">Waiting for '+granularityLabel(tf)+' candle history…</text>';$ ("chartLiveState").textContent="Waiting for candles";return;}
- chartView.bars=clamp(chartView.bars,20,240); chartView.offset=clamp(chartView.offset,0,Math.max(0,all.length-chartView.bars));
- const end=Math.max(0,all.length-chartView.offset), begin=Math.max(0,end-chartView.bars), data=all.slice(begin,end);
- const live=Number.isFinite(Number(quote))&&chartView.offset===0?Number(quote):Number(data[data.length-1].close);
- const highs=data.map(c=>c.high), lows=data.map(c=>c.low); highs.push(live);lows.push(live);
- if(a&&$("ovRange").checked){highs.push(a.hi);lows.push(a.lo);}
- if(a&&$("ovLiquidity").checked){if(a.buySideLevel!=null)highs.push(a.buySideLevel);if(a.sellSideLevel!=null)lows.push(a.sellSideLevel);}
+ if(!all.length){candleSeries.setData([]);chartRemoveOverlayLines();chartDataCache={symbol:selected,timeframe:tf,length:0,firstEpoch:0,lastEpoch:0,lastBar:null};$("chartLiveState").textContent="Waiting for native Deriv candle history";return;}
+ candleSeries.applyOptions({priceFormat:chartFormatOptions()});
+ const data=all.map(c=>({time:c.epoch,open:c.open,high:c.high,low:c.low,close:c.close}));
+ const firstEpoch=all[0].epoch,last=all[all.length-1],lastBar={time:last.epoch,open:last.open,high:last.high,low:last.low,close:last.close};
+ const sameView=chartDataCache.symbol===selected&&chartDataCache.timeframe===tf;
+ const visible=sameView?chartApi.timeScale().getVisibleLogicalRange():null;
+ let fullSet=!!force||!sameView||!chartDataCache.length||all.length<chartDataCache.length||firstEpoch!==chartDataCache.firstEpoch||all.length-chartDataCache.length>1;
+ if(fullSet){
+   candleSeries.setData(data);
+   if(visible&&sameView){try{chartApi.timeScale().setVisibleLogicalRange(visible);}catch(_){chartApi.timeScale().scrollToRealTime();}}
+   else chartApi.timeScale().fitContent();
+ }else if(last.epoch!==chartDataCache.lastEpoch||JSON.stringify(lastBar)!==JSON.stringify(chartDataCache.lastBar)){
+   try{candleSeries.update(lastBar);}catch(_){candleSeries.setData(data);chartApi.timeScale().scrollToRealTime();}
+ }
+ chartDataCache={symbol:selected,timeframe:tf,length:all.length,firstEpoch,lastEpoch:last.epoch,lastBar};
+ const overlayItems=[];
+ if(a&&$("ovRange").checked)overlayItems.push([a.hi,'1H HIGH','#f4bd50'],[a.mid,'50% EQ','#d8ad62','dot'],[a.lo,'1H LOW','#f4bd50']);
+ if(a&&$("ovLiquidity").checked)overlayItems.push([a.buySideLevel,'BUY-SIDE LIQ.','#76aaff'],[a.sellSideLevel,'SELL-SIDE LIQ.','#76aaff']);
+ if(a&&$("ovStructure").checked&&(tf===300||tf===900)){
+   const sw=confirmedSwings(completedCandles(candles[900],900),2,2);
+   sw.highs.slice(-6).forEach((p,i)=>overlayItems.push([p.price,'SH '+(i+1),'#ff9c67','dot']));
+   sw.lows.slice(-6).forEach((p,i)=>overlayItems.push([p.price,'SL '+(i+1),'#76aaff','dot']));
+ }
  const plan=a?.tradePlan&&$("ovRR").checked?a.tradePlan:null;
- if(plan){highs.push(plan.entry,plan.stop,...plan.targets.map(t=>t.price));lows.push(plan.entry,plan.stop,...plan.targets.map(t=>t.price));}
- let min=Math.min(...lows),max=Math.max(...highs); if(!(max>min)){max+=1;min-=1;} const pad=(max-min)*.10;min-=pad;max+=pad;
- const left=48,right=758,top=25,bottom=372,w=right-left,h=bottom-top;
- const y=v=>bottom-(v-min)/(max-min)*h, x=i=>left+(i+.5)*w/data.length;
- const bodyW=Math.max(2.4,Math.min(10,w/data.length*.58)); let out=[];
- for(let i=0;i<5;i++){const yy=top+i*h/4,val=max-(max-min)*i/4;out.push(`<line x1="${left}" x2="${right}" y1="${yy}" y2="${yy}" stroke="#29405c" stroke-width="1"/><text x="${left-5}" y="${yy-4}" text-anchor="end" fill="#8196b2" font-size="9">${fmt(val)}</text>`);}
- if(a&&$("ovRange").checked){const yh=y(a.hi),yl=y(a.lo),ym=y(a.mid);out.push(`<rect x="${left}" y="${Math.min(yh,yl)}" width="${w}" height="${Math.abs(yl-yh)}" fill="#f4bd50" opacity=".045"/>`);out.push(chartLine(yh,"1H HIGH","#f4bd50"));out.push(chartLine(ym,"50% EQ","#d8ad62","3 5"));out.push(chartLine(yl,"1H LOW","#f4bd50"));}
- if(a&&$("ovLiquidity").checked){if(a.buySideLevel!=null)out.push(chartLine(y(a.buySideLevel),"BUY-SIDE LIQ.","#76aaff","3 5"));if(a.sellSideLevel!=null)out.push(chartLine(y(a.sellSideLevel),"SELL-SIDE LIQ.","#76aaff","3 5"));}
- if(a&&$("ovStructure").checked&&(tf===300||tf===900)){const sw=confirmedSwings(completedCandles(candles[900],900),2,2);sw.highs.slice(-8).forEach(p=>{if(p.price>=min&&p.price<=max){const idx=data.findIndex(c=>c.epoch===p.epoch),xx=idx>=0?x(idx):right-10;out.push(`<path d="M${xx-5} ${y(p.price)-6} l5 -6 l5 6" fill="none" stroke="#ff9c67" stroke-width="1.5"/><text x="${Math.min(xx+7,right-2)}" y="${y(p.price)-7}" fill="#ff9c67" font-size="9">SH</text>`);}});sw.lows.slice(-8).forEach(p=>{if(p.price>=min&&p.price<=max){const idx=data.findIndex(c=>c.epoch===p.epoch),xx=idx>=0?x(idx):right-10;out.push(`<path d="M${xx-5} ${y(p.price)+6} l5 6 l5 -6" fill="none" stroke="#76aaff" stroke-width="1.5"/><text x="${Math.min(xx+7,right-2)}" y="${y(p.price)+15}" fill="#76aaff" font-size="9">SL</text>`);}});}
- if(plan){const ye=y(plan.entry),ys=y(plan.stop),yt3=y(plan.targets[2].price);out.push(`<rect x="${left}" y="${Math.min(ye,yt3)}" width="${w}" height="${Math.abs(yt3-ye)}" fill="#22c58b" opacity=".09"/>`);out.push(`<rect x="${left}" y="${Math.min(ye,ys)}" width="${w}" height="${Math.abs(ys-ye)}" fill="#ff637d" opacity=".16"/>`);out.push(chartLine(ye,"ENTRY "+fmt(plan.entry),"#edf4ff","4 4"));out.push(chartLine(ys,"SL "+fmt(plan.stop),"#ff637d","5 4"));plan.targets.forEach((t,i)=>out.push(chartLine(y(t.price),"TP"+(i+1)+" "+fmt(t.price),"#25d3a0","3 5")));}
- data.forEach((c,i)=>{const xx=x(i),yo=y(c.open),yc=y(c.close),yh=y(c.high),yl=y(c.low),bull=c.close>=c.open,color=bull?"#25d3a0":"#ff637d";out.push(`<line x1="${xx}" x2="${xx}" y1="${yh}" y2="${yl}" stroke="${color}" stroke-width="1.4"/>`);out.push(`<rect x="${xx-bodyW/2}" y="${Math.min(yo,yc)}" width="${bodyW}" height="${Math.max(1.5,Math.abs(yc-yo))}" fill="${color}" rx="1"/>`);});
- const py=y(live);if(chartView.offset===0){out.push(`<line x1="${left}" x2="${right}" y1="${py}" y2="${py}" stroke="#edf4ff" stroke-width="1" stroke-dasharray="2 4" opacity=".85"/><rect x="${right+7}" y="${py-9}" width="124" height="18" rx="4" fill="#edf4ff"/><text x="${right+69}" y="${py+4}" text-anchor="middle" fill="#081321" font-size="10" font-weight="700">${fmt(live)}</text>`);}
- if(chartHoverIndex>=0&&chartHoverIndex<data.length){const hx=x(chartHoverIndex),hc=data[chartHoverIndex];out.push(`<line x1="${hx}" x2="${hx}" y1="${top}" y2="${bottom}" stroke="#d6e2f3" stroke-dasharray="3 4" opacity=".7"/>`);}
- const lastEpoch=Number(data[data.length-1].epoch);out.push(`<text x="${left}" y="405" fill="#8196b2" font-size="10">${new Date(Number(data[0].epoch)*1000).toLocaleString([], {hour:"2-digit",minute:"2-digit",month:"short",day:"numeric"})}</text><text x="${right}" y="405" text-anchor="end" fill="#8196b2" font-size="10">${new Date(lastEpoch*1000).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}</text>`);
- svg.innerHTML=out.join(""); chartWindowInfo={data,left,right,top,bottom,tf,fmt};
- $("chartLiveState").textContent="LIVE · "+granularityLabel(tf)+" · "+data.length+" candles"+(chartView.offset?" · history view":"");
- $("chartExplanation").textContent="Showing "+granularityLabel(tf)+" Deriv candles for "+selected+". Amber marks show the previous completed 1H CRT range; blue marks show confirmed 15M liquidity references; red/green zones show the calculated risk and reward only when a complete WATCH candidate exists. Chart is analysis-only.";
- if(chartHoverIndex>=0&&chartHoverIndex<data.length) updateChartReadout(chartHoverIndex); else if(!chartGesture) $("chartReadout").textContent="Drag to pan · Pinch or use + / − to zoom · Reset view returns to latest candles";
+ if(plan){overlayItems.push([plan.entry,'ENTRY '+formatPrice(plan.entry,meta),'#edf4ff'],[plan.stop,'STOP '+formatPrice(plan.stop,meta),'#ff637d']);plan.targets.forEach((t,i)=>overlayItems.push([t.price,'TP'+(i+1)+' '+formatPrice(t.price,meta),'#25d3a0','dot']));}
+ const overlaySignature=JSON.stringify(overlayItems);
+ if(overlaySignature!==chartOverlaySignature){
+   chartRemoveOverlayLines();
+   overlayItems.forEach(item=>chartAddLine(item[0],item[1],item[2],item[3]==='dot'?(chartLibrary()?.LineStyle?.Dotted??1):undefined));
+   chartOverlaySignature=overlaySignature;
+ }
+ updateChartLivePrice();
+ const priceAge=latestTickEpoch?Math.max(0,Math.round(Date.now()/1000-latestTickEpoch)):null;
+ const candleAge=candleUpdateAt[tf]?Math.max(0,Math.round((Date.now()-candleUpdateAt[tf])/1000)):null;
+ $("chartLiveState").textContent='DERIV · '+granularityLabel(tf)+' · '+all.length+' candles'+(priceAge===null?'':' · tick '+(priceAge<=10?'fresh':priceAge+'s'))+(candleAge===null?'':' · OHLC '+candleAge+'s');
+ $("chartExplanation").textContent='Native Deriv OHLC candles for '+displayName(meta)+' ['+selected+']. The live quote is a separate tick from the same selected symbol. CRT and liquidity overlays are derived from the selected symbol’s own completed candles.';
+ if(!chartHoverReadoutActive())$("chartReadout").textContent='Drag to pan · Pinch to zoom · Use + / − to zoom · Reset view returns to live candles';
 }
-function updateChartReadout(index){if(!chartWindowInfo)return;const c=chartWindowInfo.data[index];if(!c)return;const f=chartWindowInfo.fmt;$("chartReadout").textContent=new Date(c.epoch*1000).toLocaleString()+"  O "+f(c.open)+"  H "+f(c.high)+"  L "+f(c.low)+"  C "+f(c.close);}
+function chartHoverReadoutActive(){return false;}
+
+function updateMarketNarrative(){renderMarketNarrative();}
 function renderMarketNarrative(){
  const a=latestAnalysis;if(!a)return;const meta=a.meta||findSymbol(selected),fmt=v=>formatPrice(v,meta),price=Number.isFinite(Number(quote))?Number(quote):a.price;
  const pct=a.hi>a.lo?((price-a.lo)/(a.hi-a.lo))*100:null;
@@ -858,26 +998,33 @@ function updateLiveRangeFromQuote(){
  $("rangeLocation").textContent=a.location;$("rangePosition").textContent=a.rangePercent===null?"—":a.rangePercent.toFixed(1)+"% from range low";
  renderMarketNarrative();renderTradePlan();
 }
-function setChartLayout(mode){chartLayout=mode;$("chartCard").classList.toggle("chartSplit",mode==="split");$("layoutChart").classList.toggle("active",mode==="chart");$("layoutSplit").classList.toggle("active",mode==="split");}
-function requestChartTimeframe(tf){if(!selected||!socketOpen()||chartSubscribedTimeframes.has(tf))return;const req={ticks_history:selected,adjust_start_time:1,count:250,end:"latest",style:"candles",granularity:tf,subscribe:1};send(req,{kind:"chart_candles",granularity:tf,symbol:selected});chartSubscribedTimeframes.add(tf);}
-function zoomChart(factor){chartView.bars=clamp(Math.round(chartView.bars*factor),20,240);chartView.offset=clamp(chartView.offset,0,Math.max(0,currentChartCandles(Number($("chartTf").value)).length-chartView.bars));chartHoverIndex=-1;renderChart();}
-function resetChartView(){chartView={bars:65,offset:0};chartHoverIndex=-1;renderChart();}
-function setChartFullscreen(on){const card=$("chartCard");card.classList.toggle("chartFullscreen",on);document.body.classList.toggle("chartNoScroll",on);$("chartFullscreen").textContent=on?"Exit full screen":"Full screen";if(on){setTimeout(()=>renderChart(),50);if(document.documentElement.requestFullscreen&&!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});}}else if(document.fullscreenElement&&document.exitFullscreen){document.exitFullscreen().catch(()=>{});}setTimeout(()=>renderChart(),120);}
-document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement&&$("chartCard").classList.contains("chartFullscreen")){ $("chartCard").classList.remove("chartFullscreen");document.body.classList.remove("chartNoScroll");$("chartFullscreen").textContent="Full screen";setTimeout(renderChart,60);}});
-function chartPointDistance(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
-function chartPointerDown(e){if(e.pointerType==="mouse"&&e.button!==0)return;e.preventDefault();try{$("liveChart").setPointerCapture(e.pointerId);}catch(_){}chartPointerPoints.set(e.pointerId,{x:e.clientX,y:e.clientY});chartHoverIndex=-1;if(chartPointerPoints.size===1)chartGesture={type:"pan",startX:e.clientX,startOffset:chartView.offset,startBars:chartView.bars};else if(chartPointerPoints.size>=2){const pts=[...chartPointerPoints.values()].slice(0,2);chartGesture={type:"pinch",distance:chartPointDistance(pts[0],pts[1]),bars:chartView.bars,offset:chartView.offset};}}
-function chartPointerMove(e){
- if(chartPointerPoints.has(e.pointerId)){chartPointerPoints.set(e.pointerId,{x:e.clientX,y:e.clientY});if(chartPointerPoints.size>=2&&chartGesture?.type==="pinch"){const pts=[...chartPointerPoints.values()].slice(0,2),d=chartPointDistance(pts[0],pts[1]);if(d>0&&chartGesture.distance>0){chartView.bars=clamp(Math.round(chartGesture.bars*chartGesture.distance/d),20,240);chartView.offset=clamp(chartGesture.offset,0,Math.max(0,currentChartCandles(Number($("chartTf").value)).length-chartView.bars));renderChart();}return;}if(chartPointerPoints.size===1&&chartGesture?.type==="pan"){const dx=e.clientX-chartGesture.startX,rect=$("liveChart").getBoundingClientRect(),move=Math.round(-dx/Math.max(1,rect.width)*chartGesture.startBars);chartView.offset=clamp(chartGesture.startOffset+move,0,Math.max(0,currentChartCandles(Number($("chartTf").value)).length-chartView.bars));renderChart();}return;}
- if(e.pointerType==="mouse"&&chartWindowInfo){const rect=$("liveChart").getBoundingClientRect(),vx=(e.clientX-rect.left)*900/rect.width,idx=Math.floor((vx-chartWindowInfo.left)/(chartWindowInfo.right-chartWindowInfo.left)*chartWindowInfo.data.length);if(idx>=0&&idx<chartWindowInfo.data.length){chartHoverIndex=idx;updateChartReadout(idx);}}
+function setChartLayout(mode){chartLayout=mode;$("chartCard").classList.toggle("chartSplit",mode==="split");$("layoutChart").classList.toggle("active",mode==="chart");$("layoutSplit").classList.toggle("active",mode==="split");setTimeout(()=>{if(chartApi)chartApi.applyOptions({});},80);}
+function requestChartTimeframe(tf){
+ if(!selected||!socketOpen()||chartSubscribedTimeframes.has(tf))return;
+ const req={ticks_history:selected,adjust_start_time:1,count:250,end:"latest",style:"candles",granularity:tf,subscribe:1};
+ const id=send(req,{kind:"chart_candles",granularity:tf,symbol:selected});
+ if(id!==null)chartSubscribedTimeframes.add(tf);
 }
-function chartPointerUp(e){chartPointerPoints.delete(e.pointerId);if(chartPointerPoints.size===0)chartGesture=null;else if(chartPointerPoints.size===1){const p=[...chartPointerPoints.values()][0];chartGesture={type:"pan",startX:p.x,startOffset:chartView.offset,startBars:chartView.bars};}}
-$("chartTf").addEventListener("change",()=>{chartView={bars:65,offset:0};chartHoverIndex=-1;requestChartTimeframe(Number($("chartTf").value));renderChart();});
-["ovRange","ovLiquidity","ovStructure","ovRR"].forEach(id=>$(id).addEventListener("change",renderChart));
+function zoomChart(factor){
+ if(!chartApi)return;
+ const range=chartApi.timeScale().getVisibleLogicalRange();if(!range)return;
+ const center=(range.from+range.to)/2,span=clamp((range.to-range.from)*factor,10,500);
+ chartApi.timeScale().setVisibleLogicalRange({from:center-span/2,to:center+span/2});
+}
+function resetChartView(){if(chartApi)chartApi.timeScale().scrollToRealTime();}
+function setChartFullscreen(on){
+ const card=$("chartCard");card.classList.toggle("chartFullscreen",on);document.body.classList.toggle("chartNoScroll",on);
+ $("chartFullscreen").textContent=on?"Exit full screen":"Full screen";
+ if(on&&document.documentElement.requestFullscreen&&!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});
+ else if(!on&&document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});
+ setTimeout(()=>{if(chartApi)chartApi.applyOptions({});},150);
+}
+document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement&&$("chartCard").classList.contains("chartFullscreen")){ $("chartCard").classList.remove("chartFullscreen");document.body.classList.remove("chartNoScroll");$("chartFullscreen").textContent="Full screen";setTimeout(()=>{if(chartApi)chartApi.applyOptions({});},100);}});
+$("chartTf").addEventListener("change",()=>{const tf=Number($("chartTf").value);requestChartTimeframe(tf);renderChart(true);});
+["ovRange","ovLiquidity","ovStructure","ovRR"].forEach(id=>$(id).addEventListener("change",()=>renderChart(false)));
 $("layoutChart").addEventListener("click",()=>setChartLayout("chart"));$("layoutSplit").addEventListener("click",()=>setChartLayout("split"));
 $("chartZoomIn").addEventListener("click",()=>zoomChart(.8));$("chartZoomOut").addEventListener("click",()=>zoomChart(1.25));$("chartReset").addEventListener("click",resetChartView);
 $("chartFullscreen").addEventListener("click",()=>setChartFullscreen(!$("chartCard").classList.contains("chartFullscreen")));
-const liveChartSvg=$("liveChart");liveChartSvg.addEventListener("pointerdown",chartPointerDown);liveChartSvg.addEventListener("pointermove",chartPointerMove);liveChartSvg.addEventListener("pointerup",chartPointerUp);liveChartSvg.addEventListener("pointercancel",chartPointerUp);liveChartSvg.addEventListener("lostpointercapture",chartPointerUp);
-liveChartSvg.addEventListener("wheel",e=>{e.preventDefault();zoomChart(e.deltaY<0?.85:1.18);},{passive:false});
 
 $("symbol").addEventListener("change", () => loadMarket($("symbol").value));
 $("category").addEventListener("change", () => {
@@ -894,7 +1041,7 @@ $("refresh").addEventListener("click", () => {
     setStatus("Refreshing market data for " + current + "…");
   } else {
     setStatus("Re-requesting Deriv active-symbol list…");
-    const id = send({active_symbols: "brief"}, {kind: "active_symbols"});
+    const id = send({active_symbols: "full"}, {kind: "active_symbols"});
     setDiagnostic("Manual active_symbols request sent (request " + id + ")");
     if (activeSymbolsTimer) clearTimeout(activeSymbolsTimer);
     activeSymbolsTimer = setTimeout(() => {
@@ -912,5 +1059,6 @@ $("notify").addEventListener("click", async () => {
   $("notifyStatus").textContent = "Browser notification permission: " + permission + ". True background push requires a separate push service.";
 });
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(error => setDiagnostic("Service worker registration unavailable: " + error.message));
+initTradingChart();
 connect();
 </script></body></html>
