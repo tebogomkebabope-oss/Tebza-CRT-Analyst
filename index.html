@@ -74,7 +74,7 @@ body.chartNoScroll{overflow:hidden!important}
 .chartFullscreen .overlayControls{position:sticky;top:44px;background:#080f1c;padding:4px 0;z-index:2}
 @media(max-width:600px){.chartWrap{height:390px;min-height:340px}.chartFullscreen{padding:9px!important}.chartFullscreen .chartWrap{height:calc(100dvh - 180px)!important;min-height:calc(100dvh - 180px)!important;max-height:calc(100dvh - 180px)!important}}
 </style></head><body>
-<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.7.2 · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
+<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.7.3 · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
 <main>
 <div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for ticks and native OHLC candles. No Deriv password or account token is required. Market data and CRT conditions are for analysis only; signals are preliminary and this app never places trades.</div>
 <section class="card">
@@ -103,6 +103,7 @@ body.chartNoScroll{overflow:hidden!important}
    <div class="chartHints">Phone: drag the chart to move through candles; pinch with two fingers to zoom. Desktop: drag to pan and use the mouse wheel to zoom.</div>
    <div class="chartLegend"><span><i class="legendDot" style="background:#25d3a0"></i>Bullish candle</span><span><i class="legendDot" style="background:#ff637d"></i>Bearish candle</span><span><i class="legendDot" style="background:#f4bd50"></i>CRT range</span><span><i class="legendDot" style="background:#76aaff"></i>Liquidity / structure</span></div>
    <div class="chartInfo" id="chartExplanation">Chart overlays will appear when Deriv candle history is available. The chart uses the same public feed as the analysis engine.</div>
+   <div class="muted tiny" id="candleIntegrity" style="margin-top:8px">OHLC integrity: waiting for validated Deriv candle history and live updates.</div>
   </div>
   <aside class="chartMini" id="chartMini">
    <div class="tile"><small>Market</small><b id="chartMarket">—</b></div><div class="tile"><small>Last price</small><b id="chartPrice">—</b></div>
@@ -168,7 +169,7 @@ body.chartNoScroll{overflow:hidden!important}
  <div class="tile"><small>Invalidation reference</small><b id="stop">—</b></div><div class="tile"><small>Opposing range target</small><b id="target">—</b></div>
 </div><p class="muted tiny">V1.4 analytical foundation: completed 1H dealing range, premium/discount location, confirmed 15M swing structure, equal-high/low zones, 5M sweep/reclaim and displacement checklist. BOS/CHoCH event classification is preliminary; FVG lifecycle, order blocks, session filters and historical backtesting are future modules. WATCH labels are analysis candidates only.</p></section>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.7.2 · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+<div class="foot">TEBZA CRT ANALYST V1.7.3 · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
 </main>
 <script>
 // Load the pinned Lightweight Charts v5 standalone library, with a second CDN fallback.
@@ -229,6 +230,9 @@ let subscriptionMeta = new Map();
 let latestTickEpoch = 0;
 let candleUpdateAt = {300:0,900:0,3600:0,14400:0};
 let chartLibraryUnavailable = false;
+let liveCandleState = {300:{openTime:0,lastUpdateEpoch:0},900:{openTime:0,lastUpdateEpoch:0},3600:{openTime:0,lastUpdateEpoch:0},14400:{openTime:0,lastUpdateEpoch:0}};
+let ohlcStreamStats = {received:0,accepted:0,updated:0,inserted:0,rejected:0,lastAction:"Waiting",lastReason:"",lastOpenTime:0,lastUpdateEpoch:0,lastGranularity:0};
+let historicalCandleStats = {received:0,accepted:0,rejected:0,duplicates:0,lastGranularity:0};
 const $ = id => document.getElementById(id);
 
 function setStatus(message) { $("status").textContent = message; }
@@ -266,6 +270,8 @@ function connect() {
   chartRemoveOverlayLines();
   latestTickEpoch=0;
   candleUpdateAt={300:0,900:0,3600:0,14400:0};
+  liveCandleState={300:{openTime:0,lastUpdateEpoch:0},900:{openTime:0,lastUpdateEpoch:0},3600:{openTime:0,lastUpdateEpoch:0},14400:{openTime:0,lastUpdateEpoch:0}};
+  resetCandleDiagnostics();
   $("symbol").innerHTML = '<option value="">Waiting for Deriv…</option>';
   $("marketCount").textContent = "Connecting to Deriv instruments…";
   $("quote").textContent = "—";
@@ -392,6 +398,7 @@ function handleMessage(data) {
       $("symbolName").textContent = displayName(meta) + " · live tick";
       setDiagnostic("Live tick received for " + selected + " at " + (latestTickEpoch ? new Date(latestTickEpoch*1000).toLocaleTimeString() : new Date().toLocaleTimeString()));
       updateLiveRangeFromQuote();
+      updateCandleIntegrity();
       updateChartLivePrice();
       renderChart(false);
     }
@@ -403,11 +410,28 @@ function handleMessage(data) {
     const granularity = Number(data.echo_req?.granularity || info?.granularity);
     const requestSymbol = data.echo_req?.ticks_history || info?.symbol;
     if (granularity && GRANULARITIES.includes(granularity) && requestSymbol === selected) {
-      candles[granularity] = normalizeDerivCandles(data.candles);
+      if (chartSubscribedTimeframes.has(granularity) && info?.subscribed !== true) {
+        setDiagnostic("Ignored a delayed non-streaming history response for " + granularityLabel(granularity) + "; the live subscription is authoritative");
+        if (data.req_id) requestMeta.delete(data.req_id);
+        return;
+      }
+      historicalCandleStats.received = data.candles.length;
+      historicalCandleStats.lastGranularity = granularity;
+      const inspected = inspectDerivHistoricalCandles(data.candles);
+      const normalized = inspected.candles;
+      historicalCandleStats.accepted = normalized.length;
+      historicalCandleStats.rejected = inspected.rejected;
+      historicalCandleStats.duplicates = inspected.duplicates;
+      candles[granularity] = normalized;
+      const last = normalized[normalized.length - 1];
+      liveCandleState[granularity] = {openTime:last?.epoch || 0,lastUpdateEpoch:0};
       candleUpdateAt[granularity] = Date.now();
-      setDiagnostic("Received " + candles[granularity].length + " validated candles for " + granularityLabel(granularity) + " · " + selected);
+      updateCandleIntegrity();
+      setDiagnostic("Received " + normalized.length + " valid historical candles for " + granularityLabel(granularity) + " · " + selected + "; rejected " + historicalCandleStats.rejected);
       if (granularity === Number($("chartTf")?.value || 300)) renderChart(true);
       analyse();
+    } else {
+      setDiagnostic("Ignored historical candle response with unmatched symbol or timeframe");
     }
     if (data.req_id) requestMeta.delete(data.req_id);
     return;
@@ -415,14 +439,34 @@ function handleMessage(data) {
 
   if (data.msg_type === "ohlc" && data.ohlc) {
     const info = responseInfo || (data.subscription?.id ? subscriptionMeta.get(data.subscription.id) : null);
-    const granularity = Number(data.echo_req?.granularity || info?.granularity);
-    const requestSymbol = data.echo_req?.ticks_history || info?.symbol;
-    if (requestSymbol === selected && GRANULARITIES.includes(granularity)) {
-      upsertCandle(granularity, data.ohlc);
-      candleUpdateAt[granularity] = Date.now();
-      if (granularity === Number($("chartTf")?.value || 300)) renderChart(false);
-      analyse();
+    const granularity = Number(data.ohlc.granularity || data.echo_req?.granularity || info?.granularity);
+    const requestSymbol = data.ohlc.symbol || data.echo_req?.ticks_history || info?.symbol;
+    ohlcStreamStats.received++;
+    if (requestSymbol !== selected) {
+      rejectOhlcUpdate("symbol mismatch", granularity);
+      return;
     }
+    if (!GRANULARITIES.includes(granularity)) {
+      rejectOhlcUpdate("unsupported or missing granularity", granularity);
+      return;
+    }
+    const result = upsertLiveOhlc(granularity, data.ohlc);
+    if (!result.ok) {
+      rejectOhlcUpdate(result.reason, granularity);
+      return;
+    }
+    ohlcStreamStats.accepted++;
+    if (result.action === "updated") ohlcStreamStats.updated++;
+    if (result.action === "inserted") ohlcStreamStats.inserted++;
+    ohlcStreamStats.lastAction = result.action;
+    ohlcStreamStats.lastReason = "";
+    ohlcStreamStats.lastOpenTime = result.openTime;
+    ohlcStreamStats.lastUpdateEpoch = result.updateEpoch || 0;
+    ohlcStreamStats.lastGranularity = granularity;
+    candleUpdateAt[granularity] = Date.now();
+    updateCandleIntegrity();
+    if (granularity === Number($("chartTf")?.value || 300)) renderChart(false);
+    analyse();
     return;
   }
 
@@ -497,6 +541,8 @@ function loadMarket(code) {
   chartRemoveOverlayLines();
   latestTickEpoch = 0;
   candleUpdateAt = {300:0,900:0,3600:0,14400:0};
+  liveCandleState = {300:{openTime:0,lastUpdateEpoch:0},900:{openTime:0,lastUpdateEpoch:0},3600:{openTime:0,lastUpdateEpoch:0},14400:{openTime:0,lastUpdateEpoch:0}};
+  resetCandleDiagnostics();
   latestAnalysis = null;
   quote = null;
   $("narrativeState").textContent="WAIT";$("narrativeLead").textContent="Loading fresh candles to generate current price analysis.";
@@ -514,27 +560,25 @@ function loadMarket(code) {
   setText("direction", "WAIT");
   $("scoreFill").style.width = "0%";
   $("confirmationList").innerHTML = "";
-  [300, 900, 3600, 14400].forEach(granularity => {
-    const meta = {kind: "candles", granularity, symbol: code};
-    const request = {ticks_history: code, adjust_start_time: 1, count: 250, end: "latest", style: "candles", granularity};
-    if (granularity === 300) request.subscribe = 1;
-    const reqId=send(request, meta);
-    if(granularity===300 && reqId!==null) chartSubscribedTimeframes.add(300);
-  });
   const activeChartTf = Number($("chartTf")?.value || 300);
-  if (activeChartTf !== 300) {
-    const chartReq = {ticks_history: code, adjust_start_time: 1, count: 250, end: "latest", style: "candles", granularity: activeChartTf, subscribe: 1};
-    const chartReqId=send(chartReq, {kind: "chart_candles", granularity: activeChartTf, symbol: code});
-    if(chartReqId!==null) chartSubscribedTimeframes.add(activeChartTf);
-  }
+  [300, 900, 3600, 14400].forEach(granularity => {
+    const shouldSubscribe = granularity === 300 || granularity === activeChartTf;
+    const meta = {kind: "candles", granularity, symbol: code, subscribed: shouldSubscribe};
+    const request = {ticks_history: code, adjust_start_time: 1, count: 250, end: "latest", style: "candles", granularity};
+    if (shouldSubscribe) request.subscribe = 1;
+    const reqId = send(request, meta);
+    if (shouldSubscribe && reqId !== null) chartSubscribedTimeframes.add(granularity);
+  });
   send({ticks: code, subscribe: 1}, {kind: "ticks", symbol: code});
   setStatus("Requesting live quote and 5M, 15M, 1H and 4H candle history for " + code + "…");
   if (candleRefreshTimer) clearInterval(candleRefreshTimer);
   candleRefreshTimer = setInterval(() => {
     if (!socketOpen() || !selected) return;
-    [900, 3600, 14400].forEach(granularity => send({
-      ticks_history: selected, adjust_start_time: 1, count: 250, end: "latest", style: "candles", granularity
-    }, {kind: "candles", granularity, symbol: selected}));
+    [900, 3600, 14400].forEach(granularity => {
+      if (chartSubscribedTimeframes.has(granularity)) return;
+      send({ticks_history: selected, adjust_start_time: 1, count: 250, end: "latest", style: "candles", granularity},
+        {kind: "candles", granularity, symbol: selected, subscribed: false});
+    });
   }, 90000);
 }
 
@@ -543,38 +587,111 @@ function syncLiveChartCandle(){
   // ticks_history candle stream; never construct an incomplete candle from a tick.
   updateChartLivePrice();
 }
-function normalizeDerivCandles(items){
-  const byEpoch=new Map();
-  (Array.isArray(items)?items:[]).forEach(c=>{
-    const epoch=Number(c.epoch ?? c.open_time);
-    const open=Number(c.open),high=Number(c.high),low=Number(c.low),close=Number(c.close);
-    if(!Number.isFinite(epoch)||epoch<=0||![open,high,low,close].every(Number.isFinite))return;
-    if(high<Math.max(open,close)||low>Math.min(open,close)||high<low)return;
-    byEpoch.set(Math.floor(epoch),{epoch:Math.floor(epoch),open,high,low,close});
-  });
-  return [...byEpoch.values()].sort((a,b)=>a.epoch-b.epoch).slice(-300);
+function validOhlc(open, high, low, close) {
+  return [open, high, low, close].every(Number.isFinite) &&
+    high >= Math.max(open, close) && low <= Math.min(open, close) && high >= low;
 }
 
-function upsertCandle(granularity, ohlc) {
-  if (!candles[granularity]) candles[granularity] = [];
-  const list = candles[granularity];
-  const epoch = Math.floor(Number(ohlc.epoch ?? ohlc.open_time));
-  const open=Number(ohlc.open),high=Number(ohlc.high),low=Number(ohlc.low),close=Number(ohlc.close);
-  if(!Number.isFinite(epoch)||epoch<=0||![open,high,low,close].every(Number.isFinite)||high<Math.max(open,close)||low>Math.min(open,close)||high<low)return;
-  const normalized = {epoch, open, high, low, close};
-  const existing = list.findIndex(candle => Number(candle.epoch) === epoch);
-  if (existing >= 0) list[existing] = normalized;
-  else { list.push(normalized); list.sort((a, b) => Number(a.epoch) - Number(b.epoch)); }
+// Historical ticks_history candle records are keyed by `epoch` (the candle time).
+// Do not use `open_time` here: that field belongs to the live OHLC message shape.
+function inspectDerivHistoricalCandles(items) {
+  const byEpoch = new Map();
+  let rejected = 0, duplicates = 0;
+  const rows = Array.isArray(items) ? items : [];
+  rows.forEach(c => {
+    // Deriv's historical candles schema defines `epoch`; do not infer the time
+    // from a different field or from the browser clock.
+    const epochValue = Number(c?.epoch);
+    const epoch = Math.floor(epochValue);
+    const open = Number(c?.open), high = Number(c?.high), low = Number(c?.low), close = Number(c?.close);
+    if (!Number.isFinite(epochValue) || epoch <= 0 || !validOhlc(open, high, low, close)) { rejected++; return; }
+    if (byEpoch.has(epoch)) duplicates++;
+    byEpoch.set(epoch, {epoch, open, high, low, close});
+  });
+  const sorted = [...byEpoch.values()].sort((a,b)=>a.epoch-b.epoch);
+  const candlesOut = sorted.slice(-300);
+  return {candles:candlesOut,rejected,duplicates,trimmed:Math.max(0,sorted.length-candlesOut.length)};
+}
+
+function normalizeDerivCandles(items, granularity) {
+  return inspectDerivHistoricalCandles(items).candles;
+}
+
+// Live OHLC subscription messages carry BOTH `epoch` (update time) and
+// `open_time` (the candle's stable opening time). The chart key MUST be open_time.
+function upsertLiveOhlc(granularity, ohlc) {
+  const list = candles[granularity] || (candles[granularity] = []);
+  const openTimeValue = Number(ohlc?.open_time);
+  const openTime = Math.floor(openTimeValue);
+  const updateEpochValue = Number(ohlc?.epoch);
+  const updateEpoch = Number.isFinite(updateEpochValue) ? Math.floor(updateEpochValue) : 0;
+  const open = Number(ohlc?.open), high = Number(ohlc?.high), low = Number(ohlc?.low), close = Number(ohlc?.close);
+  if (!Number.isFinite(openTimeValue) || openTime <= 0) return {ok:false,reason:"missing or invalid open_time"};
+  if (Math.abs(openTime - Math.floor(openTime / granularity) * granularity) > 1) return {ok:false,reason:"open_time is not aligned to the requested candle interval"};
+  if (ohlc?.granularity !== undefined && Number(ohlc.granularity) !== granularity) return {ok:false,reason:"OHLC granularity mismatch"};
+  if (!validOhlc(open, high, low, close)) return {ok:false,reason:"invalid OHLC price relationship"};
+  const state = liveCandleState[granularity] || {openTime:0,lastUpdateEpoch:0};
+  const latest = list.length ? list[list.length - 1] : null;
+  if (updateEpoch && state.lastUpdateEpoch && updateEpoch < state.lastUpdateEpoch) return {ok:false,reason:"out-of-order OHLC update timestamp"};
+  if (latest && openTime < latest.epoch) return {ok:false,reason:"out-of-order candle opening time"};
+  if (latest && openTime === latest.epoch) {
+    if (updateEpoch && state.openTime === openTime && state.lastUpdateEpoch && updateEpoch < state.lastUpdateEpoch) {
+      return {ok:false,reason:"stale update for the current candle"};
+    }
+    const unchanged = latest.open === open && latest.high === high && latest.low === low && latest.close === close;
+    if (unchanged && updateEpoch && state.lastUpdateEpoch === updateEpoch) {
+      return {ok:false,reason:"duplicate OHLC update"};
+    }
+    // WebSocket frames arrive in order. Allow a changed OHLC update with the
+    // same second-level epoch (markets can emit multiple ticks per second).
+    const normalized = {epoch:openTime,open,high,low,close};
+    list[list.length - 1] = normalized;
+    liveCandleState[granularity] = {openTime,lastUpdateEpoch:Math.max(updateEpoch,state.lastUpdateEpoch || 0)};
+    return {ok:true,action:"updated",openTime,updateEpoch};
+  }
+  if (latest && openTime <= latest.epoch) return {ok:false,reason:"live update does not advance the candle sequence"};
+  list.push({epoch:openTime,open,high,low,close});
   if (list.length > 300) list.splice(0, list.length - 300);
+  liveCandleState[granularity] = {openTime,lastUpdateEpoch:updateEpoch};
+  return {ok:true,action:"inserted",openTime,updateEpoch};
+}
+
+function rejectOhlcUpdate(reason, granularity) {
+  ohlcStreamStats.rejected++;
+  ohlcStreamStats.lastAction = "Rejected";
+  ohlcStreamStats.lastReason = reason;
+  ohlcStreamStats.lastGranularity = Number(granularity) || 0;
+  updateCandleIntegrity();
+  setDiagnostic("Rejected Deriv OHLC update: " + reason + (granularity ? " · " + granularityLabel(Number(granularity)) : ""));
+}
+
+function resetCandleDiagnostics() {
+  ohlcStreamStats = {received:0,accepted:0,updated:0,inserted:0,rejected:0,lastAction:"Waiting",lastReason:"",lastOpenTime:0,lastUpdateEpoch:0,lastGranularity:0};
+  historicalCandleStats = {received:0,accepted:0,rejected:0,duplicates:0,lastGranularity:0};
+  updateCandleIntegrity();
+}
+
+function updateCandleIntegrity() {
+  const el = $("candleIntegrity");
+  if (!el) return;
+  const tf = ohlcStreamStats.lastGranularity || historicalCandleStats.lastGranularity;
+  const label = tf ? granularityLabel(tf) : "—";
+  const lastOpen = ohlcStreamStats.lastOpenTime ? new Date(ohlcStreamStats.lastOpenTime * 1000).toLocaleTimeString() : "waiting";
+  const reason = ohlcStreamStats.lastReason ? " · last rejection: " + ohlcStreamStats.lastReason : "";
+  el.textContent = "OHLC integrity · history " + historicalCandleStats.accepted + "/" + historicalCandleStats.received +
+    " accepted (" + historicalCandleStats.rejected + " invalid / " + historicalCandleStats.duplicates + " duplicate) · live " + ohlcStreamStats.accepted + "/" + ohlcStreamStats.received +
+    " accepted (" + ohlcStreamStats.updated + " updates / " + ohlcStreamStats.inserted + " new bars / " + ohlcStreamStats.rejected + " rejected) · " + label +
+    " · current bar open " + lastOpen + reason;
 }
 
 function completedCandles(list, granularity) {
   if (!Array.isArray(list) || !list.length) return [];
-  const now = Date.now() / 1000;
+  const marketNow = latestTickEpoch > 0 ? latestTickEpoch : Date.now() / 1000;
   const withEpoch = list.filter(candle => Number.isFinite(Number(candle.epoch)) && Number(candle.epoch) > 0);
-  if (withEpoch.length) return withEpoch.filter(candle => Number(candle.epoch) + granularity <= now);
+  if (withEpoch.length) return withEpoch.filter(candle => Number(candle.epoch) + granularity <= marketNow);
   return list.length > 1 ? list.slice(0, -1) : [];
 }
+
 function num(value) { return Number(value); }
 function formatPrice(value, meta) {
   const n = Number(value);
@@ -857,7 +974,7 @@ function analyse() {
   updateMarketNarrative();
   renderTradePlan();
   renderChart(false);
-  setStatus("V1.7.2 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  setStatus("V1.7.3 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
   if (direction !== "WAIT" && "Notification" in window && Notification.permission === "granted") {
     new Notification("CRT " + direction + " · " + selected, {body: "A preliminary CRT confirmation checklist aligned. Review independently; no trade was placed."});
   }
@@ -867,7 +984,7 @@ function analyse() {
 function svgEsc(value){return String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
 function clamp(value,min,max){return Math.max(min,Math.min(max,value));}
 function currentChartCandles(tf){
- const raw=normalizeDerivCandles(candles[tf]||[]);
+ const raw=normalizeDerivCandles(candles[tf]||[],tf);
  return raw;
 }
 function chartLibrary(){return window.LightweightCharts||null;}
@@ -984,20 +1101,37 @@ function renderChart(force){
  }
  const plan=a?.tradePlan&&$("ovRR").checked?a.tradePlan:null;
  if(plan){overlayItems.push([plan.entry,'ENTRY '+formatPrice(plan.entry,meta),'#edf4ff'],[plan.stop,'STOP '+formatPrice(plan.stop,meta),'#ff637d']);plan.targets.forEach((t,i)=>overlayItems.push([t.price,'TP'+(i+1)+' '+formatPrice(t.price,meta),'#25d3a0','dot']));}
- const overlaySignature=JSON.stringify(overlayItems);
+ const mergedOverlayItems=mergeChartOverlayLabels(overlayItems,meta);
+ const overlaySignature=JSON.stringify(mergedOverlayItems);
  if(overlaySignature!==chartOverlaySignature){
    chartRemoveOverlayLines();
-   overlayItems.forEach(item=>chartAddLine(item[0],item[1],item[2],item[3]==='dot'?(chartLibrary()?.LineStyle?.Dotted??1):undefined));
+   mergedOverlayItems.forEach(item=>chartAddLine(item[0],item[1],item[2],item[3]==='dot'?(chartLibrary()?.LineStyle?.Dotted??1):undefined));
    chartOverlaySignature=overlaySignature;
  }
  updateChartLivePrice();
  const priceAge=latestTickEpoch?Math.max(0,Math.round(Date.now()/1000-latestTickEpoch)):null;
  const candleAge=candleUpdateAt[tf]?Math.max(0,Math.round((Date.now()-candleUpdateAt[tf])/1000)):null;
  $("chartLiveState").textContent='DERIV · '+granularityLabel(tf)+' · '+all.length+' candles'+(priceAge===null?'':' · tick '+(priceAge<=10?'fresh':priceAge+'s'))+(candleAge===null?'':' · OHLC '+candleAge+'s');
- $("chartExplanation").textContent='Native Deriv OHLC candles for '+displayName(meta)+' ['+selected+']. The live quote is a separate tick from the same selected symbol. CRT and liquidity overlays are derived from the selected symbol’s own completed candles.';
+ $("chartExplanation").textContent='Native Deriv OHLC candles (historical `epoch`, live `open_time`) for '+displayName(meta)+' ['+selected+']. The live quote is a separate tick from the same selected symbol. CRT and liquidity overlays are derived from the selected symbol’s own completed candles.';
  if(!chartHoverReadoutActive())$("chartReadout").textContent='Drag to pan · Pinch to zoom · Use + / − to zoom · Reset view returns to live candles';
 }
 function chartHoverReadoutActive(){return false;}
+
+// Merge CRT/swing labels that resolve to the same tradable price so the
+// right-hand price scale does not draw duplicate overlapping labels.
+function mergeChartOverlayLabels(items, meta) {
+  const decimals = decimalPlacesFromPip(meta?.pip_size, Number(quote) || 1);
+  const tolerance = Math.max(Math.pow(10, -decimals) * 0.51, 1e-9);
+  const merged = [];
+  items.forEach(item => {
+    if (!Number.isFinite(Number(item[0]))) return;
+    const match = merged.find(existing => Math.abs(Number(existing[0]) - Number(item[0])) <= tolerance);
+    if (match) {
+      if (!match[1].split(" / ").includes(item[1])) match[1] += " / " + item[1];
+    } else merged.push(item.slice());
+  });
+  return merged;
+}
 
 function updateMarketNarrative(){renderMarketNarrative();}
 function renderMarketNarrative(){
@@ -1049,7 +1183,7 @@ function setChartLayout(mode){chartLayout=mode;$("chartCard").classList.toggle("
 function requestChartTimeframe(tf){
  if(!selected||!socketOpen()||chartSubscribedTimeframes.has(tf))return;
  const req={ticks_history:selected,adjust_start_time:1,count:250,end:"latest",style:"candles",granularity:tf,subscribe:1};
- const id=send(req,{kind:"chart_candles",granularity:tf,symbol:selected});
+ const id=send(req,{kind:"chart_candles",granularity:tf,symbol:selected,subscribed:true});
  if(id!==null)chartSubscribedTimeframes.add(tf);
 }
 function zoomChart(factor){
