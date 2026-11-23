@@ -74,7 +74,7 @@ body.chartNoScroll{overflow:hidden!important}
 .chartFullscreen .overlayControls{position:sticky;top:44px;background:#080f1c;padding:4px 0;z-index:2}
 @media(max-width:600px){.chartWrap{height:390px;min-height:340px}.chartFullscreen{padding:9px!important}.chartFullscreen .chartWrap{height:calc(100dvh - 180px)!important;min-height:calc(100dvh - 180px)!important;max-height:calc(100dvh - 180px)!important}}
 </style></head><body>
-<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.7 · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
+<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.7.2 · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
 <main>
 <div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for ticks and native OHLC candles. No Deriv password or account token is required. Market data and CRT conditions are for analysis only; signals are preliminary and this app never places trades.</div>
 <section class="card">
@@ -98,7 +98,7 @@ body.chartNoScroll{overflow:hidden!important}
  </div>
  <div class="chartGrid" id="chartGrid">
   <div>
-   <div class="chartWrap" id="chartWrap"><div id="liveChart" class="chartCanvas" role="img" aria-label="Live Deriv candlestick chart with CRT overlays"><div class="chartLoading">Connecting the live chart…</div></div></div>
+   <div class="chartWrap" id="chartWrap"><div id="liveChart" class="chartCanvas" role="img" aria-label="Live Deriv candlestick chart with CRT overlays"><div class="chartLoading">Preparing live chart…</div></div></div>
    <div id="chartReadout" class="chartReadout">Touch and drag to pan · Pinch to zoom · Use the buttons for precise zoom</div>
    <div class="chartHints">Phone: drag the chart to move through candles; pinch with two fingers to zoom. Desktop: drag to pan and use the mouse wheel to zoom.</div>
    <div class="chartLegend"><span><i class="legendDot" style="background:#25d3a0"></i>Bullish candle</span><span><i class="legendDot" style="background:#ff637d"></i>Bearish candle</span><span><i class="legendDot" style="background:#f4bd50"></i>CRT range</span><span><i class="legendDot" style="background:#76aaff"></i>Liquidity / structure</span></div>
@@ -168,9 +168,35 @@ body.chartNoScroll{overflow:hidden!important}
  <div class="tile"><small>Invalidation reference</small><b id="stop">—</b></div><div class="tile"><small>Opposing range target</small><b id="target">—</b></div>
 </div><p class="muted tiny">V1.4 analytical foundation: completed 1H dealing range, premium/discount location, confirmed 15M swing structure, equal-high/low zones, 5M sweep/reclaim and displacement checklist. BOS/CHoCH event classification is preliminary; FVG lifecycle, order blocks, session filters and historical backtesting are future modules. WATCH labels are analysis candidates only.</p></section>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.7 · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+<div class="foot">TEBZA CRT ANALYST V1.7.2 · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.3.0/dist/lightweight-charts.standalone.production.js" onerror="document.getElementById('chartLiveState').textContent='Chart library failed to load'"></script>
+<script>
+// Load the pinned Lightweight Charts v5 standalone library, with a second CDN fallback.
+// The rest of the application can connect to Deriv while this renderer loads.
+window.__lwcPromise = new Promise((resolve, reject) => {
+  const sources = [
+    "https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js",
+    "https://unpkg.com/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"
+  ];
+  let index = 0;
+  const loadNext = () => {
+    if (index >= sources.length) {
+      reject(new Error("Both chart-library CDNs failed to load. Check access to jsDelivr and unpkg, then reload."));
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = sources[index++];
+    script.onload = () => {
+      const lib = window.LightweightCharts;
+      if (lib && typeof lib.createChart === "function" && lib.CandlestickSeries) resolve(lib);
+      else loadNext();
+    };
+    script.onerror = () => { script.remove(); loadNext(); };
+    document.head.appendChild(script);
+  };
+  loadNext();
+});
+</script>
 <script>
 "use strict";
 const WS_URL = "wss://api.derivws.com/trading/v1/options/ws/public";
@@ -831,7 +857,7 @@ function analyse() {
   updateMarketNarrative();
   renderTradePlan();
   renderChart(false);
-  setStatus("V1.7 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  setStatus("V1.7.2 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
   if (direction !== "WAIT" && "Notification" in window && Notification.permission === "granted") {
     new Notification("CRT " + direction + " · " + selected, {body: "A preliminary CRT confirmation checklist aligned. Review independently; no trade was placed."});
   }
@@ -845,18 +871,31 @@ function currentChartCandles(tf){
  return raw;
 }
 function chartLibrary(){return window.LightweightCharts||null;}
+function resizeTradingChart(){
+ if(!chartApi)return;
+ const container=$("liveChart");if(!container)return;
+ const rect=container.getBoundingClientRect();
+ const width=Math.max(280,Math.floor(rect.width));
+ const height=Math.max(260,Math.floor(rect.height));
+ try{chartApi.resize(width,height);}catch(error){console.warn("Chart resize failed",error);}
+}
 function initTradingChart(){
  const lib=chartLibrary(),container=$("liveChart");
  if(!container)return false;
  if(!lib||typeof lib.createChart!=="function"||!lib.CandlestickSeries){
-   chartLibraryUnavailable=true;
-   container.innerHTML='<div class="chartLoading">The chart library could not load. Check your internet connection and reload the page. Deriv market analysis remains available.</div>';
-   $("chartLiveState").textContent="Chart library unavailable";
+   container.innerHTML='<div class="chartLoading">Loading the chart renderer… Deriv market data continues independently.</div>';
+   $("chartLiveState").textContent="Loading chart renderer";
    return false;
  }
  if(chartApi)return true;
- chartApi=lib.createChart(container,{
-   autoSize:true,
+ try{
+   // Remove the initial loading placeholder before creating the chart. Keeping it
+   // inside the chart host can cover the canvas on some mobile browser layouts.
+   container.replaceChildren();
+   const rect=container.getBoundingClientRect();
+   chartApi=lib.createChart(container,{
+   width:Math.max(280,Math.floor(rect.width)),
+   height:Math.max(260,Math.floor(rect.height)),
    layout:{background:{type:lib.ColorType?.Solid??'solid',color:'#081321'},textColor:'#9cb0cb',fontFamily:'system-ui,-apple-system,Segoe UI,sans-serif',fontSize:11,attributionLogo:true},
    grid:{vertLines:{color:'#172a40'},horzLines:{color:'#172a40'}},
    rightPriceScale:{borderColor:'#263952',scaleMargins:{top:0.10,bottom:0.12},autoScale:true},
@@ -880,7 +919,15 @@ function initTradingChart(){
    $("chartReadout").textContent=when+"  O "+fmt(bar.open)+"  H "+fmt(bar.high)+"  L "+fmt(bar.low)+"  C "+fmt(bar.close);
  });
  chartApi.timeScale().subscribeVisibleLogicalRangeChange(()=>{});
+ requestAnimationFrame(resizeTradingChart);
  return true;
+ }catch(error){
+   console.error("Trading chart initialization failed",error);
+   chartApi=null;candleSeries=null;chartLibraryUnavailable=true;
+   container.innerHTML='<div class="chartLoading">Chart initialisation failed: '+svgEsc(error&&error.message?error.message:String(error))+'</div>';
+   $("chartLiveState").textContent="Chart initialisation error";
+   return false;
+ }
 }
 function chartFormatOptions(){
  const meta=findSymbol(selected),pip=Number(meta?.pip_size),precision=Number.isInteger(pip)?clamp(pip,0,8):decimalPlaces(quote??(candles[Number($("chartTf").value)]||[]).at(-1)?.close??0);
@@ -912,7 +959,7 @@ function renderChart(force){
  $("chartStructure").textContent=a?.structure?.direction||"Waiting";
  $("chartLiquidity").textContent=a?(a.bullishSweep?"Sell-side swept":a.bearishSweep?"Buy-side swept":"No confirmed sweep"):"Waiting";
  $("chartAssessment").textContent=a?.direction||"WAIT";
- if(!all.length){candleSeries.setData([]);chartRemoveOverlayLines();chartDataCache={symbol:selected,timeframe:tf,length:0,firstEpoch:0,lastEpoch:0,lastBar:null};$("chartLiveState").textContent="Waiting for native Deriv candle history";return;}
+ if(!all.length){candleSeries.setData([]);chartRemoveOverlayLines();chartDataCache={symbol:selected,timeframe:tf,length:0,firstEpoch:0,lastEpoch:0,lastBar:null};$("chartLiveState").textContent="Chart ready · waiting for native Deriv candle history";return;}
  candleSeries.applyOptions({priceFormat:chartFormatOptions()});
  const data=all.map(c=>({time:c.epoch,open:c.open,high:c.high,low:c.low,close:c.close}));
  const firstEpoch=all[0].epoch,last=all[all.length-1],lastBar={time:last.epoch,open:last.open,high:last.high,low:last.low,close:last.close};
@@ -998,7 +1045,7 @@ function updateLiveRangeFromQuote(){
  $("rangeLocation").textContent=a.location;$("rangePosition").textContent=a.rangePercent===null?"—":a.rangePercent.toFixed(1)+"% from range low";
  renderMarketNarrative();renderTradePlan();
 }
-function setChartLayout(mode){chartLayout=mode;$("chartCard").classList.toggle("chartSplit",mode==="split");$("layoutChart").classList.toggle("active",mode==="chart");$("layoutSplit").classList.toggle("active",mode==="split");setTimeout(()=>{if(chartApi)chartApi.applyOptions({});},80);}
+function setChartLayout(mode){chartLayout=mode;$("chartCard").classList.toggle("chartSplit",mode==="split");$("layoutChart").classList.toggle("active",mode==="chart");$("layoutSplit").classList.toggle("active",mode==="split");setTimeout(resizeTradingChart,80);}
 function requestChartTimeframe(tf){
  if(!selected||!socketOpen()||chartSubscribedTimeframes.has(tf))return;
  const req={ticks_history:selected,adjust_start_time:1,count:250,end:"latest",style:"candles",granularity:tf,subscribe:1};
@@ -1017,9 +1064,11 @@ function setChartFullscreen(on){
  $("chartFullscreen").textContent=on?"Exit full screen":"Full screen";
  if(on&&document.documentElement.requestFullscreen&&!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});
  else if(!on&&document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});
- setTimeout(()=>{if(chartApi)chartApi.applyOptions({});},150);
+ setTimeout(resizeTradingChart,150);
 }
-document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement&&$("chartCard").classList.contains("chartFullscreen")){ $("chartCard").classList.remove("chartFullscreen");document.body.classList.remove("chartNoScroll");$("chartFullscreen").textContent="Full screen";setTimeout(()=>{if(chartApi)chartApi.applyOptions({});},100);}});
+document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement&&$("chartCard").classList.contains("chartFullscreen")){ $("chartCard").classList.remove("chartFullscreen");document.body.classList.remove("chartNoScroll");$("chartFullscreen").textContent="Full screen";setTimeout(resizeTradingChart,100);}});
+window.addEventListener("resize",()=>setTimeout(resizeTradingChart,80));
+window.addEventListener("orientationchange",()=>setTimeout(resizeTradingChart,180));
 $("chartTf").addEventListener("change",()=>{const tf=Number($("chartTf").value);requestChartTimeframe(tf);renderChart(true);});
 ["ovRange","ovLiquidity","ovStructure","ovRR"].forEach(id=>$(id).addEventListener("change",()=>renderChart(false)));
 $("layoutChart").addEventListener("click",()=>setChartLayout("chart"));$("layoutSplit").addEventListener("click",()=>setChartLayout("split"));
@@ -1059,6 +1108,19 @@ $("notify").addEventListener("click", async () => {
   $("notifyStatus").textContent = "Browser notification permission: " + permission + ". True background push requires a separate push service.";
 });
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(error => setDiagnostic("Service worker registration unavailable: " + error.message));
-initTradingChart();
 connect();
+window.__lwcPromise.then(() => {
+  const ready = initTradingChart();
+  if (ready) {
+    $("chartLiveState").textContent = "Chart renderer ready · waiting for Deriv candles";
+    renderChart(true);
+  }
+}).catch(error => {
+  chartLibraryUnavailable = true;
+  const message = error && error.message ? error.message : String(error);
+  const host = $("liveChart");
+  if (host) host.innerHTML = '<div class="chartLoading">Chart library could not load: ' + svgEsc(message) + '</div>';
+  $("chartLiveState").textContent = "Chart library load failed";
+  setDiagnostic("Chart renderer unavailable: " + message);
+});
 </script></body></html>
