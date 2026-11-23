@@ -73,8 +73,22 @@ body.chartNoScroll{overflow:hidden!important}
 .chartFullscreen .chartToolbar{position:sticky;top:0;background:#080f1c;padding:5px 0;z-index:2}
 .chartFullscreen .overlayControls{position:sticky;top:44px;background:#080f1c;padding:4px 0;z-index:2}
 @media(max-width:600px){.chartWrap{height:390px;min-height:340px}.chartFullscreen{padding:9px!important}.chartFullscreen .chartWrap{height:calc(100dvh - 180px)!important;min-height:calc(100dvh - 180px)!important;max-height:calc(100dvh - 180px)!important}}
+.chartPriceTouch{position:absolute;right:0;top:0;bottom:24px;width:54px;z-index:5;background:transparent;touch-action:none;pointer-events:auto}.chartToolbar button{white-space:nowrap}.chartToolbar button:focus-visible{outline:2px solid #25d3a0;outline-offset:2px}
+@media(max-width:600px){.chartToolbar{gap:6px}.chartToolbar button{font-size:10px;padding:8px 9px}}
+
+/* V1.7.5 Candle Inspector */
+.candleInspector{margin-top:10px;background:#0b1627;border:1px solid #304765;border-radius:11px;padding:11px}
+.candleInspectorHead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.candleInspectorTitle{font-size:11px;letter-spacing:.7px;text-transform:uppercase;color:#b8c9df;font-weight:800}
+.candleInspectorGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.candleInspectorCell{background:#101f34;border:1px solid #263952;border-radius:8px;padding:8px;min-width:0}
+.candleInspectorCell small{display:block;color:#93a7c2;font-size:9px;letter-spacing:.5px;text-transform:uppercase}
+.candleInspectorCell b{display:block;margin-top:4px;font-size:13px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.candleInspectorMeta{font-size:10px;color:#93a7c2;line-height:1.45;margin-top:8px;overflow-wrap:anywhere}
+.candleInspector button{font-size:10px;padding:6px 9px}
+@media(min-width:600px){.candleInspectorGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style></head><body>
-<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.7.3 · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
+<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.7.5 · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
 <main>
 <div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for ticks and native OHLC candles. No Deriv password or account token is required. Market data and CRT conditions are for analysis only; signals are preliminary and this app never places trades.</div>
 <section class="card">
@@ -88,7 +102,11 @@ body.chartNoScroll{overflow:hidden!important}
  <div class="chartToolbar" style="margin-top:10px">
   <select id="chartTf" aria-label="Chart timeframe"><option value="300">5M</option><option value="900">15M</option><option value="3600">1H</option><option value="14400">4H</option></select>
   <button id="layoutChart" class="active" type="button">Chart first</button><button id="layoutSplit" type="button">Split view</button>
-  <button id="chartZoomOut" type="button" aria-label="Zoom out">−</button><button id="chartZoomIn" type="button" aria-label="Zoom in">+</button><button id="chartReset" type="button">Reset view</button><button id="chartFullscreen" class="primary" type="button">Full screen</button>
+  <button id="chartZoomOut" type="button" aria-label="Zoom out">−</button><button id="chartZoomIn" type="button" aria-label="Zoom in">+</button>
+  <button id="timeZoomOut" type="button" title="Show more candles">Time −</button><button id="timeZoomIn" type="button" title="Show fewer, wider candles">Time +</button>
+  <button id="priceZoomOut" type="button" title="Expand vertical price range">Price −</button><button id="priceZoomIn" type="button" title="Compress vertical price range">Price +</button>
+  <button id="priceAuto" type="button">Auto price</button><button id="chartFit" type="button">Fit all</button>
+  <button id="chartReset" type="button">Go live</button><button id="chartFullscreen" class="primary" type="button">Full screen</button>
  </div>
  <div class="overlayControls">
   <label><input type="checkbox" id="ovRange" checked> CRT range</label>
@@ -99,8 +117,22 @@ body.chartNoScroll{overflow:hidden!important}
  <div class="chartGrid" id="chartGrid">
   <div>
    <div class="chartWrap" id="chartWrap"><div id="liveChart" class="chartCanvas" role="img" aria-label="Live Deriv candlestick chart with CRT overlays"><div class="chartLoading">Preparing live chart…</div></div></div>
-   <div id="chartReadout" class="chartReadout">Touch and drag to pan · Pinch to zoom · Use the buttons for precise zoom</div>
-   <div class="chartHints">Phone: drag the chart to move through candles; pinch with two fingers to zoom. Desktop: drag to pan and use the mouse wheel to zoom.</div>
+   <div id="chartReadout" class="chartReadout">Move crosshair to preview OHLC · Tap a candle to pin it in Candle Inspector</div>
+   <section class="candleInspector" id="candleInspector" aria-live="polite">
+    <div class="candleInspectorHead"><div class="candleInspectorTitle">Candle inspector · select a candle</div><button id="clearCandleSelection" type="button">Clear selection</button></div>
+    <div class="candleInspectorGrid">
+     <div class="candleInspectorCell"><small>Open</small><b id="inspectOpen">—</b></div>
+     <div class="candleInspectorCell"><small>High</small><b id="inspectHigh">—</b></div>
+     <div class="candleInspectorCell"><small>Low</small><b id="inspectLow">—</b></div>
+     <div class="candleInspectorCell"><small>Close</small><b id="inspectClose">—</b></div>
+     <div class="candleInspectorCell"><small>Direction</small><b id="inspectDirection">—</b></div>
+     <div class="candleInspectorCell"><small>Range</small><b id="inspectRange">—</b></div>
+     <div class="candleInspectorCell"><small>Body</small><b id="inspectBody">—</b></div>
+     <div class="candleInspectorCell"><small>Status</small><b id="inspectStatus">—</b></div>
+    </div>
+    <div class="candleInspectorMeta" id="inspectMeta">Tap a candle on the chart to inspect its exact Deriv OHLC values. Select a completed candle for historical verification.</div>
+   </section>
+   <div class="chartHints">TradingView-style controls: drag the plot to pan through time; pinch to zoom; drag the right price scale vertically on the phone; use Time −/+ and Price −/+ for independent axis scaling. Auto price restores vertical fitting; Fit all shows all loaded candles; Go live returns to the latest candles.</div>
    <div class="chartLegend"><span><i class="legendDot" style="background:#25d3a0"></i>Bullish candle</span><span><i class="legendDot" style="background:#ff637d"></i>Bearish candle</span><span><i class="legendDot" style="background:#f4bd50"></i>CRT range</span><span><i class="legendDot" style="background:#76aaff"></i>Liquidity / structure</span></div>
    <div class="chartInfo" id="chartExplanation">Chart overlays will appear when Deriv candle history is available. The chart uses the same public feed as the analysis engine.</div>
    <div class="muted tiny" id="candleIntegrity" style="margin-top:8px">OHLC integrity: waiting for validated Deriv candle history and live updates.</div>
@@ -169,7 +201,7 @@ body.chartNoScroll{overflow:hidden!important}
  <div class="tile"><small>Invalidation reference</small><b id="stop">—</b></div><div class="tile"><small>Opposing range target</small><b id="target">—</b></div>
 </div><p class="muted tiny">V1.4 analytical foundation: completed 1H dealing range, premium/discount location, confirmed 15M swing structure, equal-high/low zones, 5M sweep/reclaim and displacement checklist. BOS/CHoCH event classification is preliminary; FVG lifecycle, order blocks, session filters and historical backtesting are future modules. WATCH labels are analysis candidates only.</p></section>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.7.3 · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+<div class="foot">TEBZA CRT ANALYST V1.7.5 · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
 </main>
 <script>
 // Load the pinned Lightweight Charts v5 standalone library, with a second CDN fallback.
@@ -230,6 +262,9 @@ let subscriptionMeta = new Map();
 let latestTickEpoch = 0;
 let candleUpdateAt = {300:0,900:0,3600:0,14400:0};
 let chartLibraryUnavailable = false;
+let selectedCandleEpoch = 0;
+let selectedCandleSymbol = "";
+let selectedCandleTimeframe = 0;
 let liveCandleState = {300:{openTime:0,lastUpdateEpoch:0},900:{openTime:0,lastUpdateEpoch:0},3600:{openTime:0,lastUpdateEpoch:0},14400:{openTime:0,lastUpdateEpoch:0}};
 let ohlcStreamStats = {received:0,accepted:0,updated:0,inserted:0,rejected:0,lastAction:"Waiting",lastReason:"",lastOpenTime:0,lastUpdateEpoch:0,lastGranularity:0};
 let historicalCandleStats = {received:0,accepted:0,rejected:0,duplicates:0,lastGranularity:0};
@@ -974,7 +1009,7 @@ function analyse() {
   updateMarketNarrative();
   renderTradePlan();
   renderChart(false);
-  setStatus("V1.7.3 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  setStatus("V1.7.5 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
   if (direction !== "WAIT" && "Notification" in window && Notification.permission === "granted") {
     new Notification("CRT " + direction + " · " + selected, {body: "A preliminary CRT confirmation checklist aligned. Review independently; no trade was placed."});
   }
@@ -996,6 +1031,28 @@ function resizeTradingChart(){
  const height=Math.max(260,Math.floor(rect.height));
  try{chartApi.resize(width,height);}catch(error){console.warn("Chart resize failed",error);}
 }
+function clearCandleInspector(){
+ selectedCandleEpoch=0;selectedCandleSymbol="";selectedCandleTimeframe=0;
+ ["inspectOpen","inspectHigh","inspectLow","inspectClose","inspectDirection","inspectRange","inspectBody","inspectStatus"].forEach(id=>setText(id,"—"));
+ setText("inspectMeta","Tap a candle on the chart to inspect its exact Deriv OHLC values. Select a completed candle for historical verification.");
+}
+function showCandleInspector(epoch){
+ const tf=Number($("chartTf")?.value||300),list=currentChartCandles(tf),bar=list.find(c=>Number(c.epoch)===Number(epoch));
+ if(!bar){setText("inspectMeta","The selected candle is not present in the current validated history. Reload the timeframe and try again.");return;}
+ selectedCandleEpoch=Number(bar.epoch);selectedCandleSymbol=selected;selectedCandleTimeframe=tf;
+ const meta=findSymbol(selected),fmt=v=>formatPrice(v,meta),range=bar.high-bar.low,body=Math.abs(bar.close-bar.open);
+ const completed=(Number(bar.epoch)+tf)<=latestTickEpoch;
+ setText("inspectOpen",fmt(bar.open));setText("inspectHigh",fmt(bar.high));setText("inspectLow",fmt(bar.low));setText("inspectClose",fmt(bar.close));
+ setText("inspectDirection",bar.close>bar.open?"Bullish":bar.close<bar.open?"Bearish":"Doji");
+ setText("inspectRange",fmt(range));setText("inspectBody",fmt(body));setText("inspectStatus",completed?"Completed":"Forming");
+ const stamp=new Date(Number(bar.epoch)*1000);
+ setText("inspectMeta",displayName(meta)+" ["+selected+"] · "+granularityLabel(tf)+" · Opens "+stamp.toLocaleString()+" · Unix "+bar.epoch+" · Source: Deriv native OHLC history/live stream · "+(completed?"Completed candle":"Current forming candle; values can change"));
+}
+function refreshSelectedCandleInspector(){
+ if(selectedCandleEpoch&&selectedCandleSymbol===selected&&selectedCandleTimeframe===Number($("chartTf")?.value||300))showCandleInspector(selectedCandleEpoch);
+ else if(selectedCandleEpoch)clearCandleInspector();
+}
+
 function initTradingChart(){
  const lib=chartLibrary(),container=$("liveChart");
  if(!container)return false;
@@ -1019,13 +1076,31 @@ function initTradingChart(){
    leftPriceScale:{visible:false},
    timeScale:{borderColor:'#263952',timeVisible:true,secondsVisible:false,rightOffset:7,barSpacing:8,minBarSpacing:2,lockVisibleTimeRangeOnResize:true},
    crosshair:{mode:lib.CrosshairMode?.Normal??0,vertLine:{color:'#8095b0',width:1,style:lib.LineStyle?.Dashed??2,labelBackgroundColor:'#263952'},horzLine:{color:'#8095b0',width:1,style:lib.LineStyle?.Dashed??2,labelBackgroundColor:'#263952'}},
-   handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:false},
-   handleScale:{mouseWheel:true,pinch:true,axisPressedMouseMove:true,axisDoubleClickReset:true}
+   handleScroll:{mouseWheel:true,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:true},
+   handleScale:{mouseWheel:true,pinch:true,axisPressedMouseMove:{time:true,price:true},axisDoubleClickReset:{time:true,price:true}}
  });
  candleSeries=chartApi.addSeries(lib.CandlestickSeries,{
    upColor:'#25d3a0',downColor:'#ff637d',borderUpColor:'#25d3a0',borderDownColor:'#ff637d',wickUpColor:'#25d3a0',wickDownColor:'#ff637d',
    borderVisible:false,priceLineVisible:false,lastValueVisible:false,priceFormat:{type:'price',precision:2,minMove:0.01}
  });
+ // Touch-only right-axis drag: lets mobile users expand/contract and shift the
+ // visible price scale without hijacking one-finger horizontal chart panning.
+ const priceTouch=document.createElement('div');priceTouch.className='chartPriceTouch';priceTouch.setAttribute('aria-label','Drag vertically to adjust price scale');container.appendChild(priceTouch);
+ let priceTouchStart=null;
+ priceTouch.addEventListener('touchstart',ev=>{
+   if(ev.touches.length!==1||!candleSeries)return;
+   const range=candleSeries.priceScale().getVisibleRange();if(!range)return;
+   candleSeries.priceScale().setAutoScale(false);
+   priceTouchStart={y:ev.touches[0].clientY,from:range.from,to:range.to};ev.preventDefault();
+ },{passive:false});
+ priceTouch.addEventListener('touchmove',ev=>{
+   if(!priceTouchStart||ev.touches.length!==1||!candleSeries)return;
+   const rect=container.getBoundingClientRect(),dy=ev.touches[0].clientY-priceTouchStart.y;
+   const span=priceTouchStart.to-priceTouchStart.from,shift=(dy/Math.max(180,rect.height))*span*1.4;
+   candleSeries.priceScale().setVisibleRange({from:priceTouchStart.from+shift,to:priceTouchStart.to+shift});ev.preventDefault();
+ },{passive:false});
+ const endPriceTouch=()=>{priceTouchStart=null;};
+ priceTouch.addEventListener('touchend',endPriceTouch);priceTouch.addEventListener('touchcancel',endPriceTouch);
  chartApi.subscribeCrosshairMove(param=>{
    if(!param||!param.time||!param.seriesData)return;
    const bar=param.seriesData.get(candleSeries);
@@ -1034,6 +1109,11 @@ function initTradingChart(){
    const when=t?t.toLocaleString():'';
    const fmt=v=>formatPrice(v,findSymbol(selected));
    $("chartReadout").textContent=when+"  O "+fmt(bar.open)+"  H "+fmt(bar.high)+"  L "+fmt(bar.low)+"  C "+fmt(bar.close);
+ });
+ chartApi.subscribeClick(param=>{
+   if(!param||param.time===undefined||param.time===null)return;
+   const epoch=typeof param.time==="number"?param.time:0;
+   if(epoch>0)showCandleInspector(epoch);
  });
  chartApi.timeScale().subscribeVisibleLogicalRangeChange(()=>{});
  requestAnimationFrame(resizeTradingChart);
@@ -1091,6 +1171,7 @@ function renderChart(force){
    try{candleSeries.update(lastBar);}catch(_){candleSeries.setData(data);chartApi.timeScale().scrollToRealTime();}
  }
  chartDataCache={symbol:selected,timeframe:tf,length:all.length,firstEpoch,lastEpoch:last.epoch,lastBar};
+ refreshSelectedCandleInspector();
  const overlayItems=[];
  if(a&&$("ovRange").checked)overlayItems.push([a.hi,'1H HIGH','#f4bd50'],[a.mid,'50% EQ','#d8ad62','dot'],[a.lo,'1H LOW','#f4bd50']);
  if(a&&$("ovLiquidity").checked)overlayItems.push([a.buySideLevel,'BUY-SIDE LIQ.','#76aaff'],[a.sellSideLevel,'SELL-SIDE LIQ.','#76aaff']);
@@ -1113,7 +1194,7 @@ function renderChart(force){
  const candleAge=candleUpdateAt[tf]?Math.max(0,Math.round((Date.now()-candleUpdateAt[tf])/1000)):null;
  $("chartLiveState").textContent='DERIV · '+granularityLabel(tf)+' · '+all.length+' candles'+(priceAge===null?'':' · tick '+(priceAge<=10?'fresh':priceAge+'s'))+(candleAge===null?'':' · OHLC '+candleAge+'s');
  $("chartExplanation").textContent='Native Deriv OHLC candles (historical `epoch`, live `open_time`) for '+displayName(meta)+' ['+selected+']. The live quote is a separate tick from the same selected symbol. CRT and liquidity overlays are derived from the selected symbol’s own completed candles.';
- if(!chartHoverReadoutActive())$("chartReadout").textContent='Drag to pan · Pinch to zoom · Use + / − to zoom · Reset view returns to live candles';
+ if(!chartHoverReadoutActive())$("chartReadout").textContent='Drag to pan · Pinch to zoom · Tap a candle to inspect OHLC · Go live returns to latest candles';
 }
 function chartHoverReadoutActive(){return false;}
 
@@ -1189,10 +1270,26 @@ function requestChartTimeframe(tf){
 function zoomChart(factor){
  if(!chartApi)return;
  const range=chartApi.timeScale().getVisibleLogicalRange();if(!range)return;
- const center=(range.from+range.to)/2,span=clamp((range.to-range.from)*factor,10,500);
+ const center=(range.from+range.to)/2,span=clamp((range.to-range.from)*factor,8,500);
  chartApi.timeScale().setVisibleLogicalRange({from:center-span/2,to:center+span/2});
 }
-function resetChartView(){if(chartApi)chartApi.timeScale().scrollToRealTime();}
+function scaleTime(factor){
+ if(!chartApi)return;
+ const ts=chartApi.timeScale(),opts=ts.options(),spacing=Number(opts.barSpacing)||8;
+ ts.applyOptions({barSpacing:clamp(spacing*factor,2,36)});
+}
+function scalePrice(factor){
+ if(!candleSeries)return;
+ try{
+  const ps=candleSeries.priceScale(),r=ps.getVisibleRange();
+  if(!r||!Number.isFinite(r.from)||!Number.isFinite(r.to)||r.to<=r.from)return;
+  const center=(r.from+r.to)/2,half=(r.to-r.from)*factor/2;
+  ps.setAutoScale(false);ps.setVisibleRange({from:center-half,to:center+half});
+ }catch(error){console.warn('Price scale adjustment failed',error);}
+}
+function autoPriceScale(){if(!candleSeries)return;try{candleSeries.priceScale().setAutoScale(true);}catch(error){console.warn('Auto price scale failed',error);}}
+function fitAllCandles(){if(chartApi){autoPriceScale();chartApi.timeScale().fitContent();}}
+function resetChartView(){if(chartApi){autoPriceScale();chartApi.timeScale().scrollToRealTime();}}
 function setChartFullscreen(on){
  const card=$("chartCard");card.classList.toggle("chartFullscreen",on);document.body.classList.toggle("chartNoScroll",on);
  $("chartFullscreen").textContent=on?"Exit full screen":"Full screen";
@@ -1203,13 +1300,17 @@ function setChartFullscreen(on){
 document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement&&$("chartCard").classList.contains("chartFullscreen")){ $("chartCard").classList.remove("chartFullscreen");document.body.classList.remove("chartNoScroll");$("chartFullscreen").textContent="Full screen";setTimeout(resizeTradingChart,100);}});
 window.addEventListener("resize",()=>setTimeout(resizeTradingChart,80));
 window.addEventListener("orientationchange",()=>setTimeout(resizeTradingChart,180));
-$("chartTf").addEventListener("change",()=>{const tf=Number($("chartTf").value);requestChartTimeframe(tf);renderChart(true);});
+$("chartTf").addEventListener("change",()=>{clearCandleInspector();const tf=Number($("chartTf").value);requestChartTimeframe(tf);renderChart(true);});
 ["ovRange","ovLiquidity","ovStructure","ovRR"].forEach(id=>$(id).addEventListener("change",()=>renderChart(false)));
 $("layoutChart").addEventListener("click",()=>setChartLayout("chart"));$("layoutSplit").addEventListener("click",()=>setChartLayout("split"));
-$("chartZoomIn").addEventListener("click",()=>zoomChart(.8));$("chartZoomOut").addEventListener("click",()=>zoomChart(1.25));$("chartReset").addEventListener("click",resetChartView);
+$("chartZoomIn").addEventListener("click",()=>zoomChart(.8));$("chartZoomOut").addEventListener("click",()=>zoomChart(1.25));
+$("timeZoomIn").addEventListener("click",()=>scaleTime(1.25));$("timeZoomOut").addEventListener("click",()=>scaleTime(.8));
+$("priceZoomIn").addEventListener("click",()=>scalePrice(.8));$("priceZoomOut").addEventListener("click",()=>scalePrice(1.25));
+$("priceAuto").addEventListener("click",autoPriceScale);$("chartFit").addEventListener("click",fitAllCandles);$("chartReset").addEventListener("click",resetChartView);
 $("chartFullscreen").addEventListener("click",()=>setChartFullscreen(!$("chartCard").classList.contains("chartFullscreen")));
 
-$("symbol").addEventListener("change", () => loadMarket($("symbol").value));
+$("clearCandleSelection").addEventListener("click",clearCandleInspector);
+$("symbol").addEventListener("change", () => {clearCandleInspector();loadMarket($("symbol").value);});
 $("category").addEventListener("change", () => {
   const before = selected;
   renderSymbols();
