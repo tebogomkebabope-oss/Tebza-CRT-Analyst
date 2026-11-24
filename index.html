@@ -211,6 +211,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 @media(max-width:390px){.topActions .pill{padding:6px 8px;font-size:8px}.pageIntro{display:block}.pageAction{margin-top:10px}.planTargets{grid-template-columns:1fr}.quickPrompts button{font-size:8px}.chatBubble{max-width:97%}}
 @media(min-width:701px){.navScrim{display:none!important}}
 
+.selectedMarketRef{font-weight:700;color:#d7c18e;overflow-wrap:anywhere}
 </style></head><body>
 <header class="appTopbar">
  <div class="topBrand"><button class="menuToggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny brandSub">INSTITUTIONAL MARKET INTELLIGENCE · ANALYSIS ONLY</div></div></div>
@@ -342,7 +343,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
  <div class="futureHint"><b>Future enhancement</b><p>Cloud-synchronised alert history and push delivery while the browser is closed require a separately deployed service. They are not active in this version.</p></div>
 </section>
 <section class="pageView" id="chartView" data-page="chart" hidden>
- <section class="pageIntro"><div><div class="eyebrow">PRICE ACTION WORKSPACE</div><h1>Professional chart</h1><p>Live candles, CRT context, liquidity, structure and scenario planning from the selected instrument.</p></div><button type="button" class="pageAction" data-go="analysis">View analysis</button></section>
+ <section class="pageIntro"><div><div class="eyebrow">PRICE ACTION WORKSPACE</div><h1>Professional chart</h1><p id="chartSelectedMarket" class="selectedMarketRef">Select a market to load its live chart and analysis.</p></div><button type="button" class="pageAction" data-go="analysis">View analysis</button></section>
 <section class="card" id="chartCard">
  <div class="row between"><h2 style="margin:0">Live annotated chart</h2><span class="tag" id="chartLiveState">Waiting for candles</span></div>
  <div class="chartToolbar" style="margin-top:10px">
@@ -400,7 +401,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 </section>
 </section>
 <section class="pageView" id="analysisView" data-page="analysis" hidden>
- <section class="pageIntro"><div><div class="eyebrow">ENGINE INTERPRETATION</div><h1>Market analysis</h1><p>Understand what has happened, what is confirmed, what remains missing and where the scenario is invalidated.</p></div><button type="button" class="pageAction" data-go="chart">Open pro chart</button></section>
+ <section class="pageIntro"><div><div class="eyebrow">ENGINE INTERPRETATION</div><h1>Market analysis</h1><p id="analysisSelectedMarket" class="selectedMarketRef">Select a market to view its analysis.</p></div><button type="button" class="pageAction" data-go="chart">Open pro chart</button></section>
 <section class="card" id="marketNarrative">
  <div class="row between"><h2 style="margin:0">Market narrative & current price analysis</h2><span class="planBadge" id="narrativeState">WAIT</span></div>
  <p class="narrativeLead" id="narrativeLead">Waiting for sufficient completed candles to describe current price behaviour.</p>
@@ -902,6 +903,10 @@ function loadMarket(code) {
   requestMeta.clear();
   selected = code;
   preferredSymbol = code;
+  const selectedMeta=findSymbol(code),selectedLabel=selectedMeta?(displayName(selectedMeta)+" ["+symbolCode(selectedMeta)+"]"):code;
+  const chartRef=document.getElementById("chartSelectedMarket"),analysisRef=document.getElementById("analysisSelectedMarket");
+  if(chartRef)chartRef.textContent=selectedLabel+" · Loading live chart…";
+  if(analysisRef)analysisRef.textContent=selectedLabel+" · Loading market analysis…";
   candles = {300: [], 900: [], 3600: [], 14400: []};
   chartSubscribedTimeframes = new Set();
   chartDataCache = {symbol:"", timeframe:0, length:0, firstEpoch:0, lastEpoch:0, lastBar:null};
@@ -1681,7 +1686,10 @@ function updateChartLivePrice(){
 function renderChart(force){
  if(!initTradingChart())return;
  const tf=Number($("chartTf")?.value||300),all=currentChartCandles(tf),meta=findSymbol(selected),a=latestAnalysis;
- $("chartMarket").textContent=displayName(meta);
+ const marketLabel=meta?(displayName(meta)+" ["+symbolCode(meta)+"]"):"Select a market";
+ $("chartMarket").textContent=marketLabel;
+ const chartRef=document.getElementById("chartSelectedMarket");if(chartRef)chartRef.textContent=marketLabel+" · Live Deriv market · "+granularityLabel(tf);
+ const analysisRef=document.getElementById("analysisSelectedMarket");if(analysisRef)analysisRef.textContent=marketLabel+" · Current engine assessment";
  $("chartLocation").textContent=a?.location||"Waiting";
  $("chartStructure").textContent=a?.structure?.direction||"Waiting";
  $("chartLiquidity").textContent=a?(a.bullishSweep?"Sell-side swept":a.bearishSweep?"Buy-side swept":"No confirmed sweep"):"Waiting";
@@ -2440,9 +2448,16 @@ function scannerRenderAlerts(){
  });
 }
 function scannerOpenMarket(code){
- if(!symbols.some(x=>symbolCode(x)===code))return;
- $s("category").value="all";renderSymbols();$s("symbol").value=code;loadMarket(code);
- document.getElementById("chartCard")?.scrollIntoView({behavior:"smooth",block:"start"});
+ const target=String(code||"").trim();
+ const meta=symbols.find(x=>symbolCode(x)===target);
+ if(!meta){setStatus("Could not open "+target+": instrument is not in the current Deriv symbol catalogue. Refresh markets and try again.");return;}
+ const category=$s("category"),selector=$s("symbol");
+ if(category)category.value="all";
+ renderSymbols();
+ if(selector)selector.value=target;
+ loadMarket(target);
+ if(typeof window.TEBZA_NAVIGATE==="function")window.TEBZA_NAVIGATE("chart");
+ requestAnimationFrame(()=>{document.getElementById("chartCard")?.scrollIntoView({behavior:"smooth",block:"start"});});
 }
 function scannerRenderOpportunities(){
  const host=$s("scannerOpportunityList");if(!host)return;host.innerHTML="";
@@ -2630,7 +2645,7 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
 </script>
 
 <script>
-/* V1.9.5 persistent confirmed-signal journal. Local-device storage; analysis only. */
+/* V1.9.5 persistent confirmed-signal journal · V1.9.6 navigation and market context. Local-device storage; analysis only. */
 (function(){
  'use strict';
  const KEY='tebza-crt-analyst-v195-confirmed-signals';
@@ -2677,7 +2692,7 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
 </script>
 
 <script>
-/* V1.9.5 workspace navigation and engine-grounded analyst companion. */
+/* V1.9.6 workspace navigation and engine-grounded analyst companion. */
 (function(){
  'use strict';
  const byId=id=>document.getElementById(id);
@@ -2700,6 +2715,7 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
   if(name==='analysis'&&byId('advancedDetails')?.open===false){/* Keep advanced evidence collapsed by default. */}
   window.scrollTo({top:0,behavior:'smooth'});
  }
+ window.TEBZA_NAVIGATE=appView;
  document.querySelectorAll('[data-view]').forEach(el=>el.addEventListener('click',()=>appView(el.dataset.view)));
  document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>appView(el.dataset.go)));
  toggle?.addEventListener('click',()=>sidebar?.classList.contains('open')?closeMenu():openMenu());
