@@ -76,7 +76,7 @@ body.chartNoScroll{overflow:hidden!important}
 .chartPriceTouch{position:absolute;right:0;top:0;bottom:24px;width:54px;z-index:5;background:transparent;touch-action:none;pointer-events:auto}.chartToolbar button{white-space:nowrap}.chartToolbar button:focus-visible{outline:2px solid #25d3a0;outline-offset:2px}
 @media(max-width:600px){.chartToolbar{gap:6px}.chartToolbar button{font-size:10px;padding:8px 9px}}
 
-/* V1.7.5 Candle Inspector */
+/* V1.8.0 Candle Inspector */
 .candleInspector{margin-top:10px;background:#0b1627;border:1px solid #304765;border-radius:11px;padding:11px}
 .candleInspectorHead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px}
 .candleInspectorTitle{font-size:11px;letter-spacing:.7px;text-transform:uppercase;color:#b8c9df;font-weight:800}
@@ -87,8 +87,43 @@ body.chartNoScroll{overflow:hidden!important}
 .candleInspectorMeta{font-size:10px;color:#93a7c2;line-height:1.45;margin-top:8px;overflow-wrap:anywhere}
 .candleInspector button{font-size:10px;padding:6px 9px}
 @media(min-width:600px){.candleInspectorGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* V1.8 multi-market scanner */
+.scannerTop{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.scannerTop button,.scannerTop select,.scannerTop input{font-size:12px}
+.scannerStats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:10px 0}
+.scannerStat{background:#0b1627;border:1px solid #263952;border-radius:10px;padding:9px;min-width:0}
+.scannerStat small{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.5px}
+.scannerStat b{display:block;margin-top:4px;font-size:19px;overflow-wrap:anywhere}
+.scannerProgress{height:8px;background:#263952;border-radius:20px;overflow:hidden;margin:8px 0}
+.scannerProgress>div{height:100%;width:0;background:linear-gradient(90deg,#187f69,#25d3a0);transition:width .2s}
+.scannerNote{font-size:10px;line-height:1.5;color:var(--muted);margin:8px 0}
+.scannerFilters{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0;color:var(--muted);font-size:10px}
+.scannerFilters label{display:flex;align-items:center;gap:5px}
+.scannerFilters input{accent-color:#25d3a0}
+.scannerCards{display:grid;gap:8px;margin-top:10px}
+.scannerMarket{border:1px solid #263952;background:#0b1627;border-radius:11px;padding:10px;display:grid;gap:7px}
+.scannerMarketHead{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.scannerMarketName{font-size:12px;font-weight:800;min-width:0;overflow-wrap:anywhere}
+.scannerMarketMeta{font-size:10px;color:var(--muted);margin-top:2px}
+.scannerBadge{display:inline-block;padding:4px 7px;border-radius:20px;background:#1d304a;color:#c8d8ef;font-size:9px;font-weight:800;white-space:nowrap}
+.scannerBadge.early{background:#203958;color:#9cc7ff}.scannerBadge.developing{background:#483b1e;color:#f6d27c}.scannerBadge.confirmed{background:#164b3d;color:#80edc9}.scannerBadge.invalid{background:#4b2430;color:#ff9bad}.scannerMarketGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.scannerMarketGrid div{background:#101e32;border-radius:7px;padding:7px;min-width:0}
+.scannerMarketGrid small{display:block;color:var(--muted);font-size:9px;text-transform:uppercase}
+.scannerMarketGrid b{display:block;font-size:11px;margin-top:3px;overflow-wrap:anywhere}
+.scannerReason{font-size:10px;color:#bdcce0;line-height:1.45}
+.scannerMarket button{font-size:10px;padding:7px 10px;width:100%}
+.scannerAlerts{display:grid;gap:6px;margin-top:8px;max-height:300px;overflow:auto}
+.scannerAlert{border:1px solid #263952;background:#0b1627;border-radius:9px;padding:8px;font-size:10px;line-height:1.45}
+.scannerAlert b{display:block;color:#cddcf0;margin-bottom:2px}
+.scannerAlert time{color:var(--muted);font-size:9px}
+.scannerEmpty{padding:14px;text-align:center;border:1px dashed #344c6c;border-radius:10px;color:var(--muted);font-size:11px;line-height:1.5}
+.scannerInline{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.scannerInline input[type=number]{width:76px;background:#182942;color:var(--txt);border:1px solid #344c6c;border-radius:8px;padding:7px}
+@media(max-width:540px){.scannerStats{grid-template-columns:repeat(2,minmax(0,1fr))}.scannerMarketGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 </style></head><body>
-<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.7.5 · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
+<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.8.0 · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
 <main>
 <div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for ticks and native OHLC candles. No Deriv password or account token is required. Market data and CRT conditions are for analysis only; signals are preliminary and this app never places trades.</div>
 <section class="card">
@@ -96,6 +131,42 @@ body.chartNoScroll{overflow:hidden!important}
  <div class="row" style="margin-top:12px"><select id="category"><option value="all">All markets</option><option value="synthetic">Synthetic / Derived</option><option value="forex">Forex</option><option value="commodities">Commodities / Metals</option><option value="indices">Stock indices</option><option value="crypto">Cryptocurrencies</option><option value="shares">Shares / ETFs</option></select><select id="symbol"><option>Loading…</option></select></div>
  <div class="row between" style="margin-top:16px"><div><div class="muted tiny">LIVE QUOTE</div><div class="big" id="quote">—</div></div><div style="text-align:right"><div class="muted tiny">CRT STATUS</div><div class="signal amber" id="decision">WAIT</div></div></div>
  <div class="muted tiny" id="symbolName">Waiting for active symbols…</div><div id="status">Connecting to Deriv public market data…</div><div id="apiDiagnostic" class="tiny muted" style="margin-top:6px;overflow-wrap:anywhere">API diagnostic: waiting for first response</div>
+</section>
+
+<section class="card" id="marketScanner">
+ <div class="row between"><h2 style="margin:0">Multi-market opportunity scanner</h2><span class="planBadge" id="scannerState">STOPPED</span></div>
+ <p class="sectionNote" style="margin-top:8px">Scans all currently active instruments returned by Deriv. Discovery uses 4H/1H context; shortlisted markets receive deeper 15M/5M monitoring. This is an analysis scanner, not a trading system.</p>
+ <div class="scannerTop">
+  <button id="scannerStart" class="primary" type="button">Start scanning all markets</button>
+  <button id="scannerPause" type="button" disabled>Pause</button>
+  <button id="scannerRescan" type="button" disabled>Rescan now</button>
+  <select id="scannerCategory" aria-label="Scanner market category"><option value="all">All categories</option><option value="synthetic">Synthetic / Derived</option><option value="forex">Forex</option><option value="commodities">Commodities / Metals</option><option value="indices">Stock indices</option><option value="crypto">Cryptocurrencies</option><option value="shares">Shares / ETFs</option><option value="other">Other active markets</option></select>
+ </div>
+ <div class="scannerStats">
+  <div class="scannerStat"><small>Active universe</small><b id="scannerUniverse">—</b></div>
+  <div class="scannerStat"><small>Ready contexts</small><b id="scannerChecked">0</b></div>
+  <div class="scannerStat"><small>Deep monitoring</small><b id="scannerMonitored">0</b></div>
+  <div class="scannerStat"><small>Alert events</small><b id="scannerAlertCount">0</b></div>
+  <div class="scannerStat"><small>Data issues</small><b id="scannerFailed">0</b></div>
+ </div>
+ <div class="scannerProgress"><div id="scannerProgressBar"></div></div>
+ <div id="scannerProgressText" class="muted tiny">Start the scanner to discover opportunities across the active Deriv catalogue.</div>
+ <div class="scannerFilters">
+  <label><input type="checkbox" id="scannerAlertEarly" checked> Approaching levels</label>
+  <label><input type="checkbox" id="scannerAlertDeveloping" checked> Developing setups</label>
+  <label><input type="checkbox" id="scannerAlertConfirmed" checked> Confirmed setups</label>
+  <label><input type="checkbox" id="scannerAlertInvalid" checked> Invalidations</label>
+ </div>
+ <div class="scannerInline scannerNote">
+  <span>Adaptive approach distance:</span><input id="scannerAtrMultiplier" type="number" min="0.10" max="1.50" step="0.05" value="0.35" aria-label="ATR approach distance multiplier"><span>× 5M ATR</span>
+  <button id="scannerEnableAlerts" type="button">Enable phone alerts</button>
+  <span id="scannerAlertPermission">Browser alerts not enabled</span>
+ </div>
+ <div class="row between" style="margin-top:14px"><h2 style="margin:0">Ranked opportunities</h2><span class="muted tiny" id="scannerUpdated">Not scanned</span></div>
+ <div id="scannerOpportunityList" class="scannerCards"><div class="scannerEmpty">No scan results yet. Start scanning to build the watchlist.</div></div>
+ <div class="row between" style="margin-top:14px"><h2 style="margin:0">Alert history</h2><button id="scannerClearAlerts" type="button" style="font-size:10px;padding:6px 9px">Clear history</button></div>
+ <div id="scannerAlertFeed" class="scannerAlerts"><div class="scannerEmpty">Approach, developing, confirmation and invalidation alerts will appear here.</div></div>
+ <p class="scannerNote">Important: this browser-based scanner runs while this page remains open and connected. Android may suspend browser tabs in the background. Always-on scanning and push notifications while the page is closed require a separately deployed cloud scanning and push service; that service is not active in this build. No API token, account login or trade permission is required.</p>
 </section>
 <section class="card" id="chartCard">
  <div class="row between"><h2 style="margin:0">Live annotated chart</h2><span class="tag" id="chartLiveState">Waiting for candles</span></div>
@@ -201,7 +272,7 @@ body.chartNoScroll{overflow:hidden!important}
  <div class="tile"><small>Invalidation reference</small><b id="stop">—</b></div><div class="tile"><small>Opposing range target</small><b id="target">—</b></div>
 </div><p class="muted tiny">V1.4 analytical foundation: completed 1H dealing range, premium/discount location, confirmed 15M swing structure, equal-high/low zones, 5M sweep/reclaim and displacement checklist. BOS/CHoCH event classification is preliminary; FVG lifecycle, order blocks, session filters and historical backtesting are future modules. WATCH labels are analysis candidates only.</p></section>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.7.5 · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+<div class="foot">TEBZA CRT ANALYST V1.8.0 · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
 </main>
 <script>
 // Load the pinned Lightweight Charts v5 standalone library, with a second CDN fallback.
@@ -1009,7 +1080,7 @@ function analyse() {
   updateMarketNarrative();
   renderTradePlan();
   renderChart(false);
-  setStatus("V1.7.5 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  setStatus("V1.8.0 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
   if (direction !== "WAIT" && "Notification" in window && Notification.permission === "granted") {
     new Notification("CRT " + direction + " · " + selected, {body: "A preliminary CRT confirmation checklist aligned. Review independently; no trade was placed."});
   }
@@ -1358,4 +1429,489 @@ window.__lwcPromise.then(() => {
   $("chartLiveState").textContent = "Chart library load failed";
   setDiagnostic("Chart renderer unavailable: " + message);
 });
-</script></body></html>
+</script>
+
+<script>
+/* V1.8.0 multi-market scanner. Uses the existing public Deriv WebSocket connection. */
+(function(){
+"use strict";
+const scanner = {
+ running:false, stage:"STOPPED", universe:[], records:new Map(), queue:[], queueTimer:null, cycleTimer:null,
+ batch:null, requestMeta:new Map(), requestTimers:new Map(), subscriptionMeta:new Map(), subscriptionIds:new Set(), monitored:new Set(),
+ stats:{requested:0,received:0,failed:0,checked:0,deep:0}, alerts:[], lastUpdated:0, cycleNumber:0, refreshEveryMs:15*60*1000,
+ alertLatches:new Map(), lastEvents:new Set(), progressMessage:"Stopped"
+};
+const SCAN_GRANULARITIES=[300,900,3600,14400];
+const $s=id=>document.getElementById(id);
+function scannerSetState(text){scanner.stage=text;$s("scannerState").textContent=text;}
+function scannerText(id,text){const el=$s(id);if(el)el.textContent=String(text);}
+function scannerFmt(value,meta){return Number.isFinite(Number(value))?formatPrice(Number(value),meta):"—";}
+function scannerNow(rec){return Number(rec?.latestTickEpoch)||Date.now()/1000;}
+function scannerCompleted(list,tf,now){return (Array.isArray(list)?list:[]).filter(c=>Number(c.epoch)+tf<=now);}
+function scannerMakeRecord(meta){return {meta,history:{300:[],900:[],3600:[],14400:[]},latestPrice:null,latestTickEpoch:0,context:null,analysis:null,stage:"WAIT",rank:0,reason:"Waiting for discovery history",lastEval5Epoch:0,lastSignal:null,invalidated:false,approachLatches:new Map(),errors:[],seenDeep:false};}
+function scannerEligibleSymbols(){
+ const filter=$s("scannerCategory")?.value||"all";
+ const unique=new Map();
+ symbols.forEach(item=>{const code=symbolCode(item);if(!code)return;if(filter!=="all"&&categoryOf(item)!==filter)return;if(!unique.has(code))unique.set(code,item);});
+ return [...unique.values()];
+}
+function scannerSetProgress(text){scanner.progressMessage=text;scannerText("scannerProgressText",text);}
+function scannerRenderStats(){
+ scannerText("scannerUniverse",scanner.universe.length||symbols.length||"—");
+ scannerText("scannerChecked",scanner.stats.checked+" / "+(scanner.universe.length||0));
+ scannerText("scannerMonitored",scanner.monitored.size);
+ scannerText("scannerAlertCount",scanner.alerts.length);
+ scannerText("scannerFailed",scanner.stats.failed);
+ const total=scanner.batch?.total||0,done=scanner.batch?.completed||0;
+ const pct=total?Math.min(100,(done/total)*100):scanner.stage==="MONITORING"?100:0;
+ const bar=$s("scannerProgressBar");if(bar)bar.style.width=pct.toFixed(1)+"%";
+}
+function scannerCreateQueueBatch(kind){scanner.queue=[];scanner.batch={kind,total:0,completed:0,pending:0};}
+function scannerEnqueue(payload,meta){
+ if(!scanner.batch)return;
+ scanner.queue.push({payload,meta});scanner.batch.total++;scanner.batch.pending++;
+}
+function scannerSend(payload,meta){
+ if(!socketOpen())return false;
+ const id=reqCounter++;
+ const req=Object.assign({},payload,{req_id:id});
+ scanner.requestMeta.set(id,Object.assign({},meta,{requestId:id}));
+ try{
+  ws.send(JSON.stringify(req));scanner.stats.requested++;
+  const timeout=setTimeout(()=>{
+   const pending=scanner.requestMeta.get(id);if(!pending)return;
+   scanner.requestMeta.delete(id);scanner.requestTimers.delete(id);scanner.stats.failed++;
+   const rec=scanner.records.get(pending.symbol);if(rec)rec.errors.push("Timed out waiting for "+granularityLabel(pending.granularity||300)+" response");
+   if(pending.countsBatch!==false)scannerBatchComplete(false,pending);
+   scannerSetProgress("Deriv did not answer a request for "+(pending.symbol||"a market")+" within 18 seconds. The remaining scan continues.");
+   scannerRenderStats();scannerRenderOpportunities();
+  },18000);
+  scanner.requestTimers.set(id,timeout);return true;
+ }
+ catch(error){scanner.requestMeta.delete(id);scanner.stats.failed++;return false;}
+}
+function scannerPump(){
+ if(scanner.queueTimer||!scanner.running)return;
+ scanner.queueTimer=setInterval(()=>{
+  if(!scanner.running){clearInterval(scanner.queueTimer);scanner.queueTimer=null;return;}
+  if(!socketOpen()){scannerSetProgress("Waiting for Deriv connection; queued requests are paused.");return;}
+  const item=scanner.queue.shift();
+  if(item){
+   const ok=scannerSend(item.payload,item.meta);
+   if(!ok){scanner.stats.failed++;scannerBatchComplete(false,item.meta);}
+   const done=scanner.batch?.completed||0,total=scanner.batch?.total||0;
+   scannerSetProgress((scanner.batch?.kind==="broad"?"Discovery":"Deep monitoring")+" · "+done+" / "+total+" requests resolved · paced to respect Deriv limits.");
+   scannerRenderStats();
+   return;
+  }
+  if(scanner.batch&&scanner.batch.pending===0){clearInterval(scanner.queueTimer);scanner.queueTimer=null;scannerFinishBatch();}
+ },450);
+}
+function scannerBatchComplete(ok,meta){
+ if(!scanner.batch)return;
+ scanner.batch.pending=Math.max(0,scanner.batch.pending-1);scanner.batch.completed++;
+ if(!ok&&meta?.symbol){const rec=scanner.records.get(meta.symbol);if(rec)rec.errors.push("No valid "+granularityLabel(meta.granularity)+" response");}
+ scannerRenderStats();
+ if(scanner.queue.length===0&&scanner.batch.pending===0&&scanner.queueTimer){clearInterval(scanner.queueTimer);scanner.queueTimer=null;scannerFinishBatch();}
+}
+function scannerAddSubscription(data,meta){
+ const id=data?.subscription?.id;
+ if(id){scanner.subscriptionMeta.set(id,meta);scanner.subscriptionIds.add(id);}
+}
+function scannerHandleHistory(data,meta){
+ const rec=scanner.records.get(meta.symbol);
+ if(!rec){scannerBatchComplete(false,meta);return;}
+ const inspected=inspectDerivHistoricalCandles(data.candles||[]);
+ rec.history[meta.granularity]=inspected.candles;
+ rec.errors=rec.errors.filter(e=>!e.includes(granularityLabel(meta.granularity)));
+ if(inspected.candles.length<3)rec.errors.push("Insufficient "+granularityLabel(meta.granularity)+" history");
+ if(meta.stage==="broad"){
+  if(rec.history[3600].length&&rec.history[14400].length){rec.context=scannerBuildContext(rec);}
+ }else{
+  rec.seenDeep=true;scannerEvaluateRecord(rec,"history");
+ }
+ if(data.subscription?.id)scannerAddSubscription(data,meta);
+ scanner.stats.received++;
+ if(meta.countsBatch!==false)scannerBatchComplete(true,meta);
+ scannerRenderOpportunities();
+}
+function scannerHandleTick(data,meta){
+ const rec=scanner.records.get(meta.symbol);
+ if(!rec||!data.tick){if(meta.countsBatch!==false)scannerBatchComplete(false,meta);return;}
+ const q=Number(data.tick.quote),epoch=Number(data.tick.epoch);
+ if(Number.isFinite(q)&&q>0){rec.latestPrice=q;rec.latestTickEpoch=Number.isFinite(epoch)?epoch:rec.latestTickEpoch;}
+ if(data.subscription?.id)scannerAddSubscription(data,meta);
+ if(meta.countsBatch!==false){scanner.stats.received++;scannerBatchComplete(true,meta);}
+ scannerEvaluateRecord(rec,"tick");scannerRenderOpportunities();
+}
+function scannerUpsertLive(rec,tf,ohlc){
+ const openTime=Math.floor(Number(ohlc?.open_time)),updateEpoch=Math.floor(Number(ohlc?.epoch)||0);
+ const open=Number(ohlc?.open),high=Number(ohlc?.high),low=Number(ohlc?.low),close=Number(ohlc?.close);
+ if(!Number.isFinite(openTime)||openTime<=0||!SCAN_GRANULARITIES.includes(tf))return false;
+ if(Math.abs(openTime-Math.floor(openTime/tf)*tf)>1)return false;
+ if(ohlc?.granularity!==undefined&&Number(ohlc.granularity)!==tf)return false;
+ if(!validOhlc(open,high,low,close))return false;
+ const list=rec.history[tf]||(rec.history[tf]=[]),last=list[list.length-1];
+ if(last&&openTime<last.epoch)return false;
+ const bar={epoch:openTime,open,high,low,close};
+ if(last&&openTime===last.epoch)list[list.length-1]=bar;
+ else list.push(bar);
+ if(list.length>300)list.splice(0,list.length-300);
+ if(updateEpoch>rec.latestTickEpoch)rec.latestTickEpoch=updateEpoch;
+ return true;
+}
+function scannerHandleOhlc(data,meta){
+ const rec=scanner.records.get(meta.symbol),tf=Number(data.ohlc?.granularity||meta.granularity);
+ if(!rec||tf!==meta.granularity||!scannerUpsertLive(rec,tf,data.ohlc)){scanner.stats.failed++;return;}
+ scanner.stats.received++;scannerEvaluateRecord(rec,"ohlc");scannerRenderOpportunities();
+}
+function scannerBuildContext(rec){
+ const now=scannerNow(rec),c1=scannerCompleted(rec.history[3600],3600,now),c4=scannerCompleted(rec.history[14400],14400,now);
+ if(c1.length<8||c4.length<4)return {ready:false,score:0,direction:"Neutral",reason:"Insufficient completed 1H/4H candles"};
+ const last1=c1[c1.length-1],prev1=c1[c1.length-2],last4=c4[c4.length-1];
+ const bias=num(last4.close)>num(last4.open)?"Bullish":num(last4.close)<num(last4.open)?"Bearish":"Neutral";
+ const oneHourDirection=num(last1.close)>num(last1.open)?"Bullish":num(last1.close)<num(last1.open)?"Bearish":"Neutral";
+ const atr1=averageTrueRange(c1,14)||Math.max(num(last1.high)-num(last1.low),Math.abs(num(last1.close))*0.0001);
+ const refHigh=num(prev1.high),refLow=num(prev1.low),refMid=(refHigh+refLow)/2,price=num(last1.close);
+ const range=refHigh-refLow;
+ if(!(range>0&&atr1>0))return {ready:false,score:0,direction:bias,reason:"Invalid 1H reference range"};
+ const distHigh=Math.abs(refHigh-price)/atr1,distLow=Math.abs(price-refLow)/atr1;
+ const nearest=distHigh<=distLow?{price:refHigh,side:"BUY-SIDE",distanceAtr:distHigh,levelEpoch:prev1.epoch}:{price:refLow,side:"SELL-SIDE",distanceAtr:distLow,levelEpoch:prev1.epoch};
+ const body=Math.abs(num(last1.close)-num(last1.open)),candleRange=num(last1.high)-num(last1.low),bodyRatio=candleRange>0?body/candleRange:0;
+ let score=0;
+ if(bias!=="Neutral")score+=25;
+ if(oneHourDirection===bias&&bias!=="Neutral")score+=20;
+ if(nearest.distanceAtr<=1.25)score+=20;else if(nearest.distanceAtr<=2)score+=10;
+ const alignedLocation=(bias==="Bullish"&&price>=refMid)||(bias==="Bearish"&&price<=refMid);
+ if(alignedLocation)score+=15;
+ if(bodyRatio>=0.55)score+=10;
+ if(c1.length>=20&&c4.length>=8)score+=10;
+ const location=price>refHigh?"Above range":price<refLow?"Below range":price>refMid?"Premium":"Discount";
+ return {ready:true,score,direction:bias,oneHourDirection,price,atr1,reference:{high:refHigh,low:refLow,mid:refMid,epoch:prev1.epoch},nearest,location,reason:bias+" 4H context · "+(oneHourDirection===bias?"1H aligned":"1H mixed")+" · nearest 1H reference "+nearest.side.toLowerCase()+" "+scannerFmt(nearest.price,rec.meta)+" ("+nearest.distanceAtr.toFixed(2)+" ATR)"};
+}
+function scannerEvaluateRecord(rec,source){
+ if(!rec)return;
+ rec.context=rec.context?.ready?rec.context:scannerBuildContext(rec);
+ const ctx=rec.context;
+ if(!ctx.ready){rec.stage="WAIT";rec.rank=0;rec.reason=ctx.reason;return;}
+ const now=scannerNow(rec),price=Number.isFinite(rec.latestPrice)?rec.latestPrice:ctx.price;
+ const tickFresh=rec.latestTickEpoch>0&&(Date.now()/1000-rec.latestTickEpoch)<=120;
+ const c5=scannerCompleted(rec.history[300],300,now),c15=scannerCompleted(rec.history[900],900,now),c1=scannerCompleted(rec.history[3600],3600,now),c4=scannerCompleted(rec.history[14400],14400,now);
+ rec.rank=ctx.score;rec.stage="MONITOR";rec.reason=ctx.reason;rec.analysis=null;
+ if(c5.length<15||c15.length<8||c1.length<2||c4.length<2){
+  rec.stage="MONITOR";rec.reason=ctx.reason+" · deeper 15M/5M history pending";scannerCheckApproach(rec,price,null);return;
+ }
+ const last5=c5[c5.length-1],last15=c15[c15.length-1],reference1h=c1[c1.length-1],last4=c4[c4.length-1];
+ const isNewCompleted5=last5.epoch>rec.lastEval5Epoch;
+ const hi=num(reference1h.high),lo=num(reference1h.low),mid=(hi+lo)/2,width=hi-lo;
+ const decimals=decimalPlacesFromPip(rec.meta?.pip_size,price),minTick=Math.pow(10,-decimals);
+ const atr15=averageTrueRange(c15,14),tolerance=Math.max(minTick*2,(atr15||0)*0.08,Math.abs(price)*0.000002);
+ const bias4=num(last4.close)>num(last4.open)?"Bullish":num(last4.close)<num(last4.open)?"Bearish":"Neutral";
+ const swings=confirmedSwings(c15,2,2),structure=classifyMarketStructure(c15,swings,tolerance);
+ const eqh=latestEqualLevel(swings.highs,tolerance),eql=latestEqualLevel(swings.lows,tolerance);
+ const latestSwingHigh=swings.highs.length?swings.highs[swings.highs.length-1].price:null;
+ const latestSwingLow=swings.lows.length?swings.lows[swings.lows.length-1].price:null;
+ const buySideLevel=eqh?eqh.price:latestSwingHigh,sellSideLevel=eql?eql.price:latestSwingLow;
+ const location=price>mid+tolerance?(price>hi+tolerance?"Above reference range":"Premium"):price<mid-tolerance?(price<lo-tolerance?"Below reference range":"Discount"):"Equilibrium";
+ const lowLevels=[{label:"1H reference low",price:lo,epoch:reference1h.epoch}];
+ const highLevels=[{label:"1H reference high",price:hi,epoch:reference1h.epoch}];
+ if(sellSideLevel!==null)lowLevels.push({label:eql?"15M equal-low pool":"15M swing low",price:sellSideLevel,epoch:eql?.second?.epoch||0});
+ if(buySideLevel!==null)highLevels.push({label:eqh?"15M equal-high pool":"15M swing high",price:buySideLevel,epoch:eqh?.second?.epoch||0});
+ const sweptLow=lowLevels.filter(level=>num(last5.low)<level.price-tolerance&&num(last5.close)>level.price);
+ const sweptHigh=highLevels.filter(level=>num(last5.high)>level.price+tolerance&&num(last5.close)<level.price);
+ const bullishSweep=sweptLow.length>0,bearishSweep=sweptHigh.length>0,ambiguousSweep=bullishSweep&&bearishSweep;
+ const bullishLevel=bullishSweep?sweptLow.reduce((a,b)=>a.price<b.price?a:b):null;
+ const bearishLevel=bearishSweep?sweptHigh.reduce((a,b)=>a.price>b.price?a:b):null;
+ const body=Math.abs(num(last5.close)-num(last5.open)),barRange=num(last5.high)-num(last5.low),atr5=averageTrueRange(c5,14),bodyRatio=barRange>0?body/barRange:0;
+ const bullishDisplacement=num(last5.close)>num(last5.open)&&bodyRatio>=0.60&&(!atr5||body>=atr5*0.70);
+ const bearishDisplacement=num(last5.close)<num(last5.open)&&bodyRatio>=0.60&&(!atr5||body>=atr5*0.70);
+ const bullLocation=location==="Discount"||location==="Below reference range",bearLocation=location==="Premium"||location==="Above reference range";
+ const bullComponents=[
+  {label:"Completed 1H CRT range",ok:width>0,weight:10},
+  {label:"Sell-side liquidity sweep + reclaim",ok:bullishSweep&&!ambiguousSweep,weight:25},
+  {label:"15M bullish structure",ok:structure.direction==="Bullish",weight:20},
+  {label:"5M bullish displacement",ok:bullishDisplacement,weight:20},
+  {label:"4H bullish context",ok:bias4==="Bullish",weight:15},
+  {label:"Price in discount area",ok:bullLocation,weight:10}
+ ];
+ const bearComponents=[
+  {label:"Completed 1H CRT range",ok:width>0,weight:10},
+  {label:"Buy-side liquidity sweep + rejection",ok:bearishSweep&&!ambiguousSweep,weight:25},
+  {label:"15M bearish structure",ok:structure.direction==="Bearish",weight:20},
+  {label:"5M bearish displacement",ok:bearishDisplacement,weight:20},
+  {label:"4H bearish context",ok:bias4==="Bearish",weight:15},
+  {label:"Price in premium area",ok:bearLocation,weight:10}
+ ];
+ const bullScore=bullComponents.reduce((sum,x)=>sum+(x.ok?x.weight:0),0),bearScore=bearComponents.reduce((sum,x)=>sum+(x.ok?x.weight:0),0);
+ const side=bullScore>bearScore?"Bullish":bearScore>bullScore?"Bearish":ctx.direction;
+ const score=Math.max(bullScore,bearScore);
+ const bullReady=bullishSweep&&!ambiguousSweep&&bullishDisplacement&&structure.direction==="Bullish"&&bias4==="Bullish"&&bullScore>=80;
+ const bearReady=bearishSweep&&!ambiguousSweep&&bearishDisplacement&&structure.direction==="Bearish"&&bias4==="Bearish"&&bearScore>=80;
+ let plan=null;
+ if(bullReady||bearReady){
+  const long=bullReady,entry=num(last5.close),sweep=long?(bullishLevel?.price??num(last5.low)):(bearishLevel?.price??num(last5.high));
+  const stopBuffer=Math.max(minTick*2,(atr5||minTick*2)*0.05),stop=long?Math.min(num(last5.low),sweep)-stopBuffer:Math.max(num(last5.high),sweep)+stopBuffer;
+  const risk=Math.abs(entry-stop);
+  if(risk>minTick&&(long?stop<entry:stop>entry))plan={side:long?"BUY":"SELL",entry,stop,risk,targets:[1,2,3].map(r=>({r,price:entry+(long?1:-1)*risk*r}))};
+ }
+ const nearLevelThreshold=Math.max((atr5||0.01)*clamp(Number($s("scannerAtrMultiplier")?.value||0.35),0.1,1.5),minTick*8,Math.abs(price)*0.00001);
+ const approachLevels=[...highLevels.map(x=>({...x,side:"BUY-SIDE"})),...lowLevels.map(x=>({...x,side:"SELL-SIDE"}))];
+ rec.analysis={price,hi,lo,mid,width,location,bias4,structure,swings,eqh,eql,buySideLevel,sellSideLevel,last5,last15,bullishSweep,bearishSweep,ambiguousSweep,bullishLevel,bearishLevel,bullishDisplacement,bearishDisplacement,bullScore,bearScore,score,side,plan,atr5,levels:approachLevels,nearLevelThreshold};
+ const recentCompletedEvent=(now-(Number(last5.epoch)+300))<=300&&now>=(Number(last5.epoch)+300);
+ // Re-arm an invalidated candidate only after a later 5M candle has completed.
+ // Keep the old invalidation in alert history; this only permits a genuinely new setup cycle.
+ const canRearm=rec.invalidated&&rec.lastSignal&&last5.epoch>rec.lastSignal.epoch&&!plan;
+ if(canRearm){rec.lastSignal=null;rec.invalidated=false;rec.reason="Previous candidate invalidated; a new completed 5M candle has started a fresh monitoring cycle";}
+ if(plan){rec.stage="CONFIRMED";rec.reason=plan.side+" checklist passed · "+score+"/100 evidence score";rec.rank=400+score;if(isNewCompleted5&&recentCompletedEvent&&!rec.lastSignal){scannerAlertConfirmed(rec,plan,last5);rec.lastSignal={plan,epoch:last5.epoch};}}
+ else if(bullishSweep||bearishSweep||structure.breakUp||structure.breakDown||bullishDisplacement||bearishDisplacement){
+  rec.stage="DEVELOPING";rec.reason=(bullishSweep?"Sell-side sweep and reclaim":bearishSweep?"Buy-side sweep and rejection":structure.breakUp?"Bullish structure break candidate":structure.breakDown?"Bearish structure break candidate":bullishDisplacement?"Bullish displacement":"Bearish displacement")+" · "+score+"/100; entry conditions incomplete";rec.rank=300+score;
+  if(isNewCompleted5&&recentCompletedEvent)scannerAlertDeveloping(rec,last5);
+ }else{
+  rec.stage="MONITOR";rec.reason=side+" context · "+score+"/100; waiting for a liquidity or structure event";rec.rank=100+score;
+ }
+ if(tickFresh)scannerCheckApproach(rec,price,rec.analysis);
+ if(rec.lastSignal&&rec.lastSignal.plan){
+  const invalid=tickFresh&&(rec.lastSignal.plan.side==="BUY"?price<=rec.lastSignal.plan.stop:price>=rec.lastSignal.plan.stop);
+  if(invalid&&!rec.invalidated){rec.invalidated=true;rec.stage="INVALIDATED";rec.rank=500;rec.reason="Previously confirmed candidate crossed its invalidation level";scannerEmit(rec,"invalidation","SETUP INVALIDATED",(rec.meta.underlying_symbol_name||displayName(rec.meta))+" crossed its invalidation level at "+scannerFmt(rec.lastSignal.plan.stop,rec.meta)+".","invalid:"+rec.lastSignal.epoch+":"+price.toFixed(decimals));}
+  else if(rec.invalidated){rec.stage="INVALIDATED";rec.rank=500;rec.reason="Previously confirmed candidate remains invalidated; wait for a new setup cycle";}
+ }
+ if(isNewCompleted5)rec.lastEval5Epoch=last5.epoch;
+ if(rec.stage!=="INVALIDATED"&&!plan&&rec.invalidated&&rec.lastSignal)rec.reason="Previous candidate invalidated; waiting for a new completed setup";
+}
+function scannerCheckApproach(rec,price,analysis){
+ if(!Number.isFinite(price)||!rec.latestTickEpoch||(Date.now()/1000-rec.latestTickEpoch)>120)return;
+ const ctx=rec.context;if(!ctx?.ready)return;
+ let levels=[];
+ if(analysis?.levels?.length)levels=analysis.levels;
+ else if(ctx.reference)levels=[{price:ctx.reference.high,label:"Previous 1H high",side:"BUY-SIDE",epoch:ctx.reference.epoch},{price:ctx.reference.low,label:"Previous 1H low",side:"SELL-SIDE",epoch:ctx.reference.epoch}];
+ const atr=analysis?.atr5||ctx.atr1/Math.sqrt(12); // approximate 5M volatility only before the deeper data arrives
+ const multiplier=clamp(Number($s("scannerAtrMultiplier")?.value||0.35),0.1,1.5);
+ const threshold=Math.max(atr*multiplier,Math.pow(10,-decimalPlacesFromPip(rec.meta?.pip_size,price))*8,Math.abs(price)*0.00001);
+ levels.forEach(level=>{
+  const target=Number(level.price);if(!Number.isFinite(target))return;
+  const isHigh=level.side==="BUY-SIDE",approaching=isHigh?(price<target&&target-price<=threshold):(price>target&&price-target<=threshold);
+  const latchKey=(isHigh?"H":"L")+":"+String(level.epoch||0)+":"+target.toFixed(6);
+  if(!approaching){if(Math.abs(price-target)>threshold*1.8)rec.approachLatches.delete(latchKey);return;}
+  if(rec.approachLatches.has(latchKey))return;
+  rec.approachLatches.set(latchKey,true);
+  const distance=Math.abs(price-target);
+  scannerEmit(rec,"early","LEVEL APPROACHING",displayName(rec.meta)+" is "+scannerFmt(distance,rec.meta)+" points from "+level.side.toLowerCase()+" liquidity at "+scannerFmt(target,rec.meta)+". Watch for a sweep/reclaim or rejection; this is not an entry signal.","approach:"+latchKey);
+  if(rec.stage==="MONITOR")rec.stage="EARLY";
+ });
+}
+function scannerAlertDeveloping(rec,last5){
+ if(!last5||rec.lastEval5Epoch===last5.epoch)return;
+ const a=rec.analysis;if(!a)return;
+ const events=[];
+ if(a.bullishSweep)events.push("Sell-side liquidity sweep and reclaim");
+ if(a.bearishSweep)events.push("Buy-side liquidity sweep and rejection");
+ if(a.structure.breakUp)events.push("Bullish structure break candidate");
+ if(a.structure.breakDown)events.push("Bearish structure break candidate");
+ if(a.bullishDisplacement)events.push("Bullish 5M displacement");
+ if(a.bearishDisplacement)events.push("Bearish 5M displacement");
+ if(events.length)scannerEmit(rec,"developing","SETUP DEVELOPING",displayName(rec.meta)+": "+events.join(" + ")+". Evidence score "+a.score+"/100. Other confirmations are still required.","developing:"+last5.epoch+":"+events.join("|") );
+}
+function scannerAlertConfirmed(rec,plan,last5){
+ if(!last5)return;
+ scannerEmit(rec,"confirmed","CRT SETUP CONFIRMED",displayName(rec.meta)+" · "+plan.side+" candidate. Entry "+scannerFmt(plan.entry,rec.meta)+", invalidation "+scannerFmt(plan.stop,rec.meta)+", TP1 "+scannerFmt(plan.targets[0].price,rec.meta)+", TP2 "+scannerFmt(plan.targets[1].price,rec.meta)+", TP3 "+scannerFmt(plan.targets[2].price,rec.meta)+". Review independently; no trade was placed.","confirmed:"+last5.epoch+":"+plan.side);
+}
+function scannerEmit(rec,stage,title,body,eventKey){
+ const toggles={early:$s("scannerAlertEarly")?.checked!==false,developing:$s("scannerAlertDeveloping")?.checked!==false,confirmed:$s("scannerAlertConfirmed")?.checked!==false,invalidation:$s("scannerAlertInvalid")?.checked!==false};
+ if(!toggles[stage])return;
+ const key=symbolCode(rec.meta)+"|"+eventKey;
+ if(scanner.lastEvents.has(key))return;
+ scanner.lastEvents.add(key);if(scanner.lastEvents.size>600)scanner.lastEvents.delete(scanner.lastEvents.values().next().value);
+ const item={symbol:symbolCode(rec.meta),name:displayName(rec.meta),stage,title,body,at:Date.now()};
+ scanner.alerts.unshift(item);scanner.alerts=scanner.alerts.slice(0,50);
+ scannerRenderAlerts();scannerRenderStats();
+ if("Notification" in window&&Notification.permission==="granted"){
+  try{
+   const options={body,tag:"tebza-"+key,renotify:false,icon:"./icon-192.png"};
+   if(navigator.serviceWorker&&navigator.serviceWorker.getRegistration){navigator.serviceWorker.getRegistration().then(reg=>{if(reg&&reg.showNotification)reg.showNotification(title,options);else new Notification(title,options);}).catch(()=>new Notification(title,options));}
+   else new Notification(title,options);
+  }catch(error){console.warn("Browser notification could not be displayed",error);}
+ }
+}
+function scannerRenderAlerts(){
+ const host=$s("scannerAlertFeed");if(!host)return;host.innerHTML="";
+ if(!scanner.alerts.length){host.innerHTML='<div class="scannerEmpty">No alert events yet. Alerts appear when a monitored market approaches a level or develops a setup.</div>';return;}
+ scanner.alerts.slice(0,20).forEach(item=>{
+  const box=document.createElement("div");box.className="scannerAlert";
+  const head=document.createElement("b");head.textContent=item.title+" · "+item.name+" ["+item.symbol+"]";
+  const body=document.createElement("div");body.textContent=item.body;
+  const time=document.createElement("time");time.textContent=new Date(item.at).toLocaleString()+" · "+item.stage.toUpperCase();
+  box.append(head,body,time);host.appendChild(box);
+ });
+}
+function scannerOpenMarket(code){
+ if(!symbols.some(x=>symbolCode(x)===code))return;
+ $s("category").value="all";renderSymbols();$s("symbol").value=code;loadMarket(code);
+ document.getElementById("chartCard")?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function scannerRenderOpportunities(){
+ const host=$s("scannerOpportunityList");if(!host)return;host.innerHTML="";
+ const rankOrder={INVALIDATED:5,CONFIRMED:4,DEVELOPING:3,EARLY:2,MONITOR:1,WAIT:0};
+ const allowed=new Set(scanner.universe.map(symbolCode));
+ const items=[...scanner.records.values()].filter(r=>allowed.has(symbolCode(r.meta))&&r.context?.ready).sort((a,b)=>(rankOrder[b.stage]||0)-(rankOrder[a.stage]||0)||b.rank-a.rank).slice(0,20);
+ if(!items.length){host.innerHTML='<div class="scannerEmpty">Waiting for enough completed history. Markets with insufficient or unsupported candle data will be marked rather than given an invented score.</div>';return;}
+ items.forEach(rec=>{
+  const card=document.createElement("div");card.className="scannerMarket";
+  const head=document.createElement("div");head.className="scannerMarketHead";
+  const identity=document.createElement("div");identity.style.minWidth="0";
+  const name=document.createElement("div");name.className="scannerMarketName";name.textContent=displayName(rec.meta)+" ["+symbolCode(rec.meta)+"]";
+  const cat=document.createElement("div");cat.className="scannerMarketMeta";cat.textContent=categoryOf(rec.meta).toUpperCase()+" · "+(rec.analysis?"4H / 1H / 15M / 5M":"4H / 1H discovery");
+  identity.append(name,cat);
+  const badge=document.createElement("span");badge.className="scannerBadge "+(rec.stage==="CONFIRMED"?"confirmed":rec.stage==="DEVELOPING"?"developing":rec.stage==="INVALIDATED"?"invalid":"early");badge.textContent=rec.stage;
+  head.append(identity,badge);card.appendChild(head);
+  const cells=document.createElement("div");cells.className="scannerMarketGrid";
+  const values=[ ["Evidence score",rec.analysis?rec.analysis.score+"/100":rec.context.score+"/100"], ["4H bias",rec.context.direction], ["Live / last price",scannerFmt(rec.latestPrice??rec.context.price,rec.meta)] ];
+  values.forEach(([label,value])=>{const cell=document.createElement("div"),small=document.createElement("small"),bold=document.createElement("b");small.textContent=label;bold.textContent=value;cell.append(small,bold);cells.appendChild(cell);});
+  card.appendChild(cells);
+  const reason=document.createElement("div");reason.className="scannerReason";reason.textContent=rec.reason;card.appendChild(reason);
+  const open=document.createElement("button");open.type="button";open.textContent="Open this market in chart";open.dataset.openSymbol=symbolCode(rec.meta);card.appendChild(open);
+  host.appendChild(card);
+ });
+}
+function scannerUpdateStage1Counts(){
+ const valid=[...scanner.records.values()].filter(r=>r.context?.ready).length;
+ scanner.stats.checked=valid;scannerRenderStats();
+}
+function scannerBuildShortlist(){
+ const allowed=new Set(scanner.universe.map(symbolCode));
+ const candidates=[...scanner.records.values()].filter(r=>allowed.has(symbolCode(r.meta))&&r.context?.ready&&r.context.direction!=="Neutral");
+ candidates.sort((a,b)=>b.context.score-a.context.score||a.context.nearest.distanceAtr-b.context.nearest.distanceAtr);
+ return candidates.slice(0,12);
+}
+function scannerBeginDeep(shortlist){
+ const previousSet=new Set(scanner.monitored);
+ const newSet=new Set(shortlist.map(r=>symbolCode(r.meta)));
+ for(const [id,meta] of [...scanner.subscriptionMeta.entries()]){
+  if(!newSet.has(meta.symbol)){
+   try{send({forget:id});}catch(_){}
+   scanner.subscriptionMeta.delete(id);scanner.subscriptionIds.delete(id);
+  }
+ }
+ scanner.monitored=newSet;scanner.stats.deep=newSet.size;
+ scannerCreateQueueBatch("deep");
+ shortlist.filter(rec=>!previousSet.has(symbolCode(rec.meta))).forEach(rec=>{
+  rec.seenDeep=true;
+  [900,300].forEach(tf=>scannerEnqueue({ticks_history:symbolCode(rec.meta),adjust_start_time:1,count:120,end:"latest",style:"candles",granularity:tf,subscribe:1},{kind:"scanner_history",stage:"deep",symbol:symbolCode(rec.meta),granularity:tf,countsBatch:true}));
+  scannerEnqueue({ticks:symbolCode(rec.meta),subscribe:1},{kind:"scanner_tick",stage:"deep",symbol:symbolCode(rec.meta),countsBatch:true});
+ });
+ scannerSetProgress("Discovery complete. Deep monitoring "+shortlist.length+" ranked markets on 15M / 5M and live ticks.");
+ if(!scanner.batch.total){scannerFinishBatch();return;}
+ scannerPump();scannerRenderOpportunities();
+}
+function scannerFinishBatch(){
+ const completed=scanner.batch?.kind;scanner.batch=null;
+ if(completed==="broad"){
+  scannerUpdateStage1Counts();
+  scanner.lastUpdated=Date.now();scannerText("scannerUpdated",new Date(scanner.lastUpdated).toLocaleTimeString());
+  const shortlist=scannerBuildShortlist();
+  if(!shortlist.length){scannerBeginDeep([]);scannerSetState("NO SHORTLIST");scannerSetProgress("Discovery finished. No instruments currently meet the minimum 4H/1H context filter. The universe will be rescanned later.");scannerRenderOpportunities();return;}
+  scannerSetState("DEEP SCAN");scannerBeginDeep(shortlist);return;
+ }
+ if(completed==="deep"){
+  scannerSetState("MONITORING");scannerSetProgress("Monitoring "+scanner.monitored.size+" shortlisted markets. Live tick and 5M/15M candle streams are active while this page remains open.");scannerRenderOpportunities();
+ }
+ scannerRenderStats();
+}
+function scannerStartBroadCycle(isRefresh){
+ if(!scanner.running||!socketOpen()||!symbols.length)return;
+ if(scanner.batch){scannerSetProgress("Current scan batch is still running; next cycle will wait.");return;}
+ if(isRefresh){
+  // Re-run the broad 4H/1H filter. Existing deep subscriptions remain live until the new shortlist is ready.
+  scanner.records.forEach(rec=>{rec.errors=[];rec.history[3600]=[];rec.history[14400]=[];rec.context=null;});
+ }
+ scanner.universe=scannerEligibleSymbols();
+ scannerCreateQueueBatch("broad");scanner.cycleNumber++;
+ scanner.universe.forEach(meta=>{
+  const code=symbolCode(meta);
+  let rec=scanner.records.get(code);
+  if(!rec){rec=scannerMakeRecord(meta);scanner.records.set(code,rec);}else rec.meta=meta;
+  [14400,3600].forEach(tf=>scannerEnqueue({ticks_history:code,adjust_start_time:1,count:100,end:"latest",style:"candles",granularity:tf},{kind:"scanner_history",stage:"broad",symbol:code,granularity:tf,countsBatch:true}));
+ });
+ scannerSetState(isRefresh?"RESCANNING":"DISCOVERY");
+ scannerSetProgress((isRefresh?"Refreshing":"Discovering")+" 4H / 1H context across "+scanner.universe.length+" active markets. Requests are deliberately paced.");
+ scannerRenderStats();scannerPump();
+}
+function scannerStart(){
+ if(!socketOpen()||!symbols.length){scannerSetState("WAITING");scannerSetProgress("Wait for the Deriv active instrument list and connected public feed before starting.");return;}
+ scannerStop(true);
+ scanner.running=true;scanner.stats={requested:0,received:0,failed:0,checked:0,deep:0};scanner.records=new Map();scanner.alertLatches.clear();
+ scannerText("scannerStart","Scanning…");$s("scannerStart").disabled=true;$s("scannerPause").disabled=false;$s("scannerRescan").disabled=false;
+ scannerStartBroadCycle(false);
+ if(scanner.cycleTimer)clearInterval(scanner.cycleTimer);
+ scanner.cycleTimer=setInterval(()=>{if(scanner.running&&!scanner.batch)scannerStartBroadCycle(true);},scanner.refreshEveryMs);
+}
+function scannerStop(forget=true){
+ scanner.running=false;
+ if(scanner.queueTimer){clearInterval(scanner.queueTimer);scanner.queueTimer=null;}
+ if(scanner.cycleTimer){clearInterval(scanner.cycleTimer);scanner.cycleTimer=null;}
+ scanner.requestTimers.forEach(timer=>clearTimeout(timer));scanner.requestTimers.clear();
+ scanner.queue=[];scanner.batch=null;
+ if(forget&&socketOpen())scanner.subscriptionIds.forEach(id=>{try{send({forget:id});}catch(_){}});
+ scanner.subscriptionIds.clear();scanner.subscriptionMeta.clear();scanner.requestMeta.clear();scanner.monitored.clear();scanner.stats.deep=0;
+ scannerSetState("PAUSED");scannerSetProgress("Scanner paused. No cross-market monitoring or alerts are running.");
+ $s("scannerStart").disabled=false;$s("scannerStart").textContent="Resume scanning";$s("scannerPause").disabled=true;$s("scannerRescan").disabled=true;
+ scannerRenderStats();
+}
+function scannerResume(){scannerStart();}
+function scannerEnableNotifications(){
+ if(!("Notification" in window)){scannerText("scannerAlertPermission","This browser does not support notifications.");return;}
+ Notification.requestPermission().then(permission=>scannerText("scannerAlertPermission","Browser notification permission: "+permission+(permission==="granted"?" · alerts enabled while app is active":" · allow notifications in Chrome settings"))).catch(()=>scannerText("scannerAlertPermission","Notification permission could not be requested."));
+}
+function scannerResetFilter(){if(scanner.running)scannerStart();}
+function scannerHook(){
+ const base=window.handleMessage;
+ window.handleMessage=function(data){
+  const id=data?.req_id,reqMeta=id!==undefined?scanner.requestMeta.get(id):null;
+  if(id!==undefined&&reqMeta){const timer=scanner.requestTimers.get(id);if(timer)clearTimeout(timer);scanner.requestTimers.delete(id);}
+  const sid=data?.subscription?.id,subMeta=sid?scanner.subscriptionMeta.get(sid):null;
+  const meta=reqMeta||subMeta;
+  const isError=!!data?.error||(Array.isArray(data?.errors)&&data.errors.length>0);
+  if(meta&&(meta.kind==="scanner_history"||meta.kind==="scanner_tick")){
+   if(data.subscription?.id)scannerAddSubscription(data,meta);
+   if(isError){
+    scanner.stats.failed++;const msg=data.error?.message||data.error?.code||data.errors?.[0]?.message||"Deriv rejected scanner request";
+    const rec=scanner.records.get(meta.symbol);if(rec)rec.errors.push(msg);
+    if(id!==undefined)scanner.requestMeta.delete(id);
+    if(reqMeta&&meta.countsBatch!==false)scannerBatchComplete(false,meta);
+    scannerSetProgress("A market-data request was rejected for "+meta.symbol+": "+msg+". Remaining markets continue.");scannerRenderStats();scannerRenderOpportunities();return;
+   }
+   if(meta.kind==="scanner_history"&&data.msg_type==="candles"){
+    if(id!==undefined)scanner.requestMeta.delete(id);
+    scannerHandleHistory(data,meta);return;
+   }
+   if(meta.kind==="scanner_tick"&&data.msg_type==="tick"){
+    if(id!==undefined)scanner.requestMeta.delete(id);
+    scannerHandleTick(data,meta);return;
+   }
+   if(meta.kind==="scanner_history"&&data.msg_type==="ohlc"){
+    scannerHandleOhlc(data,meta);return;
+   }
+  }
+  // Subscription streams sometimes arrive without req_id; route them by subscription ID.
+  if(subMeta&&subMeta.kind==="scanner_history"&&data.msg_type==="ohlc"){scannerHandleOhlc(data,subMeta);return;}
+  if(subMeta&&subMeta.kind==="scanner_tick"&&data.msg_type==="tick"){scannerHandleTick(data,Object.assign({},subMeta,{countsBatch:false}));return;}
+  const result=base.call(this,data);
+  if(data?.msg_type==="active_symbols"&&scanner.running){
+   if(scanner.queueTimer){clearInterval(scanner.queueTimer);scanner.queueTimer=null;}
+   scanner.queue=[];scanner.batch=null;scanner.requestTimers.forEach(timer=>clearTimeout(timer));scanner.requestTimers.clear();scanner.requestMeta.clear();scanner.subscriptionMeta.clear();scanner.subscriptionIds.clear();scanner.monitored.clear();scanner.records.clear();
+   setTimeout(()=>{if(scanner.running&&symbols.length)scannerStartBroadCycle(true);},1000);
+  }
+  return result;
+ };
+}
+$s("scannerStart").addEventListener("click",scannerResume);
+$s("scannerPause").addEventListener("click",()=>scannerStop(true));
+$s("scannerRescan").addEventListener("click",()=>scannerStartBroadCycle(true));
+$s("scannerCategory").addEventListener("change",scannerResetFilter);
+$s("scannerEnableAlerts").addEventListener("click",scannerEnableNotifications);
+$s("scannerClearAlerts").addEventListener("click",()=>{scanner.alerts=[];scannerRenderAlerts();scannerRenderStats();});
+$s("scannerOpportunityList").addEventListener("click",event=>{const btn=event.target.closest("button[data-open-symbol]");if(btn)scannerOpenMarket(btn.dataset.openSymbol);});
+scannerHook();scannerRenderStats();scannerRenderAlerts();
+window.TEBZA_SCANNER_V18={start:scannerStart,pause:()=>scannerStop(true),state:scanner,getSnapshot:()=>({stage:scanner.stage,universe:scanner.universe.length,checked:scanner.stats.checked,deep:scanner.monitored.size,alerts:scanner.alerts.length,requested:scanner.stats.requested,received:scanner.stats.received,failed:scanner.stats.failed})};
+})();
+</script>
+</body></html>
