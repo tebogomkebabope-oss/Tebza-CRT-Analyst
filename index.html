@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080f1c"><link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#111923"><link rel="manifest" href="manifest.webmanifest">
 <title>TEBZA CRT ANALYST</title>
 <style>
 :root{--bg:#080f1c;--panel:#111d30;--panel2:#0b1627;--line:#263952;--txt:#edf4ff;--muted:#93a7c2;--green:#28c7a5;--red:#f07883;--amber:#e8b85d;--blue:#7daeff}
@@ -170,9 +170,72 @@ body{background:radial-gradient(ellipse at top,#17263c 0,#090f1b 56%)}
 .chartProOverlay .zoneLabel{font-size:9px;font-weight:850;letter-spacing:.3px;stroke:none;paint-order:normal}
 .chartProOverlay .smallLabel{font-size:9px;font-weight:850;letter-spacing:0}
 @media(max-width:600px){.chartProOverlay .levelLabel,.chartProOverlay .planLabel{font-size:8px}.chartProOverlay .smallLabel{font-size:8px}.chartProOverlay .zoneLabel{font-size:8px}}
+
+/* V1.9.3 institutional design system + responsive analyst workspace */
+:root{
+ --bg:#0d141d;--panel:#151f2b;--panel2:#1b2735;--panel3:#202e3d;--line:#2b3948;
+ --txt:#e9edf2;--muted:#9aa8b7;--green:#42b88b;--red:#d7777e;--amber:#c6a66b;--blue:#8298b2;
+ --gold:#c6a66b;--focus:#d9bd88;--shadow:0 16px 40px rgba(0,0,0,.20)
+}
+html{background:var(--bg);scroll-behavior:smooth}
+body{background:radial-gradient(ellipse at 12% -15%,#243342 0,transparent 38%),linear-gradient(180deg,#101923 0,#0d141d 44%,#0b121a 100%);color:var(--txt);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px;padding-bottom:88px}
+.appTopbar{height:72px;position:sticky;top:0;z-index:60;background:rgba(16,25,35,.94);border-bottom:1px solid rgba(198,166,107,.18);backdrop-filter:blur(18px);padding:0 24px;display:flex;align-items:center;gap:22px;justify-content:space-between}
+.topBrand{display:flex;align-items:center;gap:13px;min-width:235px}.brand{font-size:17px;letter-spacing:1.3px;color:#f1f3f5}.brand em{color:var(--gold)}.brandSub{letter-spacing:.8px;font-size:9px;margin-top:4px;color:#93a1af}
+.menuToggle{display:none;width:38px;height:38px;padding:0;background:#1b2937;border:1px solid #344453;color:#e8edf2;border-radius:11px;font-size:18px}
+.topContext{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}.topContext b{font-size:13px;letter-spacing:.2px}.topContext span{font-size:10px}
+.topActions{display:flex;align-items:center;gap:12px}.topVersion{font-size:10px;letter-spacing:1px;color:#8f9baa}
+.pill{border-color:rgba(66,184,139,.42);color:#79d0aa;background:rgba(66,184,139,.08);font-size:10px;letter-spacing:.5px;padding:7px 11px}
+.appShell{max-width:1600px;margin:0 auto;display:grid;grid-template-columns:238px minmax(0,1fr);min-height:calc(100vh - 72px)}
+.appSidebar{height:calc(100vh - 72px);position:sticky;top:72px;align-self:start;padding:22px 14px 18px 16px;border-right:1px solid rgba(130,152,178,.14);background:rgba(15,23,32,.70);display:flex;flex-direction:column;gap:5px;z-index:45}
+.sidebarBrand{display:flex;align-items:center;gap:11px;padding:4px 8px 20px}.sidebarMark{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(145deg,#314253,#1c2a38);border:1px solid rgba(198,166,107,.36);color:#e4c68f;font-weight:900;font-size:18px}.sidebarBrand b{display:block;font-size:12px}.sidebarBrand small{display:block;margin-top:3px;color:#7f8c9b;font-size:8px;letter-spacing:1px}
+.navGroupLabel{font-size:9px;letter-spacing:1.3px;color:#748293;font-weight:800;padding:13px 10px 5px}.navItem{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:transparent;border:1px solid transparent;color:#a9b5c2;border-radius:10px;padding:10px 11px;font-size:12px;font-weight:600;transition:background .16s,border .16s,color .16s}.navItem:hover{background:#1b2733;color:#eef2f5}.navItem.active{background:linear-gradient(90deg,rgba(198,166,107,.16),rgba(198,166,107,.045));border-color:rgba(198,166,107,.22);color:#f1e1c1}.navIcon{width:18px;text-align:center;color:var(--gold);font-size:16px}.navCount{margin-left:auto;font-size:9px;color:#c9b17e;background:rgba(198,166,107,.12);padding:3px 6px;border-radius:20px}.navSoon{margin-left:auto;font-size:8px;color:#8f9baa;letter-spacing:.8px}.navSpacer{flex:1}.sidebarStatus{display:flex;gap:9px;align-items:center;margin:14px 4px 12px;padding:11px 9px;border:1px solid rgba(66,184,139,.18);background:rgba(66,184,139,.055);border-radius:11px}.statusDot,.heroModeDot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(66,184,139,.10)}.sidebarStatus b{display:block;font-size:10px;color:#d3e5dc}.sidebarStatus small{display:block;color:#82918e;font-size:9px;margin-top:2px}.sidebarFoot{font-size:8px;line-height:1.7;color:#687789;letter-spacing:.8px;padding:14px 9px 0;border-top:1px solid rgba(130,152,178,.12);margin-top:8px}
+.navScrim{display:none}#appMain{width:100%;max-width:none;min-width:0;margin:0;padding:24px clamp(15px,2.5vw,38px) 52px}
+.pageView[hidden]{display:none!important}.pageView{max-width:1220px;margin:0 auto;animation:pageIn .18s ease-out}@keyframes pageIn{from{opacity:.55;transform:translateY(3px)}to{opacity:1;transform:none}}
+.pageIntro{display:flex;justify-content:space-between;align-items:end;gap:18px;margin:6px 2px 19px}.pageIntro h1,.workspaceHero h1{margin:5px 0 6px;font-size:clamp(23px,3vw,32px);letter-spacing:-.8px;font-weight:720;color:#f0f2f4}.pageIntro p,.workspaceHero p{margin:0;color:#9ba9b8;font-size:12px;line-height:1.6;max-width:690px}.eyebrow{font-size:9px;font-weight:800;color:#c6ad7d;letter-spacing:1.55px}
+.pageAction{background:#1a2836;border-color:#3a4a59;color:#d9e0e7;font-size:10px;padding:9px 12px;white-space:nowrap}
+.card,.workspacePanel{background:linear-gradient(145deg,rgba(24,36,49,.98),rgba(19,29,40,.98));border:1px solid rgba(130,152,178,.17);border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.13)}.card{padding:17px;margin-bottom:15px}.workspacePanel{padding:18px;min-width:0}
+h2{color:#c4cdd6;font-size:11px;letter-spacing:1.05px;font-weight:800;margin-bottom:11px}.sectionNote,.muted{color:#98a6b5}.tile,.planTile,.scannerStat,.scannerMarketGrid div,.narrativeItem,.checkItem,.candleInspector,.candleInspectorCell{background:#172331;border-color:rgba(130,152,178,.15);border-radius:10px}.tile small,.planTile small,.scannerStat small,.scannerMarketGrid small{color:#8998a8}.tile b,.planTile b,.scannerMarketGrid b{color:#e4e9ee}.notice{background:rgba(198,166,107,.10);border:1px solid rgba(198,166,107,.28);color:#e0cfaa;border-radius:12px;padding:12px 14px;font-size:11px;margin-bottom:14px}
+select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2;border-color:#3a4a59;border-radius:10px}select:focus,button:focus-visible,input:focus-visible{outline:2px solid rgba(198,166,107,.72);outline-offset:2px}.primary{background:linear-gradient(135deg,#276d59,#318369);border-color:#4a997b;color:#f4fbf7}.big{font-variant-numeric:tabular-nums;color:#eff2f4}.green,.checkState.ok{color:var(--green)}.red{color:var(--red)}.amber,.checkState.pending{color:var(--amber)}.scoreFill{background:linear-gradient(90deg,#9d8051,#42b88b)}.scoreTrack,.scannerProgress{background:#283644}.scannerProgress>div{background:linear-gradient(90deg,#91784e,#42b88b)}
+.planBadge,.tag,.scannerBadge{border-radius:20px;border:1px solid rgba(130,152,178,.17);background:#223142;color:#c0ccd7}.planBadge.projected,.scannerBadge.projected,.scannerBadge.developing{background:rgba(198,166,107,.13);border-color:rgba(198,166,107,.30);color:#e4c68f}.planBadge.confirmed,.scannerBadge.confirmed{background:rgba(66,184,139,.13);border-color:rgba(66,184,139,.30);color:#8bd5b3}.planBadge.invalidated,.scannerBadge.invalid{background:rgba(215,119,126,.12);border-color:rgba(215,119,126,.28);color:#e5a2a7}.scannerBadge.early{background:rgba(130,152,178,.13);color:#b1c1d1}.chartToolbar button.active,.chartToolbar #chartFullscreen{background:#326f5e;border-color:#4c977c}.chartToolbar #chartReset{background:#202e3c;border-color:#445564}
+.chartWrap{background:#101b27;border-color:#344250;border-radius:13px}.chartMini .tile{background:#182533}.chartProOverlay text{stroke:#111a24}.chartReadout{color:#c2cbd4}.chartHints{color:#8795a4}.chartLegend{color:#a2adba}.candleInspector{background:#151f2b}.candleInspectorCell{background:#1b2937}
+.advancedDetails{background:linear-gradient(145deg,#182431,#141e29);border-color:rgba(130,152,178,.18);box-shadow:none}.advancedDetails>summary{color:#d7dfe6}.advancedDetails>summary:after{color:var(--gold)}.advancedDetails>.card{background:#151f2b;box-shadow:none}.scannerMarket{background:#172331;border-color:rgba(130,152,178,.17)}.scannerMarketGrid div{background:#202e3d}.scannerAlert{background:#172331;border-color:rgba(130,152,178,.18)}.scannerReason{color:#b4bfca}.scannerEmpty{border-color:#4a5a68;color:#9aa8b7}.checkItem{border-color:rgba(130,152,178,.16)}
+.workspaceHero{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:19px 21px;margin:2px 0 14px;border:1px solid rgba(198,166,107,.17);border-radius:15px;background:linear-gradient(115deg,rgba(39,54,66,.92),rgba(23,34,46,.82));box-shadow:var(--shadow)}.heroMode{display:flex;align-items:center;gap:8px;white-space:nowrap;font-size:8px;color:#a9b4be;letter-spacing:.75px}.heroMode b{color:var(--gold)}
+.homeMetrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.homeMetric{padding:12px 14px;background:rgba(25,38,51,.9);border:1px solid rgba(130,152,178,.15);border-radius:12px}.homeMetric small{display:block;font-size:8px;letter-spacing:1px;color:#8493a2;font-weight:800}.homeMetric b{display:block;font-size:24px;margin-top:5px;font-weight:700;letter-spacing:-.4px;font-variant-numeric:tabular-nums}.homeMetric span{display:block;font-size:9px;color:#7f8d9b;margin-top:2px}.homeWorkGrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(310px,.85fr);gap:14px;align-items:start}.panelHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.panelHead h2{font-size:14px;letter-spacing:.1px;text-transform:none;color:#edf0f2;margin:5px 0 0}.engineChip{font-size:8px;letter-spacing:.8px;color:#92c8ad;display:flex;gap:7px;align-items:center;background:rgba(66,184,139,.08);border:1px solid rgba(66,184,139,.18);border-radius:20px;padding:6px 8px;white-space:nowrap}.engineChip i{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.analystIntro{display:flex;gap:10px;align-items:flex-start;padding:12px;background:#1c2936;border:1px solid rgba(130,152,178,.12);border-radius:12px}.analystAvatar{width:30px;height:30px;display:grid;place-items:center;border-radius:10px;background:linear-gradient(145deg,#b89a65,#806b49);color:#17212a;font-size:13px;font-weight:900;flex:none}.analystIntro b{font-size:11px;color:#e6e9eb}.analystIntro p{font-size:11px;line-height:1.5;color:#a6b2bd;margin:4px 0 0}.chatMessages{display:grid;gap:9px;padding:13px 1px;min-height:138px;max-height:320px;overflow:auto}.chatBubble{max-width:92%;padding:10px 12px;border-radius:12px;font-size:11px;line-height:1.55;overflow-wrap:anywhere}.chatBubble b{display:block;font-size:9px;letter-spacing:.6px;margin-bottom:4px;text-transform:uppercase}.chatBubble p{margin:0;white-space:pre-wrap}.chatBubble.assistant{background:#202e3b;border:1px solid rgba(130,152,178,.14);color:#d3dbe2;border-top-left-radius:4px}.chatBubble.assistant b{color:#d4bd90}.chatBubble.user{justify-self:end;background:rgba(66,184,139,.14);border:1px solid rgba(66,184,139,.22);color:#d9ece3;border-top-right-radius:4px}.chatBubble.user b{color:#83c9a7}.quickPrompts{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 10px}.quickPrompts button{font-size:9px;font-weight:600;padding:7px 9px;border-radius:20px;background:#1b2a38;border-color:#3a4b59;color:#bdc8d1}.quickPrompts button:hover{border-color:rgba(198,166,107,.55);color:#eddbb8}.analystComposer{display:flex;gap:7px;padding:6px;background:#101a24;border:1px solid #3a4b59;border-radius:12px}.analystComposer input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:#edf1f4;padding:8px;font:inherit;font-size:11px}.analystComposer input:focus-visible{outline:none}.sendPrompt{width:36px;height:36px;padding:0;border:0;border-radius:9px;background:#356f5d;color:#eff8f3;font-size:16px}.chatDisclaimer{font-size:8px;color:#798997;margin-top:8px;line-height:1.45}
+.snapshotPanel{position:sticky;top:89px}.snapshotPrice{display:flex;align-items:end;justify-content:space-between;gap:9px;padding:12px 0 14px;border-bottom:1px solid rgba(130,152,178,.14)}.snapshotPrice small{display:block;color:#8d9baa;font-size:8px;letter-spacing:1px}.snapshotPrice b{display:block;font-size:25px;margin-top:4px;font-variant-numeric:tabular-nums;letter-spacing:-.5px}.snapshotSide{font-size:15px;font-weight:850;color:#c9b17e}.snapshotGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:13px 0}.snapshotGrid>div{min-width:0}.snapshotGrid small{display:block;font-size:8px;color:#8593a1;letter-spacing:.8px}.snapshotGrid b{display:block;font-size:11px;margin-top:4px;overflow-wrap:anywhere;color:#e0e6eb}.snapshotPlan{border:1px solid rgba(198,166,107,.22);border-radius:11px;padding:10px;background:rgba(198,166,107,.045)}.snapshotPlanHead{display:flex;justify-content:space-between;gap:8px;margin-bottom:8px}.snapshotPlanHead b{font-size:9px;letter-spacing:.8px;color:#d4c19e}.snapshotPlanHead span{font-size:8px;color:#c9af7e}.snapshotLevel{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid rgba(130,152,178,.10);font-size:9px;color:#9daab6}.snapshotLevel b{font-size:10px;color:#e4e9ed;text-align:right;font-variant-numeric:tabular-nums}.snapshotLevel.risk b{color:#e39a9f}.snapshotLevel.reward b{color:#7bcaa4}.snapshotReason{font-size:10px;line-height:1.5;color:#a6b2bd;margin:10px 0}.snapshotActions{display:flex;gap:7px}.snapshotActions button{flex:1;font-size:9px;padding:8px 7px;background:#1d2b39;border-color:#3c4b58}
+.pageIntro .eyebrow{margin-bottom:4px}.alertsWorkspaceCard #scannerAlertFeed{max-height:none;overflow:visible}.alertsWorkspaceCard #scannerAlertHeading{margin-top:0!important}.alertsWorkspaceCard #scannerAlertHeading h2{font-size:12px}.alertsWorkspaceCard #scannerAlertFeed{margin-top:11px}.futureHint{padding:12px 15px;background:rgba(198,166,107,.055);border:1px solid rgba(198,166,107,.16);border-radius:12px;color:#b8aa8d;font-size:10px;line-height:1.5}.futureHint b{color:#d3bd91}.futureHint p{margin:4px 0 0}.performanceEmpty{padding:26px;max-width:900px}.performanceIcon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(198,166,107,.12);color:var(--gold);font-size:23px}.performanceEmpty h2{font-size:15px;text-transform:none;letter-spacing:0;margin:14px 0 8px;color:#e8ecef}.performanceEmpty>p{color:#a4b0bb;font-size:11px;line-height:1.6;max-width:690px}.futureMetricGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:16px}.futureMetricGrid>div{padding:11px;background:#1a2835;border:1px solid rgba(130,152,178,.14);border-radius:10px}.futureMetricGrid b{display:block;font-size:10px;color:#e1e6ea}.futureMetricGrid small{display:block;font-size:9px;color:#91a0ae;margin-top:4px;line-height:1.45}
+.themeSwatches{display:flex;gap:7px;margin:15px 0 9px}.themeSwatches span{height:27px;flex:1;border-radius:7px;border:1px solid rgba(255,255,255,.12)}.appearanceTags{display:flex;flex-wrap:wrap;gap:6px}.appearanceTags span{font-size:8px;color:#aab5bf;border:1px solid rgba(130,152,178,.16);border-radius:20px;padding:5px 8px}
+.mobileDock{display:none}.foot{color:#72808e;border-top:1px solid rgba(130,152,178,.12);margin-top:24px;padding-top:14px}.foot a{color:#a99a7b}
+@media(max-width:980px){.appShell{grid-template-columns:210px minmax(0,1fr)}.appSidebar{padding-left:11px;padding-right:10px}#appMain{padding:20px 16px 40px}.homeWorkGrid{grid-template-columns:minmax(0,1fr)}.snapshotPanel{position:static}.topBrand{min-width:205px}}
+@media(max-width:700px){body{padding-bottom:84px}.appTopbar{height:64px;padding:0 12px;gap:8px}.topBrand{min-width:0;gap:9px}.brand{font-size:15px}.brandSub{font-size:7px}.menuToggle{display:block;width:35px;height:35px}.topContext{display:none}.topActions{gap:6px}.topVersion{display:none}.appShell{display:block;min-height:calc(100vh - 64px)}.appSidebar{position:fixed;top:64px;bottom:70px;left:0;width:min(282px,84vw);height:auto;transform:translateX(-105%);transition:transform .22s ease;background:#111b26;border-right:1px solid #3a4651;box-shadow:18px 0 45px rgba(0,0,0,.35);overflow:auto;padding:17px 13px;z-index:90}.appSidebar.open{transform:translateX(0)}.navScrim.open{display:block;position:fixed;inset:64px 0 70px;background:rgba(0,0,0,.52);z-index:80}#appMain{padding:14px 11px 32px}.pageIntro{align-items:flex-start;margin:4px 1px 14px}.pageIntro h1,.workspaceHero h1{font-size:23px}.pageAction{font-size:9px;padding:8px}.workspaceHero{display:block;padding:16px;margin-bottom:11px}.heroMode{margin-top:13px}.homeMetrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.homeMetric{padding:10px}.homeMetric b{font-size:21px}.workspacePanel{padding:14px}.snapshotPrice b{font-size:22px}.mobileDock{position:fixed;display:grid;grid-template-columns:repeat(4,1fr);left:10px;right:10px;bottom:max(8px,env(safe-area-inset-bottom));height:60px;padding:5px;background:rgba(20,30,41,.96);border:1px solid rgba(130,152,178,.24);border-radius:16px;box-shadow:0 10px 35px rgba(0,0,0,.38);backdrop-filter:blur(18px);z-index:70}.mobileDock button{border:0;background:transparent;border-radius:11px;color:#8998a7;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:3px}.mobileDock button span{font-size:17px;line-height:1}.mobileDock button small{font-size:8px}.mobileDock button.active{background:rgba(198,166,107,.12);color:#e1c995}.card{padding:13px;border-radius:14px}.scannerStats{grid-template-columns:repeat(2,minmax(0,1fr))}.scannerMarketGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.planTargets{grid-template-columns:repeat(3,minmax(0,1fr))}.planTargets .planTile{padding:7px}.planTargets b{font-size:10px}.chartWrap{height:390px;min-height:340px}.chartFullscreen{z-index:120!important}.chartFullscreen .chartWrap{height:calc(100dvh - 180px)!important;min-height:calc(100dvh - 180px)!important}.advancedDetails{padding:0 12px}.futureMetricGrid{grid-template-columns:1fr}.snapshotGrid{gap:8px}}
+@media(max-width:390px){.topActions .pill{padding:6px 8px;font-size:8px}.pageIntro{display:block}.pageAction{margin-top:10px}.planTargets{grid-template-columns:1fr}.quickPrompts button{font-size:8px}.chatBubble{max-width:97%}}
+@media(min-width:701px){.navScrim{display:none!important}}
+
 </style></head><body>
-<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.9.2 · PRO CHART · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
-<main>
+<header class="appTopbar">
+ <div class="topBrand"><button class="menuToggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny brandSub">INSTITUTIONAL MARKET INTELLIGENCE · ANALYSIS ONLY</div></div></div>
+ <div class="topContext"><b id="pageTitle">Analyst workspace</b><span class="muted tiny" id="pageSubtitle">Your live market overview</span></div>
+ <div class="topActions"><span class="pill" id="connBadge">CONNECTING</span><span class="topVersion">V1.9.3</span></div>
+</header>
+<div class="appShell">
+ <aside class="appSidebar" id="appSidebar" aria-label="Main navigation">
+  <div class="sidebarBrand"><span class="sidebarMark">T</span><div><b>Workspace</b><small>TRADING INTELLIGENCE</small></div></div>
+  <div class="navGroupLabel">WORKSPACE</div>
+  <button class="navItem active" type="button" data-view="workspace"><span class="navIcon">⌂</span><span>Overview</span></button>
+  <button class="navItem" type="button" data-view="markets"><span class="navIcon">⌕</span><span>Market scanner</span><span class="navCount" id="navOpportunityCount">—</span></button>
+  <button class="navItem" type="button" data-view="chart"><span class="navIcon">▥</span><span>Pro chart</span></button>
+  <div class="navGroupLabel">INTELLIGENCE</div>
+  <button class="navItem" type="button" data-view="analysis"><span class="navIcon">◈</span><span>Market analysis</span></button>
+  <button class="navItem" type="button" data-view="alerts"><span class="navIcon">♧</span><span>Alerts & activity</span><span class="navCount" id="navAlertCount">—</span></button>
+  <button class="navItem" type="button" data-view="performance"><span class="navIcon">⌁</span><span>Performance lab</span><span class="navSoon">LATER</span></button>
+  <div class="navSpacer"></div>
+  <div class="sidebarStatus"><span class="statusDot"></span><div><b>Analysis-only mode</b><small>No orders are placed</small></div></div>
+  <button class="navItem" type="button" data-view="settings"><span class="navIcon">⚙</span><span>Settings & connection</span></button>
+  <div class="sidebarFoot">TEBZA CRT ANALYST<br>INSTITUTIONAL EDITION · V1.9.3</div>
+ </aside>
+ <div class="navScrim" id="navScrim"></div>
+ <main id="appMain">
+<section class="pageView active" id="workspaceView" data-page="workspace">
 <div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for ticks and native OHLC candles. No Deriv password or account token is required. Market data and CRT conditions are for analysis only; signals are preliminary and this app never places trades.</div>
 <section class="card">
  <div class="row between"><div><h2 style="margin:0">Market selector</h2><div class="muted tiny" id="marketCount">Loading Deriv instruments…</div></div><button id="refresh" class="primary">Refresh</button></div>
@@ -180,7 +243,56 @@ body{background:radial-gradient(ellipse at top,#17263c 0,#090f1b 56%)}
  <div class="row between" style="margin-top:16px"><div><div class="muted tiny">LIVE QUOTE</div><div class="big" id="quote">—</div></div><div style="text-align:right"><div class="muted tiny">SETUP STATUS</div><div class="signal amber" id="decision">WAIT</div></div></div>
  <div class="muted tiny" id="symbolName">Waiting for active symbols…</div><div id="status">Connecting to Deriv public market data…</div><div id="apiDiagnostic" class="tiny muted" style="margin-top:6px;overflow-wrap:anywhere">API diagnostic: waiting for first response</div>
 </section>
-
+<section class="workspaceHero">
+ <div><div class="eyebrow">MARKET INTELLIGENCE DESK</div><h1>Think clearly. Read the market.</h1><p>One place to understand current conditions, review developing setups and ask the analyst to explain the engine's findings.</p></div>
+ <div class="heroMode"><span class="heroModeDot"></span> LIVE ENGINE CONTEXT <b>·</b> DERIV PUBLIC DATA</div>
+</section>
+<section class="homeMetrics" aria-label="Market overview metrics">
+ <div class="homeMetric"><small>ACTIVE INSTRUMENTS</small><b id="homeMarkets">—</b><span>Returned by Deriv</span></div>
+ <div class="homeMetric"><small>DEEP MONITORING</small><b id="homeMonitored">—</b><span>Shortlisted markets</span></div>
+ <div class="homeMetric"><small>RANKED OPPORTUNITIES</small><b id="homeSetups">—</b><span>Current scanner shortlist</span></div>
+ <div class="homeMetric"><small>ALERT EVENTS</small><b id="homeAlerts">—</b><span>Saved in this browser</span></div>
+</section>
+<div class="homeWorkGrid">
+ <section class="workspacePanel analystPanel" id="analystChatPanel">
+  <div class="panelHead"><div><div class="eyebrow">TEBZA MARKET ANALYST</div><h2>Ask about the market</h2></div><span class="engineChip"><i></i> ENGINE LINKED</span></div>
+  <div class="analystIntro"><div class="analystAvatar">T</div><div><b>Market analyst</b><p id="analystWelcome">I explain the current selected market using the platform's completed-candle analysis. Select a market to begin.</p></div></div>
+  <div class="chatMessages" id="analystMessages" aria-live="polite">
+   <div class="chatBubble assistant"><b>Analyst</b><p>Ask me to explain the current setup, why a signal is waiting, important price levels, market structure or the risk plan. Answers are grounded in the live engine output available in this browser.</p></div>
+  </div>
+  <div class="quickPrompts">
+   <button type="button" data-ask="Explain the current setup">Explain this setup</button>
+   <button type="button" data-ask="Why is the engine waiting?">Why is it waiting?</button>
+   <button type="button" data-ask="Show the important price levels">Key price levels</button>
+   <button type="button" data-ask="Explain the risk and reward plan">Explain risk / reward</button>
+  </div>
+  <form class="analystComposer" id="analystForm">
+   <input id="analystPrompt" type="text" maxlength="240" placeholder="Ask about the selected market…" autocomplete="off" aria-label="Ask the market analyst">
+   <button class="sendPrompt" type="submit" aria-label="Send question">➤</button>
+  </form>
+  <div class="chatDisclaimer">Engine-grounded explanations · No external AI chat service is connected in this build.</div>
+ </section>
+ <aside class="workspacePanel snapshotPanel">
+  <div class="panelHead"><div><div class="eyebrow">SELECTED MARKET</div><h2 id="homeMarketName">Waiting for market</h2></div><span class="planBadge" id="homeState">WAIT</span></div>
+  <div class="snapshotPrice"><div><small>LIVE PRICE</small><b id="homeLiveQuote">—</b></div><div class="snapshotSide" id="homeSide">WAIT</div></div>
+  <div class="snapshotGrid">
+   <div><small>4H DIRECTION</small><b id="homeBias4">—</b></div><div><small>1H DIRECTION</small><b id="homeBias1">—</b></div>
+   <div><small>15M STRUCTURE</small><b id="homeStructure">—</b></div><div><small>5M TRIGGER</small><b id="homeTrigger">—</b></div>
+   <div><small>CRT LOCATION</small><b id="homeLocation">—</b></div><div><small>LIQUIDITY</small><b id="homeLiquidity">—</b></div>
+  </div>
+  <div class="snapshotPlan" id="homePlanBox">
+   <div class="snapshotPlanHead"><b>SETUP LEVELS</b><span id="homePlanType">NO PLAN</span></div>
+   <div class="snapshotLevel"><span>Entry reference</span><b id="homeEntry">—</b></div>
+   <div class="snapshotLevel risk"><span>Stop / invalidation</span><b id="homeStop">—</b></div>
+   <div class="snapshotLevel reward"><span>TP1 · TP2 · TP3</span><b id="homeTargets">—</b></div>
+  </div>
+  <p class="snapshotReason" id="homeReason">Waiting for sufficient completed candles.</p>
+  <div class="snapshotActions"><button type="button" data-go="chart">Open pro chart</button><button type="button" data-go="analysis">Full analysis</button></div>
+ </aside>
+</div>
+</section>
+<section class="pageView" id="marketsView" data-page="markets" hidden>
+<section class="pageIntro"><div><div class="eyebrow">DISCOVERY & RANKING</div><h1>Market scanner</h1><p>Discover instruments, screen higher-timeframe context and monitor the strongest candidates in more depth.</p></div><button type="button" class="pageAction" data-go="workspace">Back to overview</button></section>
 <section class="card" id="marketScanner">
  <div class="row between"><h2 style="margin:0">Multi-market opportunity scanner</h2><span class="planBadge" id="scannerState">STOPPED</span></div>
  <p class="sectionNote" style="margin-top:8px">Discovers the active instruments returned by Deriv. It screens 4H/1H context, then applies deeper 15M/5M checks to a shortlist. CRT, trend-continuation and breakout/retest logic are assessed where sufficient candle history is available. This remains an analysis tool.</p>
@@ -212,11 +324,19 @@ body{background:radial-gradient(ellipse at top,#17263c 0,#090f1b 56%)}
  </div>
  <div class="row between" style="margin-top:14px"><h2 style="margin:0">Ranked opportunities</h2><span class="muted tiny" id="scannerUpdated">Not scanned</span></div>
  <div id="scannerOpportunityList" class="scannerCards"><div class="scannerEmpty">No scan results yet. Start scanning to build the watchlist.</div></div>
- <div class="row between" style="margin-top:14px"><h2 style="margin:0">Alert history</h2><button id="scannerClearAlerts" type="button" style="font-size:10px;padding:6px 9px">Clear history</button></div>
- <div class="scannerNote">The latest 50 scanner events are saved locally in this browser. They are not synchronised to another device or a cloud account.</div>
+ <div class="row between" id="scannerAlertHeading" style="margin-top:14px"><h2 style="margin:0">Alert history</h2><button id="scannerClearAlerts" type="button" style="font-size:10px;padding:6px 9px">Clear history</button></div>
+ <div class="scannerNote" id="scannerAlertNote">The latest 50 scanner events are saved locally in this browser. They are not synchronised to another device or a cloud account.</div>
  <div id="scannerAlertFeed" class="scannerAlerts"><div class="scannerEmpty">Approach, developing, confirmation and invalidation alerts will appear here.</div></div>
  <p class="scannerNote">Important: this browser-based scanner runs while this page remains open and connected. Android may suspend browser tabs in the background. Always-on scanning and push notifications while the page is closed require a separately deployed cloud scanning and push service; that service is not active in this build. No API token, account login or trade permission is required.</p>
 </section>
+</section>
+<section class="pageView" id="alertsView" data-page="alerts" hidden>
+ <section class="pageIntro"><div><div class="eyebrow">EVENT MONITOR</div><h1>Alerts & activity</h1><p>Recent approach, developing, confirmation and invalidation events saved by this browser.</p></div><button type="button" class="pageAction" data-go="markets">Open scanner</button></section>
+ <section class="card alertsWorkspaceCard"><div id="alertsMount"><div class="scannerEmpty">Loading saved scanner events…</div></div></section>
+ <div class="futureHint"><b>Future enhancement</b><p>Cloud-synchronised alert history and push delivery while the browser is closed require a separately deployed service. They are not active in this version.</p></div>
+</section>
+<section class="pageView" id="chartView" data-page="chart" hidden>
+ <section class="pageIntro"><div><div class="eyebrow">PRICE ACTION WORKSPACE</div><h1>Professional chart</h1><p>Live candles, CRT context, liquidity, structure and scenario planning from the selected instrument.</p></div><button type="button" class="pageAction" data-go="analysis">View analysis</button></section>
 <section class="card" id="chartCard">
  <div class="row between"><h2 style="margin:0">Live annotated chart</h2><span class="tag" id="chartLiveState">Waiting for candles</span></div>
  <div class="chartToolbar" style="margin-top:10px">
@@ -272,6 +392,9 @@ body{background:radial-gradient(ellipse at top,#17263c 0,#090f1b 56%)}
  </div>
  <p class="sectionNote">Candles and live price use Deriv public market data. CRT high/low/equilibrium are taken from the previous completed 1H candle. Swing levels are confirmed 15M pivots. Labels are analytical references, not trade instructions.</p>
 </section>
+</section>
+<section class="pageView" id="analysisView" data-page="analysis" hidden>
+ <section class="pageIntro"><div><div class="eyebrow">ENGINE INTERPRETATION</div><h1>Market analysis</h1><p>Understand what has happened, what is confirmed, what remains missing and where the scenario is invalidated.</p></div><button type="button" class="pageAction" data-go="chart">Open pro chart</button></section>
 <section class="card" id="marketNarrative">
  <div class="row between"><h2 style="margin:0">Market narrative & current price analysis</h2><span class="planBadge" id="narrativeState">WAIT</span></div>
  <p class="narrativeLead" id="narrativeLead">Waiting for sufficient completed candles to describe current price behaviour.</p>
@@ -327,11 +450,39 @@ body{background:radial-gradient(ellipse at top,#17263c 0,#090f1b 56%)}
 <section class="card"><h2>Analysis summary</h2><div class="grid">
  <div class="tile"><small>Potential direction</small><b id="direction">WAIT</b></div><div class="tile"><small>Entry reference</small><b id="entry">—</b></div>
  <div class="tile"><small>Invalidation reference</small><b id="stop">—</b></div><div class="tile"><small>Opposing range target</small><b id="target">—</b></div>
-</div><p class="muted tiny">V1.9.2 strategies: CRT reversal, trend continuation (4H/1H alignment, 15M EMA21 pullback and 5M impulse) and breakout/retest (completed 15M break with 5M retest/hold). The strategy rules are initial, evidence-based heuristics and have not yet been statistically backtested or calibrated separately for each market category. FVG lifecycle, order blocks, session filters, market-specific calibration and full historical performance testing remain future modules. Evidence scores are not win probabilities.</p></section>
+</div><p class="muted tiny">V1.9.3 strategies: CRT reversal, trend continuation (4H/1H alignment, 15M EMA21 pullback and 5M impulse) and breakout/retest (completed 15M break with 5M retest/hold). The strategy rules are initial, evidence-based heuristics and have not yet been statistically backtested or calibrated separately for each market category. FVG lifecycle, order blocks, session filters, market-specific calibration and full historical performance testing remain future modules. Evidence scores are not win probabilities.</p></section>
 </details>
+</section>
+<section class="pageView" id="performanceView" data-page="performance" hidden>
+ <section class="pageIntro"><div><div class="eyebrow">RESEARCH & VALIDATION</div><h1>Performance lab</h1><p>Historical strategy validation will be shown here once the testing and data-quality framework is implemented.</p></div></section>
+ <section class="card performanceEmpty">
+  <div class="performanceIcon">⌁</div><h2>Performance measurement is not enabled yet</h2>
+  <p>The current strategies are rule-based analytical heuristics. The platform does not yet have a validated historical backtest dataset, so it should not display invented win rates or profitability statistics.</p>
+  <div class="futureMetricGrid">
+   <div><b>Win rate</b><small>Calculated from completed historical samples</small></div>
+   <div><b>Expectancy</b><small>Average outcome per validated setup</small></div>
+   <div><b>Maximum drawdown</b><small>Historical equity decline</small></div>
+   <div><b>Profit factor</b><small>Gross gains relative to gross losses</small></div>
+   <div><b>Market breakdown</b><small>Results separated by instrument and category</small></div>
+   <div><b>Walk-forward testing</b><small>Out-of-sample validation to reduce overfitting</small></div>
+  </div>
+  <div class="projectedNote">These are planned research metrics, not currently available platform results.</div>
+ </section>
+</section>
+<section class="pageView" id="settingsView" data-page="settings" hidden>
+ <section class="pageIntro"><div><div class="eyebrow">PLATFORM PREFERENCES</div><h1>Settings & connection</h1><p>Review the visual system, data connection and notification permissions.</p></div></section>
+ <section class="card appearanceCard"><div class="eyebrow">APPEARANCE</div><h2>Premium institutional · Balanced density</h2><p class="sectionNote">A consistent interface palette is applied across the dashboard, scanner, chart, alerts and analysis.</p><div class="themeSwatches"><span style="background:#111923"></span><span style="background:#1B2735"></span><span style="background:#C6A66B"></span><span style="background:#42B88B"></span><span style="background:#D7777E"></span><span style="background:#8298B2"></span></div><div class="appearanceTags"><span>Charcoal navy surfaces</span><span>Emerald positive states</span><span>Champagne reference levels</span><span>Soft coral risk states</span></div></section>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.9.2 · Professional annotated chart · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+<div class="foot">TEBZA CRT ANALYST V1.9.3 · Institutional analyst workspace · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+</section>
 </main>
+</div>
+<nav class="mobileDock" aria-label="Quick navigation">
+ <button type="button" class="active" data-view="workspace"><span>⌂</span><small>Home</small></button>
+ <button type="button" data-view="markets"><span>⌕</span><small>Markets</small></button>
+ <button type="button" data-view="chart"><span>▥</span><small>Chart</small></button>
+ <button type="button" data-view="analysis"><span>◈</span><small>Analysis</small></button>
+</nav>
 <script>
 // Load the pinned Lightweight Charts v5 standalone library, with a second CDN fallback.
 // The rest of the application can connect to Deriv while this renderer loads.
@@ -1288,7 +1439,7 @@ function analyse() {
   updateMarketNarrative();
   renderTradePlan();
   renderChart(false);
-  setStatus("V1.9.2 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  setStatus("V1.9.3 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
   if (direction !== "WAIT") {
     const signalKey=[selected,selectedStrategy||"CRT REVERSAL",direction,last5.epoch].join("|");
     if(signalKey!==lastNotifiedSignalKey){
@@ -2371,6 +2522,96 @@ $s("scannerOpportunityList").addEventListener("click",event=>{const btn=event.ta
 scanner.alerts=scannerLoadSavedAlerts();
 scannerHook();scannerRenderStats();scannerRenderAlerts();
 window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:scanner,getSnapshot:()=>({stage:scanner.stage,universe:scanner.universe.length,checked:scanner.stats.checked,deep:scanner.monitored.size,alerts:scanner.alerts.length,requested:scanner.stats.requested,received:scanner.stats.received,failed:scanner.stats.failed})};
+})();
+</script>
+
+<script>
+/* V1.9.3 workspace navigation and engine-grounded analyst companion. */
+(function(){
+ 'use strict';
+ const byId=id=>document.getElementById(id);
+ const views={workspace:['Analyst workspace','Your live market overview'],markets:['Market scanner','Discover and rank Deriv instruments'],alerts:['Alerts & activity','Recent scanner events'],chart:['Professional chart','Live price action and scenario levels'],analysis:['Market analysis','Engine evidence and setup conditions'],performance:['Performance lab','Historical validation and research'],settings:['Settings & connection','Appearance, data and notification controls']};
+ const sidebar=byId('appSidebar'),scrim=byId('navScrim'),toggle=byId('menuToggle');
+ function closeMenu(){sidebar?.classList.remove('open');scrim?.classList.remove('open');toggle?.setAttribute('aria-expanded','false');}
+ function openMenu(){sidebar?.classList.add('open');scrim?.classList.add('open');toggle?.setAttribute('aria-expanded','true');}
+ function moveAlertHistory(){
+  const mount=byId('alertsMount');if(!mount)return;
+  ['scannerAlertHeading','scannerAlertNote','scannerAlertFeed'].forEach(id=>{const el=byId(id);if(el&&el.parentElement!==mount)mount.appendChild(el);});
+ }
+ function appView(name){
+  if(!views[name])name='workspace';
+  moveAlertHistory();
+  document.querySelectorAll('.pageView').forEach(el=>{const active=el.dataset.page===name;el.hidden=!active;el.classList.toggle('active',active);});
+  document.querySelectorAll('.navItem[data-view],.mobileDock [data-view]').forEach(el=>{const active=el.dataset.view===name;el.classList.toggle('active',active);if(active)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});
+  const title=byId('pageTitle'),sub=byId('pageSubtitle');if(title)title.textContent=views[name][0];if(sub)sub.textContent=views[name][1];
+  closeMenu();
+  if(name==='chart')setTimeout(()=>{try{resizeTradingChart();renderChartOverlays();}catch(_){ }},100);
+  if(name==='analysis'&&byId('advancedDetails')?.open===false){/* Keep advanced evidence collapsed by default. */}
+  window.scrollTo({top:0,behavior:'smooth'});
+ }
+ document.querySelectorAll('[data-view]').forEach(el=>el.addEventListener('click',()=>appView(el.dataset.view)));
+ document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>appView(el.dataset.go)));
+ toggle?.addEventListener('click',()=>sidebar?.classList.contains('open')?closeMenu():openMenu());
+ scrim?.addEventListener('click',closeMenu);
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+ moveAlertHistory();
+
+ const set=(id,value)=>{const el=byId(id);if(el)el.textContent=value==null?'—':String(value);};
+ function currentPlan(a){return a?.tradePlan||a?.projectedPlan||null;}
+ function getSetupState(a,p){if(!a)return 'WAIT';if(p){if(p.stage==='PROJECTED'||a.projectedPlan)return 'PROJECTED';return 'CONFIRMED';}return 'WAIT';}
+ function updateWorkspace(){
+  try{
+   const scanner=window.TEBZA_SCANNER_V19?.getSnapshot?.()||{};
+   set('homeMarkets',scanner.universe||byId('marketCount')?.textContent?.match(/\d+/)?.[0]||'—');set('homeMonitored',scanner.deep??byId('scannerMonitored')?.textContent??'—');
+   const count=byId('scannerOpportunityList')?.querySelectorAll('.scannerMarket')?.length||0;set('homeSetups',count);set('homeAlerts',scanner.alerts??byId('scannerAlertCount')?.textContent??'—');
+   set('navAlertCount',scanner.alerts??'—');set('navOpportunityCount',count||'—');
+   const a=latestAnalysis||null,p=currentPlan(a),meta=a?.meta||(typeof findSymbol==='function'?findSymbol(selected):null);
+   const sym=typeof displayName==='function'&&meta?displayName(meta):selected||'Waiting for market';
+   set('homeMarketName',sym);set('homeLiveQuote',typeof formatPrice==='function'&&Number.isFinite(Number(quote))?formatPrice(quote,meta):'—');
+   const state=getSetupState(a,p);set('homeState',state);set('homePlanType',p?(state+' · '+(p.strategy||'SETUP')):'NO PLAN');
+   const side=p?.side||(a?.direction?.includes('BUY')?'BUY':a?.direction?.includes('SELL')?'SELL':'WAIT');set('homeSide',side);
+   set('homeBias4',a?.bias4||'—');set('homeBias1',a?.bias1||'—');set('homeStructure',a?.structure?.direction||'—');
+   set('homeTrigger',a?.alternative?.checks?.find(x=>/5M|impulse|retest/i.test(x.label))?.ok?'Passed':a?.alternative?.reason?'Pending':'—');
+   set('homeLocation',a?.location||'—');set('homeLiquidity',a?(a.bullishSweep?'Sell-side swept':a.bearishSweep?'Buy-side swept':'No confirmed sweep'):'—');
+   const fmt=v=>typeof formatPrice==='function'&&Number.isFinite(Number(v))?formatPrice(v,meta):'—';
+   set('homeEntry',p?fmt(p.entry):'—');set('homeStop',p?fmt(p.stop):'—');set('homeTargets',p?.targets?.length?p.targets.map(t=>fmt(t.price)).join(' · '):'—');
+   let reason='Waiting for sufficient completed candles.';
+   if(p&&state==='PROJECTED')reason=a?.alternative?.reason||p.reason||'The setup is provisional. Wait for all required confirmation conditions.';
+   else if(p&&state==='CONFIRMED')reason=(p.strategy||'Strategy')+' has passed its programmed checks. This is an analytical scenario, not a guarantee.';
+   else if(a?.alternative?.checks?.length){const missing=a.alternative.checks.filter(x=>!x.ok).map(x=>x.label);reason=missing.length?'Waiting for: '+missing.join(', '):'No complete setup is currently available.';}
+   else if(a)reason='No setup currently meets all required conditions. Review the market structure and liquidity before considering a scenario.';
+   set('homeReason',reason);
+   const welcome=byId('analystWelcome');if(welcome)welcome.textContent=a?('I am reviewing '+sym+' using the latest completed candles and public quote. Ask about the setup, missing confirmations, key levels or risk plan.'): 'I explain the current selected market using the platform’s completed-candle analysis. Select a market to begin.';
+  }catch(err){console.warn('Workspace summary update skipped',err);}
+ }
+ function analystAnswer(question){
+  const a=latestAnalysis,meta=a?.meta||(typeof findSymbol==='function'?findSymbol(selected):null),fmt=v=>typeof formatPrice==='function'&&Number.isFinite(Number(v))?formatPrice(v,meta):'—';
+  if(!a)return 'I do not have enough completed candle history for a reliable explanation yet. Check the Deriv connection and wait for the 4H, 1H, 15M and 5M context to load.';
+  const q=question.toLowerCase(),p=currentPlan(a),side=p?.side||'WAIT';
+  const state=p?(a.projectedPlan?'PROJECTED':'CONFIRMED'):'WAIT';
+  if(/why.*wait|waiting|missing|confirm|trigger/.test(q)){
+   const checks=a.alternative?.checks||[];const missing=checks.filter(x=>!x.ok).map(x=>x.label);
+   if(state==='CONFIRMED')return 'The selected strategy has passed its programmed completed-candle checks. That is a technical-rule confirmation, not a measured win probability. Review the entry, invalidation and nearby liquidity before making any decision.';
+   if(state==='PROJECTED')return 'The current idea is a provisional '+side+' from '+(p.strategy||'a strategy')+'. It is not confirmed. '+(missing.length?'Still waiting for: '+missing.join('; ')+'.':(a.alternative?.reason||p.reason||'The required trigger has not passed yet.'));
+   return 'The engine currently says WAIT. '+(a.alternative?.reason||'No strategy has passed all required conditions.')+' A partial evidence score does not create a trade setup.';
+  }
+  if(/level|price|entry|stop|target|risk|reward|tp[123]/.test(q)){
+   if(!p)return 'There is no valid projected or confirmed plan for this market at the moment. The engine is showing WAIT, so it is deliberately not inventing an entry, stop-loss or targets.';
+   return state+' '+side+' scenario for '+(meta?displayName(meta):selected)+'. Entry reference: '+fmt(p.entry)+'. Invalidation / stop: '+fmt(p.stop)+'. Risk distance: '+fmt(p.risk)+' points. '+(p.targets||[]).map(t=>'TP'+t.r+': '+fmt(t.price)+' ('+t.r+'R)').join('; ')+'. '+(state==='PROJECTED'?'These are provisional model levels and are not an active confirmed signal.':'The setup passed its programmed checks, but this is not a guaranteed outcome or trade instruction.');
+  }
+  if(/liquid|sweep|equal high|equal low/.test(q))return 'Liquidity review: '+(a.liquidity||'No confirmed sweep event')+'. Buy-side reference: '+fmt(a.buySideLevel)+'. Sell-side reference: '+fmt(a.sellSideLevel)+'. A mapped level is an area of interest; it is not itself an entry signal.';
+  if(/range|premium|discount|equilibrium|crt/.test(q))return 'CRT reference uses the previous completed 1H candle. High: '+fmt(a.hi)+'. Equilibrium: '+fmt(a.mid)+'. Low: '+fmt(a.lo)+'. Current price location: '+(a.location||'unavailable')+(a.rangePercent==null?'':', '+Number(a.rangePercent).toFixed(1)+'% from the range low')+'. Above or below the reference range is explicitly distinguished from premium or discount inside it.';
+  if(/structure|trend|bias|direction/.test(q))return 'Multi-timeframe context for '+(meta?displayName(meta):selected)+': 4H '+(a.bias4||'unknown')+'; 1H '+(a.bias1||'unknown')+'; 15M '+(a.structure?.trend||'neutral / developing')+'. Latest 15M event: '+(a.structure?.event||'none confirmed')+'. The 5M trigger is '+(a.alternative?.reason||a.displacementDirection||'still being evaluated')+'.';
+  if(/setup|summary|what.*happen|market|explain/.test(q))return (meta?displayName(meta):selected)+' is currently '+state+' '+side+'. 4H bias: '+(a.bias4||'unknown')+'. 1H bias: '+(a.bias1||'unknown')+'. 15M structure: '+(a.structure?.trend||'neutral')+'. Current location: '+(a.location||'unknown')+'. '+(p?(a.alternative?.reason||p.reason||'A setup scenario is available for review.'):'No complete trade plan is available; the engine remains on WAIT.');
+  return 'I can explain the selected market using the engine data currently available: setup status, why confirmation is pending, market structure and trend, CRT range, liquidity, entry / stop / targets and risk/reward. I cannot provide open-ended AI conversation in this build because no external AI service is connected.';
+ }
+ function addChat(text,role){const host=byId('analystMessages');if(!host)return;const bubble=document.createElement('div');bubble.className='chatBubble '+(role==='user'?'user':'assistant');const label=document.createElement('b');label.textContent=role==='user'?'You':'Analyst';const p=document.createElement('p');p.textContent=text;bubble.append(label,p);host.appendChild(bubble);host.scrollTop=host.scrollHeight;}
+ const form=byId('analystForm'),input=byId('analystPrompt');
+ function ask(text){const q=String(text||'').trim();if(!q)return;addChat(q,'user');addChat(analystAnswer(q),'assistant');if(input)input.value='';}
+ form?.addEventListener('submit',e=>{e.preventDefault();ask(input?.value);});
+ document.querySelectorAll('[data-ask]').forEach(btn=>btn.addEventListener('click',()=>ask(btn.dataset.ask)));
+ updateWorkspace();setInterval(updateWorkspace,1800);
+ appView('workspace');
 })();
 </script>
 </body></html>
