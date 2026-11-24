@@ -171,7 +171,7 @@ body{background:radial-gradient(ellipse at top,#17263c 0,#090f1b 56%)}
 .chartProOverlay .smallLabel{font-size:9px;font-weight:850;letter-spacing:0}
 @media(max-width:600px){.chartProOverlay .levelLabel,.chartProOverlay .planLabel{font-size:8px}.chartProOverlay .smallLabel{font-size:8px}.chartProOverlay .zoneLabel{font-size:8px}}
 
-/* V1.9.3 institutional design system + responsive analyst workspace */
+/* V1.9.4 institutional design system + responsive analyst workspace */
 :root{
  --bg:#0d141d;--panel:#151f2b;--panel2:#1b2735;--panel3:#202e3d;--line:#2b3948;
  --txt:#e9edf2;--muted:#9aa8b7;--green:#42b88b;--red:#d7777e;--amber:#c6a66b;--blue:#8298b2;
@@ -215,7 +215,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 <header class="appTopbar">
  <div class="topBrand"><button class="menuToggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny brandSub">INSTITUTIONAL MARKET INTELLIGENCE · ANALYSIS ONLY</div></div></div>
  <div class="topContext"><b id="pageTitle">Analyst workspace</b><span class="muted tiny" id="pageSubtitle">Your live market overview</span></div>
- <div class="topActions"><span class="pill" id="connBadge">CONNECTING</span><span class="topVersion">V1.9.3</span></div>
+ <div class="topActions"><span class="pill" id="connBadge">CONNECTING</span><span class="topVersion">V1.9.4</span></div>
 </header>
 <div class="appShell">
  <aside class="appSidebar" id="appSidebar" aria-label="Main navigation">
@@ -231,17 +231,17 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
   <div class="navSpacer"></div>
   <div class="sidebarStatus"><span class="statusDot"></span><div><b>Analysis-only mode</b><small>No orders are placed</small></div></div>
   <button class="navItem" type="button" data-view="settings"><span class="navIcon">⚙</span><span>Settings & connection</span></button>
-  <div class="sidebarFoot">TEBZA CRT ANALYST<br>INSTITUTIONAL EDITION · V1.9.3</div>
+  <div class="sidebarFoot">TEBZA CRT ANALYST<br>INSTITUTIONAL EDITION · V1.9.4</div>
  </aside>
  <div class="navScrim" id="navScrim"></div>
  <main id="appMain">
 <section class="pageView active" id="workspaceView" data-page="workspace">
-<div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for ticks and native OHLC candles. No Deriv password or account token is required. Market data and CRT conditions are for analysis only; signals are preliminary and this app never places trades.</div>
+<div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for live ticks and native OHLC candles. V1.9.4 pauses current setup confirmation when the selected-market tick feed has not updated within 120 seconds. No Deriv password or account token is required. Analysis only; no trades are placed.</div>
 <section class="card">
  <div class="row between"><div><h2 style="margin:0">Market selector</h2><div class="muted tiny" id="marketCount">Loading Deriv instruments…</div></div><button id="refresh" class="primary">Refresh</button></div>
  <div class="row" style="margin-top:12px"><select id="category"><option value="all">All markets</option><option value="synthetic">Synthetic / Derived</option><option value="forex">Forex</option><option value="commodities">Commodities / Metals</option><option value="indices">Stock indices</option><option value="crypto">Cryptocurrencies</option><option value="shares">Shares / ETFs</option></select><select id="symbol"><option>Loading…</option></select></div>
  <div class="row between" style="margin-top:16px"><div><div class="muted tiny">LIVE QUOTE</div><div class="big" id="quote">—</div></div><div style="text-align:right"><div class="muted tiny">SETUP STATUS</div><div class="signal amber" id="decision">WAIT</div></div></div>
- <div class="muted tiny" id="symbolName">Waiting for active symbols…</div><div id="status">Connecting to Deriv public market data…</div><div id="apiDiagnostic" class="tiny muted" style="margin-top:6px;overflow-wrap:anywhere">API diagnostic: waiting for first response</div>
+ <div class="muted tiny" id="symbolName">Waiting for active symbols…</div><div class="tiny" id="marketFreshness" style="margin-top:5px;color:var(--amber)">WAITING FOR LIVE TICK · signals unavailable</div><div id="status">Connecting to Deriv public market data…</div><div id="apiDiagnostic" class="tiny muted" style="margin-top:6px;overflow-wrap:anywhere">API diagnostic: waiting for first response</div>
 </section>
 <section class="workspaceHero">
  <div><div class="eyebrow">MARKET INTELLIGENCE DESK</div><h1>Think clearly. Read the market.</h1><p>One place to understand current conditions, review developing setups and ask the analyst to explain the engine's findings.</p></div>
@@ -450,7 +450,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 <section class="card"><h2>Analysis summary</h2><div class="grid">
  <div class="tile"><small>Potential direction</small><b id="direction">WAIT</b></div><div class="tile"><small>Entry reference</small><b id="entry">—</b></div>
  <div class="tile"><small>Invalidation reference</small><b id="stop">—</b></div><div class="tile"><small>Opposing range target</small><b id="target">—</b></div>
-</div><p class="muted tiny">V1.9.3 strategies: CRT reversal, trend continuation (4H/1H alignment, 15M EMA21 pullback and 5M impulse) and breakout/retest (completed 15M break with 5M retest/hold). The strategy rules are initial, evidence-based heuristics and have not yet been statistically backtested or calibrated separately for each market category. FVG lifecycle, order blocks, session filters, market-specific calibration and full historical performance testing remain future modules. Evidence scores are not win probabilities.</p></section>
+</div><p class="muted tiny">V1.9.4 strategies: CRT reversal, trend continuation (4H/1H alignment, 15M EMA21 pullback and 5M impulse) and breakout/retest (completed 15M break with 5M retest/hold). The strategy rules are initial, evidence-based heuristics and have not yet been statistically backtested or calibrated separately for each market category. FVG lifecycle, order blocks, session filters, market-specific calibration and full historical performance testing remain future modules. Evidence scores are not win probabilities.</p></section>
 </details>
 </section>
 <section class="pageView" id="performanceView" data-page="performance" hidden>
@@ -473,7 +473,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
  <section class="pageIntro"><div><div class="eyebrow">PLATFORM PREFERENCES</div><h1>Settings & connection</h1><p>Review the visual system, data connection and notification permissions.</p></div></section>
  <section class="card appearanceCard"><div class="eyebrow">APPEARANCE</div><h2>Premium institutional · Balanced density</h2><p class="sectionNote">A consistent interface palette is applied across the dashboard, scanner, chart, alerts and analysis.</p><div class="themeSwatches"><span style="background:#111923"></span><span style="background:#1B2735"></span><span style="background:#C6A66B"></span><span style="background:#42B88B"></span><span style="background:#D7777E"></span><span style="background:#8298B2"></span></div><div class="appearanceTags"><span>Charcoal navy surfaces</span><span>Emerald positive states</span><span>Champagne reference levels</span><span>Soft coral risk states</span></div></section>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.9.3 · Institutional analyst workspace · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+<div class="foot">TEBZA CRT ANALYST V1.9.4 · Institutional analyst workspace · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
 </section>
 </main>
 </div>
@@ -544,6 +544,10 @@ let chartDataCache = {symbol:"", timeframe:0, length:0, firstEpoch:0, lastEpoch:
 let chartSubscribedTimeframes = new Set([300]);
 let subscriptionMeta = new Map();
 let latestTickEpoch = 0;
+let lastLiveTickReceivedAt = 0;
+let marketFeedState = "waiting";
+let marketFeedWatchdog = null;
+const LIVE_DATA_MAX_AGE_MS = 120000;
 let candleUpdateAt = {300:0,900:0,3600:0,14400:0};
 let chartLibraryUnavailable = false;
 let selectedCandleEpoch = 0;
@@ -570,6 +574,34 @@ function clearTimers() {
   activeSymbolsTimer = null;
   if (candleRefreshTimer) clearInterval(candleRefreshTimer);
   candleRefreshTimer = null;
+  if (marketFeedWatchdog) clearInterval(marketFeedWatchdog);
+  marketFeedWatchdog = null;
+}
+function hasFreshLiveTick() {
+  return socketOpen() && lastLiveTickReceivedAt > 0 && (Date.now() - lastLiveTickReceivedAt) <= LIVE_DATA_MAX_AGE_MS;
+}
+function refreshMarketFeedHealth() {
+  const host = $("marketFreshness");
+  if (!host) return;
+  const fresh = hasFreshLiveTick();
+  const ageMs = lastLiveTickReceivedAt ? Math.max(0, Date.now() - lastLiveTickReceivedAt) : null;
+  const nextState = fresh ? "live" : (lastLiveTickReceivedAt ? "stale" : "waiting");
+  if (fresh) {
+    host.textContent = ageMs < 5000 ? "LIVE DATA · updated just now" : "LIVE DATA · updated " + Math.floor(ageMs / 1000) + "s ago";
+    host.style.color = "var(--green)";
+  } else if (ageMs !== null) {
+    host.textContent = "STALE DATA · last tick " + Math.floor(ageMs / 1000) + "s ago · signals paused";
+    host.style.color = "var(--red)";
+  } else {
+    host.textContent = "WAITING FOR LIVE TICK · signals unavailable";
+    host.style.color = "var(--amber)";
+  }
+  if (nextState !== marketFeedState) {
+    const previous = marketFeedState;
+    marketFeedState = nextState;
+    if (selected && candles && (previous === "live" || nextState === "live" || nextState === "stale")) analyse();
+    if (nextState === "stale") setDiagnostic("Live tick feed has been quiet for more than 120 seconds. The market may be inactive or the feed interrupted; current setup confirmation is paused.");
+  }
 }
 function connect() {
   clearTimers();
@@ -589,6 +621,8 @@ function connect() {
   chartPriceLine=null;
   chartRemoveOverlayLines();
   latestTickEpoch=0;
+  lastLiveTickReceivedAt=0;
+  marketFeedState="waiting";
   candleUpdateAt={300:0,900:0,3600:0,14400:0};
   liveCandleState={300:{openTime:0,lastUpdateEpoch:0},900:{openTime:0,lastUpdateEpoch:0},3600:{openTime:0,lastUpdateEpoch:0},14400:{openTime:0,lastUpdateEpoch:0}};
   resetCandleDiagnostics();
@@ -607,6 +641,7 @@ function connect() {
     setDiagnostic("Browser could not create the connection");
     return;
   }
+  if (!marketFeedWatchdog) marketFeedWatchdog = setInterval(refreshMarketFeedHealth, 5000);
   ws.onopen = () => {
     if (generation !== socketGeneration) return;
     $("connBadge").textContent = "CONNECTED";
@@ -652,6 +687,7 @@ function connect() {
   ws.onclose = event => {
     if (generation !== socketGeneration) return;
     clearTimers();
+    refreshMarketFeedHealth();
     $("connBadge").textContent = "DISCONNECTED";
     $("connBadge").style.color = "var(--red)";
     setStatus("Connection closed (code " + event.code + "). Reconnecting in 5 seconds…");
@@ -710,8 +746,12 @@ function handleMessage(data) {
     if (tickSymbol && tickSymbol === selected && data.tick.quote !== undefined) {
       const nextQuote = Number(data.tick.quote);
       if (!Number.isFinite(nextQuote)) return;
+      const tickEpoch = Number(data.tick.epoch);
+      if (Number.isFinite(tickEpoch) && latestTickEpoch > 0 && tickEpoch < latestTickEpoch) return;
       quote = nextQuote;
-      latestTickEpoch = Number(data.tick.epoch) || latestTickEpoch;
+      if (Number.isFinite(tickEpoch) && tickEpoch > 0) latestTickEpoch = Math.max(latestTickEpoch, tickEpoch);
+      lastLiveTickReceivedAt = Date.now();
+      refreshMarketFeedHealth();
       const tickPrecision = Number(data.tick.pip_size);
       const decimals = Number.isInteger(tickPrecision) && tickPrecision >= 0 && tickPrecision <= 8 ? tickPrecision : decimalPlaces(data.tick.quote);
       if (Number.isInteger(tickPrecision) && tickPrecision >= 0 && tickPrecision <= 8) marketPrecisionBySymbol.set(tickSymbol, tickPrecision);
@@ -719,7 +759,8 @@ function handleMessage(data) {
       const meta = findSymbol(selected);
       $("symbolName").textContent = displayName(meta) + " · live tick";
       setDiagnostic("Live tick received for " + selected + " at " + (latestTickEpoch ? new Date(latestTickEpoch*1000).toLocaleTimeString() : new Date().toLocaleTimeString()));
-      updateLiveRangeFromQuote();
+      if (!latestAnalysis) analyse();
+      else updateLiveRangeFromQuote();
       updateCandleIntegrity();
       updateChartLivePrice();
       renderChart(false);
@@ -863,6 +904,9 @@ function loadMarket(code) {
   chartPriceLine=null;
   chartRemoveOverlayLines();
   latestTickEpoch = 0;
+  lastLiveTickReceivedAt = 0;
+  marketFeedState = "waiting";
+  refreshMarketFeedHealth();
   candleUpdateAt = {300:0,900:0,3600:0,14400:0};
   liveCandleState = {300:{openTime:0,lastUpdateEpoch:0},900:{openTime:0,lastUpdateEpoch:0},3600:{openTime:0,lastUpdateEpoch:0},14400:{openTime:0,lastUpdateEpoch:0}};
   resetCandleDiagnostics();
@@ -1244,6 +1288,25 @@ function analyse() {
   const c4 = completedCandles(candles[14400], 14400);
   const ready = [c4.length ? "4H ready" : "4H waiting", c1.length ? "1H ready" : "1H waiting", c15.length ? "15M ready" : "15M waiting", c5.length ? "5M ready" : "5M waiting"];
   renderChart();
+  if (!hasFreshLiveTick()) {
+    const age = lastLiveTickReceivedAt ? Math.floor((Date.now() - lastLiveTickReceivedAt) / 1000) : null;
+    latestAnalysis = null;
+    setText("decision", "WAIT · DATA NOT LIVE");
+    $("decision").className = "signal amber";
+    setText("direction", "WAIT");
+    setText("entry", "—"); setText("stop", "—"); setText("target", "—");
+    setText("scoreValue", "0/100"); setText("scoreLabel", "Live market data required before setup confirmation");
+    $("scoreFill").style.width = "0%";
+    setText("structureBias", "Awaiting fresh live data");
+    setText("structureEvent", "—");
+    $("narrativeState").textContent = "WAIT";
+    $("narrativeLead").textContent = age === null ? "Waiting for the first live Deriv tick. Historical candles alone cannot confirm a current opportunity." : "Live tick data is stale (" + age + " seconds). The market may be inactive or the feed interrupted; no current setup will be confirmed.";
+    $("narrativeDetails").innerHTML = "<div class=\"narrativeItem\"><b>Data freshness</b>Current trade confirmation is paused until a new live tick is received.</div><div class=\"narrativeItem\"><b>Available history</b>" + svgEsc(ready.join(" · ")) + "</div>";
+    renderConfirmationChecks([{label:"Fresh Deriv live tick within 120 seconds",ok:false},{label:"Historical candle integrity",ok:c5.length>0&&c15.length>0&&c1.length>0&&c4.length>0}]);
+    renderTradePlan();
+    setStatus(age === null ? "Waiting for the first live Deriv tick. Historical prices are not treated as a current setup." : "Live tick feed stale for " + age + " seconds. Signal confirmation paused.");
+    return;
+  }
   if (c5.length < 15 || c15.length < 8 || c1.length < 1 || c4.length < 1) {
     setStatus("Connected to " + selected + ". Waiting for completed candles: " + ready.join(" · "));
     setText("scoreValue", "0/100");
@@ -1439,7 +1502,7 @@ function analyse() {
   updateMarketNarrative();
   renderTradePlan();
   renderChart(false);
-  setStatus("V1.9.3 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  setStatus("V1.9.4 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
   if (direction !== "WAIT") {
     const signalKey=[selected,selectedStrategy||"CRT REVERSAL",direction,last5.epoch].join("|");
     if(signalKey!==lastNotifiedSignalKey){
@@ -2027,7 +2090,7 @@ window.__lwcPromise.then(() => {
 (function(){
 "use strict";
 const scanner = {
- running:false, stage:"STOPPED", universe:[], records:new Map(), queue:[], queueTimer:null, cycleTimer:null,
+ running:false, stage:"STOPPED", universe:[], records:new Map(), queue:[], queueTimer:null, cycleTimer:null, healthTimer:null,
  batch:null, requestMeta:new Map(), requestTimers:new Map(), subscriptionMeta:new Map(), subscriptionIds:new Set(), monitored:new Set(),
  stats:{requested:0,received:0,failed:0,checked:0,deep:0}, alerts:[], lastUpdated:0, cycleNumber:0, refreshEveryMs:15*60*1000,
  alertLatches:new Map(), lastEvents:new Set(), progressMessage:"Stopped"
@@ -2046,7 +2109,7 @@ function scannerText(id,text){const el=$s(id);if(el)el.textContent=String(text);
 function scannerFmt(value,meta){return Number.isFinite(Number(value))?formatPrice(Number(value),meta):"—";}
 function scannerNow(rec){return Number(rec?.latestTickEpoch)||Date.now()/1000;}
 function scannerCompleted(list,tf,now){return (Array.isArray(list)?list:[]).filter(c=>Number(c.epoch)+tf<=now);}
-function scannerMakeRecord(meta){return {meta,history:{300:[],900:[],3600:[],14400:[]},latestPrice:null,latestTickEpoch:0,context:null,analysis:null,stage:"WAIT",rank:0,reason:"Waiting for discovery history",lastEval5Epoch:0,lastSignal:null,invalidated:false,approachLatches:new Map(),errors:[],seenDeep:false};}
+function scannerMakeRecord(meta){return {meta,history:{300:[],900:[],3600:[],14400:[]},latestPrice:null,latestTickEpoch:0,lastLiveAt:0,context:null,analysis:null,stage:"WAIT",rank:0,reason:"Waiting for discovery history",lastEval5Epoch:0,lastSignal:null,invalidated:false,approachLatches:new Map(),errors:[],seenDeep:false};}
 function scannerEligibleSymbols(){
  const filter=$s("scannerCategory")?.value||"all";
  const unique=new Map();
@@ -2137,7 +2200,13 @@ function scannerHandleTick(data,meta){
  const rec=scanner.records.get(meta.symbol);
  if(!rec||!data.tick){if(meta.countsBatch!==false)scannerBatchComplete(false,meta);return;}
  const q=Number(data.tick.quote),epoch=Number(data.tick.epoch),tickPrecision=Number(data.tick.pip_size);
- if(Number.isFinite(q)&&q>0){rec.latestPrice=q;rec.latestTickEpoch=Number.isFinite(epoch)?epoch:rec.latestTickEpoch;if(Number.isInteger(tickPrecision)&&tickPrecision>=0&&tickPrecision<=8)marketPrecisionBySymbol.set(meta.symbol,tickPrecision);}
+ if(Number.isFinite(q)&&q>0){
+  const outOfOrder=Number.isFinite(epoch)&&rec.latestTickEpoch>0&&epoch<rec.latestTickEpoch;
+  if(!outOfOrder){
+   rec.latestPrice=q;rec.latestTickEpoch=Number.isFinite(epoch)?Math.max(rec.latestTickEpoch,epoch):rec.latestTickEpoch;rec.lastLiveAt=Date.now();
+   if(Number.isInteger(tickPrecision)&&tickPrecision>=0&&tickPrecision<=8)marketPrecisionBySymbol.set(meta.symbol,tickPrecision);
+  }
+ }
  if(data.subscription?.id)scannerAddSubscription(data,meta);
  if(meta.countsBatch!==false){scanner.stats.received++;scannerBatchComplete(true,meta);}
  scannerEvaluateRecord(rec,"tick");scannerRenderOpportunities();
@@ -2156,6 +2225,8 @@ function scannerUpsertLive(rec,tf,ohlc){
  else list.push(bar);
  if(list.length>300)list.splice(0,list.length-300);
  if(updateEpoch>rec.latestTickEpoch)rec.latestTickEpoch=updateEpoch;
+ if(tf===300)rec.latestPrice=close;
+ rec.lastLiveAt=Date.now();
  return true;
 }
 function scannerHandleOhlc(data,meta){
@@ -2193,7 +2264,12 @@ function scannerEvaluateRecord(rec,source){
  const ctx=rec.context;
  if(!ctx.ready){rec.stage="WAIT";rec.rank=0;rec.reason=ctx.reason;return;}
  const now=scannerNow(rec),price=Number.isFinite(rec.latestPrice)?rec.latestPrice:ctx.price;
- const tickFresh=rec.latestTickEpoch>0&&(Date.now()/1000-rec.latestTickEpoch)<=120;
+ const tickFresh=rec.lastLiveAt>0&&(Date.now()-rec.lastLiveAt)<=LIVE_DATA_MAX_AGE_MS;
+ if(!tickFresh){
+  rec.stage=rec.invalidated?"INVALIDATED":"WAIT";rec.rank=rec.invalidated?500:0;rec.analysis=null;
+  rec.reason=ctx.reason+" · live feed not updated within 120 seconds; current setup confirmation and alerts are paused";
+  return;
+ }
  const c5=scannerCompleted(rec.history[300],300,now),c15=scannerCompleted(rec.history[900],900,now),c1=scannerCompleted(rec.history[3600],3600,now),c4=scannerCompleted(rec.history[14400],14400,now);
  rec.rank=ctx.score;rec.stage="MONITOR";rec.reason=ctx.reason;rec.analysis=null;
  if(c5.length<15||c15.length<8||c1.length<2||c4.length<2){
@@ -2287,7 +2363,7 @@ function scannerEvaluateRecord(rec,source){
  if(rec.stage!=="INVALIDATED"&&!plan&&rec.invalidated&&rec.lastSignal)rec.reason="Previous candidate invalidated; waiting for a new completed setup";
 }
 function scannerCheckApproach(rec,price,analysis){
- if(!Number.isFinite(price)||!rec.latestTickEpoch||(Date.now()/1000-rec.latestTickEpoch)>120)return;
+ if(!Number.isFinite(price)||!rec.lastLiveAt||(Date.now()-rec.lastLiveAt)>LIVE_DATA_MAX_AGE_MS)return;
  const ctx=rec.context;if(!ctx?.ready)return;
  let levels=[];
  if(analysis?.levels?.length)levels=analysis.levels;
@@ -2452,11 +2528,28 @@ function scannerStart(){
  scannerStartBroadCycle(false);
  if(scanner.cycleTimer)clearInterval(scanner.cycleTimer);
  scanner.cycleTimer=setInterval(()=>{if(scanner.running&&!scanner.batch)scannerStartBroadCycle(true);},scanner.refreshEveryMs);
+ if(scanner.healthTimer)clearInterval(scanner.healthTimer);
+ scanner.healthTimer=setInterval(scannerRefreshFreshness,5000);
+}
+function scannerRefreshFreshness(){
+ if(!scanner.running)return;
+ let changed=false;
+ for(const rec of scanner.records.values()){
+  if(!rec.context?.ready)continue;
+  const fresh=rec.lastLiveAt>0&&(Date.now()-rec.lastLiveAt)<=LIVE_DATA_MAX_AGE_MS;
+  if(!fresh&&!rec.reason.includes("live feed not updated within 120 seconds")){
+   rec.stage=rec.invalidated?"INVALIDATED":"WAIT";rec.rank=rec.invalidated?500:0;rec.analysis=null;
+   rec.reason=rec.context.reason+" · live feed not updated within 120 seconds; current setup confirmation and alerts are paused";
+   changed=true;
+  }
+ }
+ if(changed)scannerRenderOpportunities();
 }
 function scannerStop(forget=true){
  scanner.running=false;
  if(scanner.queueTimer){clearInterval(scanner.queueTimer);scanner.queueTimer=null;}
  if(scanner.cycleTimer){clearInterval(scanner.cycleTimer);scanner.cycleTimer=null;}
+ if(scanner.healthTimer){clearInterval(scanner.healthTimer);scanner.healthTimer=null;}
  scanner.requestTimers.forEach(timer=>clearTimeout(timer));scanner.requestTimers.clear();
  scanner.queue=[];scanner.batch=null;
  if(forget&&socketOpen())scanner.subscriptionIds.forEach(id=>{try{send({forget:id});}catch(_){}});
@@ -2526,7 +2619,7 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
 </script>
 
 <script>
-/* V1.9.3 workspace navigation and engine-grounded analyst companion. */
+/* V1.9.4 workspace navigation and engine-grounded analyst companion. */
 (function(){
  'use strict';
  const byId=id=>document.getElementById(id);
