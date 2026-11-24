@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111923"><link rel="manifest" href="manifest.webmanifest">
-<title>TEBZA CRT ANALYST</title>
+<title>TEBZA CRT ANALYST V1.9.7</title>
 <style>
 :root{--bg:#080f1c;--panel:#111d30;--panel2:#0b1627;--line:#263952;--txt:#edf4ff;--muted:#93a7c2;--green:#28c7a5;--red:#f07883;--amber:#e8b85d;--blue:#7daeff}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172b47 0,#080f1c 55%);color:var(--txt);font:14px system-ui,-apple-system,Segoe UI,sans-serif;padding-bottom:30px}
@@ -212,11 +212,28 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 @media(min-width:701px){.navScrim{display:none!important}}
 
 .selectedMarketRef{font-weight:700;color:#d7c18e;overflow-wrap:anywhere}
+
+/* V1.9.7: visible selected-market context and signal replay workspace */
+.chartSelectedBadge,.analysisSelectedBadge{display:block;margin-top:7px;padding:7px 10px;border:1px solid rgba(198,166,107,.32);border-radius:9px;background:rgba(198,166,107,.08);font-size:11px;line-height:1.4}
+.signalReplayPanel{margin-top:10px;padding:10px;border:1px solid #34495c;border-radius:10px;background:#101c29}
+.signalReplayPanel[hidden]{display:none!important}
+.signalReplayTitle{font-size:10px;font-weight:850;letter-spacing:.8px;color:#d8c28f;text-transform:uppercase;margin-bottom:8px}
+.signalReplayChart{width:100%;height:auto;display:block;background:#0a1420;border:1px solid #26394b;border-radius:8px}
+.signalReplayLegend{display:flex;gap:8px;flex-wrap:wrap;margin:7px 0;color:#aebdcb;font-size:9px}
+.signalReplayEvents{display:grid;gap:6px;margin-top:8px}
+.signalReplayEvent{display:grid;grid-template-columns:94px 1fr auto;gap:7px;align-items:start;padding:7px;border:1px solid #2b3c4d;border-radius:7px;font-size:10px}
+.signalReplayEvent time{color:#91a3b5;font-size:9px}
+.signalReplayEvent b{color:#d8e1ea}
+.signalReplayEmpty{padding:12px;border:1px dashed #3b4d5e;border-radius:8px;color:#a4b3c2;font-size:10px;line-height:1.5}
+.signalCardActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.signalCardActions button{font-size:10px;padding:7px 10px}
+@media(max-width:540px){.signalReplayEvent{grid-template-columns:1fr auto}.signalReplayEvent time{grid-column:1/-1;grid-row:2}}
+
 </style></head><body>
 <header class="appTopbar">
  <div class="topBrand"><button class="menuToggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny brandSub">INSTITUTIONAL MARKET INTELLIGENCE · ANALYSIS ONLY</div></div></div>
  <div class="topContext"><b id="pageTitle">Analyst workspace</b><span class="muted tiny" id="pageSubtitle">Your live market overview</span></div>
- <div class="topActions"><span class="pill" id="connBadge">CONNECTING</span><span class="topVersion">V1.9.5</span></div>
+ <div class="topActions"><span class="pill" id="connBadge">CONNECTING</span><span class="topVersion">V1.9.7</span></div>
 </header>
 <div class="appShell">
  <aside class="appSidebar" id="appSidebar" aria-label="Main navigation">
@@ -233,12 +250,12 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
   <div class="navSpacer"></div>
   <div class="sidebarStatus"><span class="statusDot"></span><div><b>Analysis-only mode</b><small>No orders are placed</small></div></div>
   <button class="navItem" type="button" data-view="settings"><span class="navIcon">⚙</span><span>Settings & connection</span></button>
-  <div class="sidebarFoot">TEBZA CRT ANALYST<br>INSTITUTIONAL EDITION · V1.9.5</div>
+  <div class="sidebarFoot">TEBZA CRT ANALYST<br>INSTITUTIONAL EDITION · V1.9.7</div>
  </aside>
  <div class="navScrim" id="navScrim"></div>
  <main id="appMain">
 <section class="pageView active" id="workspaceView" data-page="workspace">
-<div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for live ticks and native OHLC candles. V1.9.5 pauses current setup confirmation when the selected-market tick feed has not updated within 120 seconds. No Deriv password or account token is required. Analysis only; no trades are placed.</div>
+<div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for live ticks and native OHLC candles. V1.9.7 preserves confirmed setup records and replay history. Current-market confirmation is paused if the live tick feed is stale for more than 120 seconds. No Deriv password or account token is required. Analysis only; no trades are placed.</div>
 <section class="card">
  <div class="row between"><div><h2 style="margin:0">Market selector</h2><div class="muted tiny" id="marketCount">Loading Deriv instruments…</div></div><button id="refresh" class="primary">Refresh</button></div>
  <div class="row" style="margin-top:12px"><select id="category"><option value="all">All markets</option><option value="synthetic">Synthetic / Derived</option><option value="forex">Forex</option><option value="commodities">Commodities / Metals</option><option value="indices">Stock indices</option><option value="crypto">Cryptocurrencies</option><option value="shares">Shares / ETFs</option></select><select id="symbol"><option>Loading…</option></select></div>
@@ -333,9 +350,9 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 </section>
 </section>
 <section class="pageView" id="signalsView" data-page="signals" hidden>
- <section class="pageIntro"><div><div class="eyebrow">SIGNAL TRACKING</div><h1>Confirmed signals</h1><p>Confirmed setup snapshots remain saved while you change markets or timeframes. Each signal is tracked until invalidation or completion.</p></div><button type="button" class="pageAction" id="signalsRefresh">Refresh</button></section>
+ <section class="pageIntro"><div><div class="eyebrow">SIGNAL TRACKING</div><h1>Confirmed signals</h1><p>Confirmed setup snapshots and candle history remain saved while you change markets or timeframes. Review the confirmation, entry, target and invalidation events in each signal replay.</p></div><button type="button" class="pageAction" id="signalsRefresh">Refresh</button></section>
  <section class="homeMetrics"><div class="homeMetric"><small>OPEN / TRACKING</small><b id="signalOpenCount">0</b><span>Confirmed opportunities</span></div><div class="homeMetric"><small>COMPLETED</small><b id="signalCompletedCount">0</b><span>All targets reached</span></div><div class="homeMetric"><small>INVALIDATED</small><b id="signalInvalidCount">0</b><span>Stop / invalidation reached</span></div><div class="homeMetric"><small>HISTORY</small><b id="signalTotalCount">0</b><span>Saved on this device</span></div></section>
- <section class="card"><div class="panelHead"><div><div class="eyebrow">PERSISTENT RECORD</div><h2>Signal history</h2></div><span class="tag">Local device storage</span></div><div id="confirmedSignalsList" class="scannerAlerts"><div class="scannerEmpty">No confirmed signals have been recorded yet.</div></div><p class="scannerNote">Signals are stored in this browser on this device. Clearing browser site data can erase them. Cloud sync across devices is not included. Recorded signals are analytical scenarios, not executed trades.</p></section>
+ <section class="card"><div class="panelHead"><div><div class="eyebrow">PERSISTENT RECORD</div><h2>Signal history</h2></div><span class="tag">Local device storage</span></div><div id="confirmedSignalsList" class="scannerAlerts"><div class="scannerEmpty">No confirmed signals have been recorded yet.</div></div><p class="scannerNote">Signals and replay candles are stored in this browser on this device. Clearing browser site data can erase them. Tracking updates while this page is open and connected; background monitoring while the browser is closed and cloud sync are not included. Recorded signals are analytical scenarios, not executed trades.</p></section>
 </section>
 <section class="pageView" id="alertsView" data-page="alerts" hidden>
  <section class="pageIntro"><div><div class="eyebrow">EVENT MONITOR</div><h1>Alerts & activity</h1><p>Recent approach, developing, confirmation and invalidation events saved by this browser.</p></div><button type="button" class="pageAction" data-go="markets">Open scanner</button></section>
@@ -345,7 +362,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 <section class="pageView" id="chartView" data-page="chart" hidden>
  <section class="pageIntro"><div><div class="eyebrow">PRICE ACTION WORKSPACE</div><h1>Professional chart</h1><p id="chartSelectedMarket" class="selectedMarketRef">Select a market to load its live chart and analysis.</p></div><button type="button" class="pageAction" data-go="analysis">View analysis</button></section>
 <section class="card" id="chartCard">
- <div class="row between"><h2 style="margin:0">Live annotated chart</h2><span class="tag" id="chartLiveState">Waiting for candles</span></div>
+ <div class="row between"><div><h2 style="margin:0">Live annotated chart</h2><div class="selectedMarketRef chartSelectedBadge" id="chartCardMarket">Select a market</div></div><span class="tag" id="chartLiveState">Waiting for candles</span></div>
  <div class="chartToolbar" style="margin-top:10px">
   <select id="chartTf" aria-label="Chart timeframe"><option value="300">5M</option><option value="900">15M</option><option value="3600">1H</option><option value="14400">4H</option></select>
   <button id="layoutChart" class="active" type="button" hidden>Chart first</button><button id="layoutSplit" type="button" hidden>Split view</button>
@@ -403,7 +420,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 <section class="pageView" id="analysisView" data-page="analysis" hidden>
  <section class="pageIntro"><div><div class="eyebrow">ENGINE INTERPRETATION</div><h1>Market analysis</h1><p id="analysisSelectedMarket" class="selectedMarketRef">Select a market to view its analysis.</p></div><button type="button" class="pageAction" data-go="chart">Open pro chart</button></section>
 <section class="card" id="marketNarrative">
- <div class="row between"><h2 style="margin:0">Market narrative & current price analysis</h2><span class="planBadge" id="narrativeState">WAIT</span></div>
+ <div class="row between"><div><h2 style="margin:0">Market narrative & current price analysis</h2><div class="selectedMarketRef analysisSelectedBadge" id="analysisCardMarket">Select a market</div></div><span class="planBadge" id="narrativeState">WAIT</span></div>
  <p class="narrativeLead" id="narrativeLead">Waiting for sufficient completed candles to describe current price behaviour.</p>
  <div class="narrativeList" id="narrativeDetails">
   <div class="narrativeItem"><b>Higher timeframe</b>Waiting for 4H and 1H context.</div>
@@ -457,7 +474,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 <section class="card"><h2>Analysis summary</h2><div class="grid">
  <div class="tile"><small>Potential direction</small><b id="direction">WAIT</b></div><div class="tile"><small>Entry reference</small><b id="entry">—</b></div>
  <div class="tile"><small>Invalidation reference</small><b id="stop">—</b></div><div class="tile"><small>Opposing range target</small><b id="target">—</b></div>
-</div><p class="muted tiny">V1.9.5 strategies: CRT reversal, trend continuation (4H/1H alignment, 15M EMA21 pullback and 5M impulse) and breakout/retest (completed 15M break with 5M retest/hold). The strategy rules are initial, evidence-based heuristics and have not yet been statistically backtested or calibrated separately for each market category. FVG lifecycle, order blocks, session filters, market-specific calibration and full historical performance testing remain future modules. Evidence scores are not win probabilities.</p></section>
+</div><p class="muted tiny">Current strategy set: CRT reversal, trend continuation (4H/1H alignment, 15M EMA21 pullback and 5M impulse) and breakout/retest (completed 15M break with 5M retest/hold). The strategy rules are initial, evidence-based heuristics and have not yet been statistically backtested or calibrated separately for each market category. FVG lifecycle, order blocks, session filters, market-specific calibration and full historical performance testing remain future modules. Evidence scores are not win probabilities.</p></section>
 </details>
 </section>
 <section class="pageView" id="performanceView" data-page="performance" hidden>
@@ -480,7 +497,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
  <section class="pageIntro"><div><div class="eyebrow">PLATFORM PREFERENCES</div><h1>Settings & connection</h1><p>Review the visual system, data connection and notification permissions.</p></div></section>
  <section class="card appearanceCard"><div class="eyebrow">APPEARANCE</div><h2>Premium institutional · Balanced density</h2><p class="sectionNote">A consistent interface palette is applied across the dashboard, scanner, chart, alerts and analysis.</p><div class="themeSwatches"><span style="background:#111923"></span><span style="background:#1B2735"></span><span style="background:#C6A66B"></span><span style="background:#42B88B"></span><span style="background:#D7777E"></span><span style="background:#8298B2"></span></div><div class="appearanceTags"><span>Charcoal navy surfaces</span><span>Emerald positive states</span><span>Champagne reference levels</span><span>Soft coral risk states</span></div></section>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.9.5 · Institutional analyst workspace · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+<div class="foot">TEBZA CRT ANALYST V1.9.7 · Institutional analyst workspace · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
 </section>
 </main>
 </div>
@@ -612,6 +629,7 @@ function refreshMarketFeedHealth() {
   }
 }
 function connect() {
+  window.TEBZA_SIGNAL_JOURNAL?.resetWatchers?.();
   clearTimers();
   if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
   const generation = ++socketGeneration;
@@ -751,6 +769,10 @@ function handleMessage(data) {
   if (data.msg_type === "tick" && data.tick) {
     const tickInfo = responseInfo || (data.subscription?.id ? subscriptionMeta.get(data.subscription.id) : null);
     const tickSymbol = data.tick.symbol || data.echo_req?.ticks || tickInfo?.symbol;
+    if (tickSymbol && data.tick.quote !== undefined) {
+      const journalPrice=Number(data.tick.quote),journalEpoch=Number(data.tick.epoch);
+      if(Number.isFinite(journalPrice))window.TEBZA_SIGNAL_JOURNAL?.update(tickSymbol,journalPrice,journalEpoch);
+    }
     if (tickSymbol && tickSymbol === selected && data.tick.quote !== undefined) {
       const nextQuote = Number(data.tick.quote);
       if (!Number.isFinite(nextQuote)) return;
@@ -780,6 +802,12 @@ function handleMessage(data) {
     const info = responseInfo || (data.subscription?.id ? subscriptionMeta.get(data.subscription.id) : null);
     const granularity = Number(data.echo_req?.granularity || info?.granularity);
     const requestSymbol = data.echo_req?.ticks_history || info?.symbol;
+    if(info?.kind==="signal_journal_ohlc"&&requestSymbol&&granularity===300&&Array.isArray(data.candles)){
+      const inspectedJournal=inspectDerivHistoricalCandles(data.candles);
+      inspectedJournal.candles.forEach(b=>window.TEBZA_SIGNAL_JOURNAL?.updateBar(requestSymbol,300,b));
+      if(data.req_id)requestMeta.delete(data.req_id);
+      return;
+    }
     if (granularity && GRANULARITIES.includes(granularity) && requestSymbol === selected) {
       if (chartSubscribedTimeframes.has(granularity) && info?.subscribed !== true) {
         setDiagnostic("Ignored a delayed non-streaming history response for " + granularityLabel(granularity) + "; the live subscription is authoritative");
@@ -812,6 +840,10 @@ function handleMessage(data) {
     const info = responseInfo || (data.subscription?.id ? subscriptionMeta.get(data.subscription.id) : null);
     const granularity = Number(data.ohlc.granularity || data.echo_req?.granularity || info?.granularity);
     const requestSymbol = data.ohlc.symbol || data.echo_req?.ticks_history || info?.symbol;
+    if(info?.kind==="signal_journal_ohlc"&&requestSymbol&&granularity===300){
+      window.TEBZA_SIGNAL_JOURNAL?.updateBar(requestSymbol,300,{epoch:Number(data.ohlc.open_time),open:Number(data.ohlc.open),high:Number(data.ohlc.high),low:Number(data.ohlc.low),close:Number(data.ohlc.close)});
+      return;
+    }
     ohlcStreamStats.received++;
     if (requestSymbol !== selected) {
       rejectOhlcUpdate("symbol mismatch", granularity);
@@ -835,6 +867,7 @@ function handleMessage(data) {
     ohlcStreamStats.lastUpdateEpoch = result.updateEpoch || 0;
     ohlcStreamStats.lastGranularity = granularity;
     candleUpdateAt[granularity] = Date.now();
+    window.TEBZA_SIGNAL_JOURNAL?.updateBar(selected,granularity,{epoch:Number(data.ohlc.open_time),open:Number(data.ohlc.open),high:Number(data.ohlc.high),low:Number(data.ohlc.low),close:Number(data.ohlc.close)});
     updateCandleIntegrity();
     if (granularity === Number($("chartTf")?.value || 300)) renderChart(false);
     analyse();
@@ -897,6 +930,7 @@ function renderSymbols() {
 
 function loadMarket(code) {
   if (!code || !socketOpen()) return;
+  window.TEBZA_SIGNAL_JOURNAL?.resetWatchers?.();
   subscriptions.forEach(id => send({forget: id}));
   subscriptions.clear();
   subscriptionMeta.clear();
@@ -907,6 +941,9 @@ function loadMarket(code) {
   const chartRef=document.getElementById("chartSelectedMarket"),analysisRef=document.getElementById("analysisSelectedMarket");
   if(chartRef)chartRef.textContent=selectedLabel+" · Loading live chart…";
   if(analysisRef)analysisRef.textContent=selectedLabel+" · Loading market analysis…";
+  const chartCardRef=document.getElementById("chartCardMarket"),analysisCardRef=document.getElementById("analysisCardMarket");
+  if(chartCardRef)chartCardRef.textContent=selectedLabel+" · Market selected";
+  if(analysisCardRef)analysisCardRef.textContent=selectedLabel+" · Analysis loading";
   candles = {300: [], 900: [], 3600: [], 14400: []};
   chartSubscribedTimeframes = new Set();
   chartDataCache = {symbol:"", timeframe:0, length:0, firstEpoch:0, lastEpoch:0, lastBar:null};
@@ -1514,7 +1551,7 @@ function analyse() {
   updateMarketNarrative();
   renderTradePlan();
   renderChart(false);
-  setStatus("V1.9.5 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  setStatus("V1.9.7 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
   if (direction !== "WAIT") {
     const signalKey=[selected,selectedStrategy||"CRT REVERSAL",direction,last5.epoch].join("|");
     if(signalKey!==lastNotifiedSignalKey){
@@ -1690,6 +1727,9 @@ function renderChart(force){
  $("chartMarket").textContent=marketLabel;
  const chartRef=document.getElementById("chartSelectedMarket");if(chartRef)chartRef.textContent=marketLabel+" · Live Deriv market · "+granularityLabel(tf);
  const analysisRef=document.getElementById("analysisSelectedMarket");if(analysisRef)analysisRef.textContent=marketLabel+" · Current engine assessment";
+ const chartCardRef=document.getElementById("chartCardMarket"),analysisCardRef=document.getElementById("analysisCardMarket");
+ if(chartCardRef)chartCardRef.textContent=marketLabel+" · "+granularityLabel(tf)+" · Live Deriv market";
+ if(analysisCardRef)analysisCardRef.textContent=marketLabel+" · Current engine assessment";
  $("chartLocation").textContent=a?.location||"Waiting";
  $("chartStructure").textContent=a?.structure?.direction||"Waiting";
  $("chartLiquidity").textContent=a?(a.bullishSweep?"Sell-side swept":a.bearishSweep?"Buy-side swept":"No confirmed sweep"):"Waiting";
@@ -1984,7 +2024,7 @@ function renderTradePlan(){
 }
 function updateLiveRangeFromQuote(){
  if(!latestAnalysis||!hasLiveQuote())return;const a=latestAnalysis,meta=a.meta||findSymbol(selected),p=Number(quote),width=a.hi-a.lo;
- window.TEBZA_SIGNAL_JOURNAL?.update(selected,p);
+ window.TEBZA_SIGNAL_JOURNAL?.update(selected,p,latestTickEpoch);
  const rangeState=classifyRangePosition(p,a.hi,a.lo);
  a.price=p;a.rangePercent=rangeState.percent;a.location=rangeState.label;
  $("rangeLocation").textContent=a.location;$("rangePosition").textContent=a.rangePercent===null?"—":a.rangePercent.toFixed(1)+"% from range low"+(rangeState.inside?"":" · outside range");
@@ -2222,7 +2262,7 @@ function scannerHandleTick(data,meta){
   if(!outOfOrder){
    rec.latestPrice=q;rec.latestTickEpoch=Number.isFinite(epoch)?Math.max(rec.latestTickEpoch,epoch):rec.latestTickEpoch;rec.lastLiveAt=Date.now();
    if(Number.isInteger(tickPrecision)&&tickPrecision>=0&&tickPrecision<=8)marketPrecisionBySymbol.set(meta.symbol,tickPrecision);
-   window.TEBZA_SIGNAL_JOURNAL?.update(meta.symbol,q);
+   window.TEBZA_SIGNAL_JOURNAL?.update(meta.symbol,q,epoch);
   }
  }
  if(data.subscription?.id)scannerAddSubscription(data,meta);
@@ -2245,6 +2285,7 @@ function scannerUpsertLive(rec,tf,ohlc){
  if(updateEpoch>rec.latestTickEpoch)rec.latestTickEpoch=updateEpoch;
  if(tf===300)rec.latestPrice=close;
  rec.lastLiveAt=Date.now();
+ window.TEBZA_SIGNAL_JOURNAL?.updateBar(symbolCode(rec.meta),tf,bar);
  return true;
 }
 function scannerHandleOhlc(data,meta){
@@ -2416,7 +2457,7 @@ function scannerAlertDeveloping(rec,last5){
 }
 function scannerAlertConfirmed(rec,plan,last5){
  if(!last5)return;
- try{window.TEBZA_SIGNAL_JOURNAL?.capture({meta:rec.meta,tradePlan:plan,last5,price:rec.latestPrice,hi:rec.analysis?.hi,lo:rec.analysis?.lo,mid:rec.analysis?.mid,bias4:rec.analysis?.bias4,structure:rec.analysis?.structure},"market-scanner");}catch(_){}
+ try{window.TEBZA_SIGNAL_JOURNAL?.capture({meta:rec.meta,tradePlan:plan,last5,price:rec.latestPrice,hi:rec.analysis?.hi,lo:rec.analysis?.lo,mid:rec.analysis?.mid,bias4:rec.analysis?.bias4,structure:rec.analysis?.structure,replayHistory:rec.history},"market-scanner");}catch(_){}
  scannerEmit(rec,"confirmed","SETUP CONFIRMED",displayName(rec.meta)+" · "+(plan.strategy||"CRT REVERSAL")+" · "+plan.side+" candidate. Entry "+scannerFmt(plan.entry,rec.meta)+", invalidation "+scannerFmt(plan.stop,rec.meta)+", TP1 "+scannerFmt(plan.targets[0].price,rec.meta)+", TP2 "+scannerFmt(plan.targets[1].price,rec.meta)+", TP3 "+scannerFmt(plan.targets[2].price,rec.meta)+". Review independently; no trade was placed.","confirmed:"+last5.epoch+":"+plan.side);
 }
 function scannerEmit(rec,stage,title,body,eventKey){
@@ -2451,13 +2492,30 @@ function scannerOpenMarket(code){
  const target=String(code||"").trim();
  const meta=symbols.find(x=>symbolCode(x)===target);
  if(!meta){setStatus("Could not open "+target+": instrument is not in the current Deriv symbol catalogue. Refresh markets and try again.");return;}
- const category=$s("category"),selector=$s("symbol");
- if(category)category.value="all";
- renderSymbols();
- if(selector)selector.value=target;
- loadMarket(target);
- if(typeof window.TEBZA_NAVIGATE==="function")window.TEBZA_NAVIGATE("chart");
- requestAnimationFrame(()=>{document.getElementById("chartCard")?.scrollIntoView({behavior:"smooth",block:"start"});});
+ const openSelected=()=>{
+  const category=$s("category"),selector=$s("symbol");
+  if(category)category.value="all";
+  renderSymbols();
+  if(selector)selector.value=target;
+  if(!socketOpen()){
+   setStatus("Reconnecting to Deriv before loading "+displayName(meta)+" ["+target+"]…");
+   try{connect();}catch(_){}
+   return false;
+  }
+  loadMarket(target);
+  if(selected!==target){setStatus("The market selection did not complete. Please use Reconnect data and try again.");return false;}
+  const label=displayName(meta)+" ["+target+"]";
+  const chartRef=document.getElementById("chartSelectedMarket"),analysisRef=document.getElementById("analysisSelectedMarket");
+  if(chartRef)chartRef.textContent=label+" · Loading live Deriv candles…";
+  if(analysisRef)analysisRef.textContent=label+" · Loading market analysis…";
+  if(typeof window.TEBZA_NAVIGATE==="function")window.TEBZA_NAVIGATE("chart");
+  setTimeout(()=>{try{renderChart(true);renderChartOverlays();}catch(_){}},180);
+  requestAnimationFrame(()=>{document.getElementById("chartCard")?.scrollIntoView({behavior:"smooth",block:"start"});});
+  return true;
+ };
+ if(!openSelected()){
+  let attempts=0;const retry=setInterval(()=>{attempts++;if(openSelected()||attempts>=12)clearInterval(retry);},500);
+ }
 }
 function scannerRenderOpportunities(){
  const host=$s("scannerOpportunityList");if(!host)return;host.innerHTML="";
@@ -2645,37 +2703,110 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
 </script>
 
 <script>
-/* V1.9.5 persistent confirmed-signal journal · V1.9.6 navigation and market context. Local-device storage; analysis only. */
+/* V1.9.7 persistent signal lifecycle + candle replay. Backward-compatible local storage. */
 (function(){
  'use strict';
  const KEY='tebza-crt-analyst-v195-confirmed-signals';
  let records=load();
- function load(){try{const x=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(x)?x.filter(v=>v&&v.id&&v.plan&&v.symbol).slice(0,200):[];}catch(_){return[];}}
- function save(){try{localStorage.setItem(KEY,JSON.stringify(records.slice(0,200)));}catch(e){console.warn('Signal journal storage unavailable',e);}}
+ const TF_LIMITS={'300':180,'900':100,'3600':60,'14400':32};
+ function load(){try{const x=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(x)?x.filter(v=>v&&v.id&&v.symbol&&Number.isFinite(Number(v.entry))&&Number.isFinite(Number(v.stop))&&Array.isArray(v.targets)).slice(0,100).map(v=>({...v,events:Array.isArray(v.events)?v.events:[],entryReached:(v.entryReached??(/TP|ACTIVE|COMPLETED/.test(String(v.status||'')))),replay:v.replay||{bars:{}}})):[];}catch(_){return[];}}
+ function save(){try{localStorage.setItem(KEY,JSON.stringify(records.slice(0,100)));}catch(e){console.warn('Signal journal storage unavailable; older replay records may need removal',e);}}
  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
  function fmt(v){return Number.isFinite(Number(v))?Number(v).toLocaleString(undefined,{maximumFractionDigits:8}):'—';}
+ function normalizeBars(source,tf){
+  if(!Array.isArray(source))return[];
+  const limit=TF_LIMITS[String(tf)]||100;
+  return source.slice(-limit).map(b=>{
+   const epoch=Number(b.epoch??b.time??b.open_time),o=Number(b.open),h=Number(b.high),l=Number(b.low),c=Number(b.close);
+   if(!Number.isFinite(epoch)||![o,h,l,c].every(Number.isFinite)||h<Math.max(o,c)||l>Math.min(o,c)||h<l)return null;
+   return [Math.floor(epoch),o,h,l,c];
+  }).filter(Boolean);
+ }
+ function snapshotFor(a,sym){
+  const src=a?.replayHistory||(typeof selected!=='undefined'&&selected===sym&&typeof candles!=='undefined'?candles:null);
+  const out={};
+  if(src)Object.keys(TF_LIMITS).forEach(tf=>{out[tf]=normalizeBars(src[tf],tf);});
+  return {bars:out,createdAt:Date.now(),captureSymbol:sym};
+ }
+ function event(r,type,price,detail,at){
+  r.events=r.events||[];
+  const stamp=Number(at)||Date.now();
+  const last=r.events[r.events.length-1];
+  if(last&&last.type===type&&last.price===Number(price))return;
+  r.events.push({type,price:Number.isFinite(Number(price))?Number(price):null,detail:String(detail||''),at:stamp});
+  if(r.events.length>120)r.events=r.events.slice(-120);
+ }
+ function entryTouched(r,prev,px){
+  const z=r.entryZone;
+  if(z&&Number.isFinite(Number(z.from))&&Number.isFinite(Number(z.to))){const low=Math.min(Number(z.from),Number(z.to)),high=Math.max(Number(z.from),Number(z.to));if(px>=low&&px<=high)return true;}
+  const near=Math.max(Math.abs(r.entry)*1e-8,1e-10);
+  if(Math.abs(px-r.entry)<=near)return true;
+  return (prev<r.entry&&px>r.entry)||(prev>r.entry&&px<r.entry);
+ }
  function capture(a,source='selected-market'){
   const p=a?.tradePlan;if(!p||!a?.meta)return;
   const sym=a.meta.underlying_symbol||a.meta.symbol||a.meta.display_name||'';
   const epoch=Number(a.last5?.epoch||a.last15?.epoch||Math.floor(Date.now()/1000));
   const id=[sym,p.strategy||'strategy',p.side,epoch].join('|');
   if(records.some(r=>r.id===id))return;
-  const targets=(p.targets||[]).map(t=>({r:Number(t.r),price:Number(t.price),hit:false}));
+  const targets=(p.targets||[]).map(t=>({r:Number(t.r),price:Number(t.price),hit:false,hitAt:null}));
   if(!sym||!Number.isFinite(Number(p.entry))||!Number.isFinite(Number(p.stop))||targets.length<1)return;
-  records.unshift({id,symbol:sym,name:a.meta.underlying_symbol_name||a.meta.display_name||sym,side:p.side,strategy:p.strategy||'CRT',source,createdAt:Date.now(),candleEpoch:epoch,entry:Number(p.entry),entryZone:p.entryZone||null,stop:Number(p.stop),risk:Number(p.risk),targets,hi:Number(a.hi),lo:Number(a.lo),mid:Number(a.mid),bias4:a.bias4||'',bias1:a.bias1||'',structure:a.structure?.trend||a.structure?.direction||'',status:'CONFIRMED · TRACKING',lastPrice:Number(a.price),updatedAt:Date.now(),completedAt:null,invalidReason:'',counterTrend:!!p.counterTrend});
-  records=records.slice(0,200);save();render();
+  const now=Number(a.price),rec={id,symbol:sym,name:a.meta.underlying_symbol_name||a.meta.display_name||sym,side:p.side,strategy:p.strategy||'CRT',source,createdAt:Date.now(),candleEpoch:epoch,entry:Number(p.entry),entryZone:p.entryZone||null,stop:Number(p.stop),risk:Number(p.risk),targets,hi:Number(a.hi),lo:Number(a.lo),mid:Number(a.mid),bias4:a.bias4||'',bias1:a.bias1||'',structure:a.structure?.trend||a.structure?.direction||'',status:'ENTRY PENDING',entryReached:false,lastPrice:Number.isFinite(now)?now:null,updatedAt:Date.now(),completedAt:null,invalidReason:'',counterTrend:!!p.counterTrend,events:[],plan:{side:p.side,entry:Number(p.entry),stop:Number(p.stop),risk:Number(p.risk),targets},replay:snapshotFor(a,sym),bestFavourableR:0,worstAdverseR:0};
+  event(rec,'CONFIRMED',now,'All programmed confirmation conditions passed; setup snapshot saved.',rec.createdAt);
+  if(Number.isFinite(now)&&Math.abs(now-rec.entry)<=Math.max(Math.abs(rec.entry)*1e-8,1e-10)){rec.entryReached=true;rec.status='ACTIVE · ENTRY REACHED';event(rec,'ENTRY REACHED',now,'Price was at the entry reference when the signal was saved.',rec.createdAt);}
+  records.unshift(rec);records=records.slice(0,100);save();render();
  }
- function update(symbol,price){
+ function update(symbol,price,epoch){
   const px=Number(price);if(!symbol||!Number.isFinite(px))return;let changed=false;
-  records.forEach(r=>{if(r.symbol!==symbol||['COMPLETED','INVALIDATED'].includes(r.status))return;r.lastPrice=px;r.updatedAt=Date.now();
+  records.forEach(r=>{
+   if(r.symbol!==symbol||['COMPLETED','INVALIDATED'].includes(r.status))return;
+   const prev=Number(r.lastPrice),at=Number(epoch)>0?Number(epoch)*1000:Date.now();
+   r.lastPrice=px;r.updatedAt=Date.now();
+   if(!r.entryReached&&entryTouched(r,Number.isFinite(prev)?prev:px,px)){
+    r.entryReached=true;r.entryAt=at;r.status='ACTIVE · ENTRY REACHED';event(r,'ENTRY REACHED',px,'Market price reached the planned entry reference.',at);changed=true;
+   }
+   // Stop/invalidation is checked before target progression. If a single quote gap crosses
+   // both stop and targets, the conservative outcome is invalidation.
    const stopHit=r.side==='BUY'?px<=r.stop:px>=r.stop;
-   if(stopHit){r.status='INVALIDATED';r.invalidReason='Stop / structural invalidation level reached';r.completedAt=Date.now();changed=true;return;}
-   const ordered=r.targets.slice().sort((a,b)=>r.side==='BUY'?a.price-b.price:b.price-a.price);
-   ordered.forEach(t=>{if(!t.hit&&(r.side==='BUY'?px>=t.price:px<=t.price)){t.hit=true;t.hitAt=Date.now();changed=true;}});
-   if(r.targets.length&&r.targets.every(t=>t.hit)){r.status='COMPLETED';r.completedAt=Date.now();changed=true;}
-   else {const n=r.targets.filter(t=>t.hit).length;r.status=n?'TP'+n+' HIT · TRACKING':'CONFIRMED · TRACKING';}
+   if(stopHit){r.status='INVALIDATED';r.invalidReason=r.entryReached?'Stop / structural invalidation reached after entry.':'Scenario invalidated before entry was reached.';r.completedAt=at;event(r,'INVALIDATED',px,r.invalidReason,at);changed=true;return;}
+   if(r.entryReached){
+    const fav=r.side==='BUY'?(px-r.entry)/Math.max(r.risk,1e-12):(r.entry-px)/Math.max(r.risk,1e-12);
+    const adv=r.side==='BUY'?(r.entry-px)/Math.max(r.risk,1e-12):(px-r.entry)/Math.max(r.risk,1e-12);
+    r.bestFavourableR=Math.max(Number(r.bestFavourableR)||0,fav);r.worstAdverseR=Math.max(Number(r.worstAdverseR)||0,adv);
+    r.targets.forEach((t,i)=>{if(t.hit)return;const hit=r.side==='BUY'?px>=t.price:px<=t.price;if(hit){t.hit=true;t.hitAt=at;event(r,'TP'+(i+1)+' HIT',px,'Target '+(i+1)+' reached at '+fmt(t.price)+'.',at);changed=true;}});
+    if(r.targets.length&&r.targets.every(t=>t.hit)){r.status='COMPLETED';r.completedAt=at;event(r,'COMPLETED',px,'All recorded take-profit levels were reached.',at);}
+    else {const n=r.targets.filter(t=>t.hit).length;r.status=n?'TP'+n+' HIT · ACTIVE':'ACTIVE · ENTRY REACHED';}
+   }else r.status='ENTRY PENDING';
   });
   if(changed||records.some(r=>r.symbol===symbol&&!['COMPLETED','INVALIDATED'].includes(r.status))){save();render();}
+ }
+ function updateBar(symbol,tf,bar){
+  const key=String(Number(tf));if(!TF_LIMITS[key]||!bar)return;
+  const e=Number(bar.epoch??bar.open_time),o=Number(bar.open),h=Number(bar.high),l=Number(bar.low),c=Number(bar.close);
+  if(!Number.isFinite(e)||![o,h,l,c].every(Number.isFinite)||h<Math.max(o,c)||l>Math.min(o,c)||h<l)return;
+  let changed=false;
+  records.forEach(r=>{
+   if(r.symbol!==symbol||!r.replay)return;
+   const list=r.replay.bars[key]||(r.replay.bars[key]=[]),row=[Math.floor(e),o,h,l,c],idx=list.findIndex(x=>Number(x[0])===row[0]);
+   if(idx>=0)list[idx]=row;else if(row[0]*1000>=r.createdAt-30*86400000)list.push(row);
+   list.sort((a,b)=>a[0]-b[0]);if(list.length>TF_LIMITS[key])list.splice(0,list.length-TF_LIMITS[key]);changed=true;
+  });
+  if(changed)save();
+ }
+ function replaySvg(r){
+  const raw=(r.replay?.bars?.['300']||[]).filter(x=>Array.isArray(x)&&x.length===5);
+  if(raw.length<2)return '<div class="signalReplayEmpty">A candle snapshot was not stored for this older signal. New signals will include 5M, 15M, 1H and 4H replay candles captured at confirmation, followed by recorded live candles while the application is open.</div>';
+  const bars=raw.slice(-90),min=Math.min(...bars.map(x=>x[3]),r.stop,...r.targets.map(x=>x.price)),max=Math.max(...bars.map(x=>x[2]),r.stop,...r.targets.map(x=>x.price));
+  const W=760,H=250,L=48,R=12,T=14,B=24,range=Math.max(max-min,1e-9),y=v=>T+(max-v)/range*(H-T-B),step=(W-L-R)/bars.length,cw=Math.max(2,Math.min(7,step*.58));
+  let shapes='';
+  bars.forEach((b,i)=>{const x=L+i*step+step/2,up=b[4]>=b[1],color=up?'#42b88b':'#d7777e';shapes+=`<line x1="${x.toFixed(1)}" y1="${y(b[2]).toFixed(1)}" x2="${x.toFixed(1)}" y2="${y(b[3]).toFixed(1)}" stroke="${color}" stroke-width="1.3"/><rect x="${(x-cw/2).toFixed(1)}" y="${Math.min(y(b[1]),y(b[4])).toFixed(1)}" width="${cw.toFixed(1)}" height="${Math.max(1,Math.abs(y(b[1])-y(b[4]))).toFixed(1)}" fill="${color}"/>`;});
+  const levels=[['ENTRY',r.entry,'#e7d39b'],['SL',r.stop,'#d7777e'],...r.targets.map((t,i)=>['TP'+(i+1),t.price,'#42b88b'])];
+  levels.forEach(([name,v,color])=>{const yy=y(Number(v));if(yy>=T&&yy<=H-B)shapes+=`<line x1="${L}" y1="${yy.toFixed(1)}" x2="${W-R}" y2="${yy.toFixed(1)}" stroke="${color}" stroke-dasharray="5 4" stroke-width="1.4"/><text x="${L+5}" y="${(yy-4).toFixed(1)}" font-size="10" fill="${color}">${name} ${esc(fmt(v))}</text>`;});
+  return `<svg class="signalReplayChart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Historical 5 minute signal replay"><rect width="${W}" height="${H}" fill="#0a1420"/>${shapes}<text x="${L}" y="${H-6}" fill="#9db0c1" font-size="9">${new Date(bars[0][0]*1000).toLocaleString()}</text><text x="${W-R}" y="${H-6}" text-anchor="end" fill="#9db0c1" font-size="9">${new Date(bars[bars.length-1][0]*1000).toLocaleString()}</text></svg>`;
+ }
+ function replayEvents(r){
+  const events=r.events||[];if(!events.length)return '<div class="signalReplayEmpty">No lifecycle events have been recorded yet.</div>';
+  return '<div class="signalReplayEvents">'+events.slice().reverse().map(e=>'<div class="signalReplayEvent"><time>'+esc(new Date(e.at).toLocaleString())+'</time><b>'+esc(e.type)+'</b><span>'+esc(e.price==null?'—':fmt(e.price))+'</span><div style="grid-column:2/-1;color:#9eafbf">'+esc(e.detail)+'</div></div>').join('')+'</div>';
  }
  function render(){
   const host=document.getElementById('confirmedSignalsList');if(!host)return;
@@ -2683,16 +2814,36 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
   const put=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   put('signalOpenCount',open);put('signalCompletedCount',done);put('signalInvalidCount',invalid);put('signalTotalCount',records.length);put('navSignalCount',open);
   if(!records.length){host.innerHTML='<div class="scannerEmpty">No confirmed signals have been recorded yet. A signal is saved only when the engine produces a confirmed trade plan.</div>';return;}
-  host.innerHTML=records.map(r=>{const targets=r.targets.map((t,i)=>'<span class="tag">TP'+(i+1)+' '+fmt(t.price)+(t.hit?' · HIT':'')+'</span>').join(' ');const state=r.status==='INVALIDATED'?'invalid':r.status==='COMPLETED'?'confirmed':'developing';return '<article class="scannerAlert"><div class="row between"><b>'+esc(r.name)+' ['+esc(r.symbol)+'] · '+esc(r.side)+'</b><span class="scannerBadge '+state+'">'+esc(r.status)+'</span></div><div class="muted tiny">'+esc(r.strategy)+' · Saved '+new Date(r.createdAt).toLocaleString()+' · '+esc(r.source)+'</div><div class="scannerMarketGrid"><div><small>ENTRY</small><b>'+fmt(r.entry)+'</b></div><div><small>STOP / INVALIDATION</small><b>'+fmt(r.stop)+'</b></div><div><small>LAST RECORDED PRICE</small><b>'+fmt(r.lastPrice)+'</b></div><div><small>4H CONTEXT</small><b>'+esc(r.bias4||'—')+'</b></div></div><div>'+targets+'</div><div class="scannerReason">'+(r.status==='INVALIDATED'?esc(r.invalidReason):r.status==='COMPLETED'?'All recorded targets reached.': 'Signal remains under tracking. It is retained even when the selected market changes.')+'</div><div class="muted tiny">CRT range snapshot: '+fmt(r.hi)+' / '+fmt(r.mid)+' / '+fmt(r.lo)+' · '+(r.counterTrend?'Countertrend setup':'Not marked countertrend')+'</div></article>';}).join('');
+  host.innerHTML=records.map((r,i)=>{
+   const targets=r.targets.map((t,j)=>'<span class="tag">TP'+(j+1)+' '+fmt(t.price)+(t.hit?' · HIT':'')+'</span>').join(' '),state=r.status==='INVALIDATED'?'invalid':r.status==='COMPLETED'?'confirmed':'developing';
+   const targetText=r.targets.filter(t=>t.hit).length+'/'+r.targets.length+' targets reached';
+   const entryText=r.entryReached?'Entry reached':'Entry pending';
+   return '<article class="scannerAlert signalRecord"><div class="row between"><b>'+esc(r.name)+' ['+esc(r.symbol)+'] · '+esc(r.side)+'</b><span class="scannerBadge '+state+'">'+esc(r.status)+'</span></div><div class="muted tiny">'+esc(r.strategy)+' · Confirmed '+new Date(r.createdAt).toLocaleString()+' · '+esc(r.source)+'</div><div class="scannerMarketGrid"><div><small>ENTRY</small><b>'+fmt(r.entry)+'</b></div><div><small>STOP / INVALIDATION</small><b>'+fmt(r.stop)+'</b></div><div><small>LAST RECORDED PRICE</small><b>'+fmt(r.lastPrice)+'</b></div><div><small>ENTRY STATE</small><b>'+entryText+'</b></div><div><small>4H CONTEXT</small><b>'+esc(r.bias4||'—')+'</b></div><div><small>TARGET PROGRESS</small><b>'+targetText+'</b></div></div><div>'+targets+'</div><div class="scannerReason">'+(r.status==='INVALIDATED'?esc(r.invalidReason):r.status==='COMPLETED'?'All recorded targets reached.':'Signal remains under lifecycle tracking. Updates are captured while this browser remains open and connected.')+'</div><div class="muted tiny">CRT range snapshot: '+fmt(r.hi)+' / '+fmt(r.mid)+' / '+fmt(r.lo)+' · Best favourable movement: '+Number(r.bestFavourableR||0).toFixed(2)+'R · Worst adverse movement: '+Number(r.worstAdverseR||0).toFixed(2)+'R'+(r.counterTrend?' · Countertrend setup':'')+'</div><div class="signalCardActions"><button type="button" data-replay-index="'+i+'">'+(r.replayOpen?'Hide replay':'Replay signal history')+'</button></div><div class="signalReplayPanel" data-replay-panel="'+i+'" '+(r.replayOpen?'':'hidden')+'><div class="signalReplayTitle">Historical 5M replay · confirmation and outcome</div>'+replaySvg(r)+'<div class="signalReplayLegend"><span>Green: bullish candle</span><span>Coral: bearish candle</span><span>Dashed: original entry / SL / TP levels</span></div>'+replayEvents(r)+'</div></article>';
+  }).join('');
  }
- window.TEBZA_SIGNAL_JOURNAL={capture,update,render,getRecords:()=>records.slice()};
- document.getElementById('signalsRefresh')?.addEventListener('click',render);
- render();
+ const host=document.getElementById('confirmedSignalsList');
+ host?.addEventListener('click',e=>{const btn=e.target.closest('button[data-replay-index]');if(!btn)return;const i=Number(btn.dataset.replayIndex);if(!Number.isInteger(i)||!records[i])return;records[i].replayOpen=!records[i].replayOpen;render();});
+ const watched=new Set();let watcherSocket=null;
+ function resetWatchers(){watched.clear();watcherSocket=null;}
+ function syncWatchers(){
+  if(typeof socketOpen!=='function'||!socketOpen())return;
+  if(watcherSocket!==ws){watcherSocket=ws;watched.clear();}
+  const active=records.filter(r=>!['COMPLETED','INVALIDATED'].includes(r.status)).slice(0,20);
+  active.forEach(r=>{
+   if(r.symbol===selected||watched.has(r.symbol))return;
+   const tickReq=send({ticks:r.symbol,subscribe:1},{kind:'signal_journal_tick',symbol:r.symbol});
+   const candleReq=send({ticks_history:r.symbol,adjust_start_time:1,count:180,end:'latest',style:'candles',granularity:300,subscribe:1},{kind:'signal_journal_ohlc',symbol:r.symbol,granularity:300,subscribed:true});
+   if(tickReq!==null&&candleReq!==null)watched.add(r.symbol);
+  });
+ }
+ window.TEBZA_SIGNAL_JOURNAL={capture,update,updateBar,render,getRecords:()=>records.slice(),syncWatchers,resetWatchers};
+ document.getElementById('signalsRefresh')?.addEventListener('click',()=>{render();syncWatchers();});
+ render();syncWatchers();setInterval(syncWatchers,5000);
 })();
 </script>
 
 <script>
-/* V1.9.6 workspace navigation and engine-grounded analyst companion. */
+/* V1.9.7 workspace navigation, market identity and engine-grounded analyst companion. */
 (function(){
  'use strict';
  const byId=id=>document.getElementById(id);
@@ -2711,7 +2862,8 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
   document.querySelectorAll('.navItem[data-view],.mobileDock [data-view]').forEach(el=>{const active=el.dataset.view===name;el.classList.toggle('active',active);if(active)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});
   const title=byId('pageTitle'),sub=byId('pageSubtitle');if(title)title.textContent=views[name][0];if(sub)sub.textContent=views[name][1];
   closeMenu();
-  if(name==='chart')setTimeout(()=>{try{resizeTradingChart();renderChartOverlays();}catch(_){ }},100);
+  if(name==='chart')setTimeout(()=>{try{resizeTradingChart();renderChart(true);renderChartOverlays();}catch(_){ }},100);
+  if(name==='signals')window.TEBZA_SIGNAL_JOURNAL?.render();
   if(name==='analysis'&&byId('advancedDetails')?.open===false){/* Keep advanced evidence collapsed by default. */}
   window.scrollTo({top:0,behavior:'smooth'});
  }
@@ -2734,6 +2886,7 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
    set('navAlertCount',scanner.alerts??'—');set('navOpportunityCount',count||'—');
    const a=latestAnalysis||null,p=currentPlan(a),meta=a?.meta||(typeof findSymbol==='function'?findSymbol(selected):null);
    const sym=typeof displayName==='function'&&meta?displayName(meta):selected||'Waiting for market';
+   const marketLabel=meta?(sym+' ['+(meta.underlying_symbol||meta.symbol||selected)+']'):'Waiting for market';
    set('homeMarketName',sym);set('homeLiveQuote',typeof formatPrice==='function'&&Number.isFinite(Number(quote))?formatPrice(quote,meta):'—');
    const state=getSetupState(a,p);set('homeState',state);set('homePlanType',p?(state+' · '+(p.strategy||'SETUP')):'NO PLAN');
    const side=p?.side||(a?.direction?.includes('BUY')?'BUY':a?.direction?.includes('SELL')?'SELL':'WAIT');set('homeSide',side);
@@ -2748,7 +2901,7 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
    else if(a?.alternative?.checks?.length){const missing=a.alternative.checks.filter(x=>!x.ok).map(x=>x.label);reason=missing.length?'Waiting for: '+missing.join(', '):'No complete setup is currently available.';}
    else if(a)reason='No setup currently meets all required conditions. Review the market structure and liquidity before considering a scenario.';
    set('homeReason',reason);
-   const welcome=byId('analystWelcome');if(welcome)welcome.textContent=a?('I am reviewing '+sym+' using the latest completed candles and public quote. Ask about the setup, missing confirmations, key levels or risk plan.'): 'I explain the current selected market using the platform’s completed-candle analysis. Select a market to begin.';
+   const analystWelcome=byId('analystWelcome');if(analystWelcome)analystWelcome.textContent=a?('I am reviewing '+marketLabel+' using the latest completed candles and public quote. Ask about the setup, missing confirmations, key levels or risk plan.'): 'I explain the current selected market using the platform’s completed-candle analysis. Select a market to begin.';
   }catch(err){console.warn('Workspace summary update skipped',err);}
  }
  function analystAnswer(question){
