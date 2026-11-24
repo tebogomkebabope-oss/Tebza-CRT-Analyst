@@ -150,8 +150,22 @@ body{background:radial-gradient(ellipse at top,#17263c 0,#090f1b 56%)}
 .chartLegend{gap:12px}
 @media(max-width:600px){main{padding:10px}.card{padding:12px}.chartToolbar{gap:6px}.chartToolbar button{font-size:10px}.chartWrap{height:400px;min-height:350px}}
 
+
+/* V1.9.1 professional chart annotations */
+.chartCanvas{position:relative}
+.chartProOverlay{position:absolute;left:0;top:0;z-index:8;pointer-events:none;overflow:visible}
+.chartProOverlay text{font-family:system-ui,-apple-system,Segoe UI,sans-serif;paint-order:stroke;stroke:#07111f;stroke-width:1.5px;stroke-linejoin:round}
+.chartProOverlay .zoneLabel{font-size:10px;font-weight:800;letter-spacing:.45px}
+.chartProOverlay .levelLabel{font-size:10px;font-weight:850;letter-spacing:.25px}
+.chartProOverlay .smallLabel{font-size:9px;font-weight:800;letter-spacing:.2px}
+.chartProOverlay .planLabel{font-size:10px;font-weight:900;letter-spacing:.25px}
+.chartLegend{align-items:center}
+.chartLegend .legendKey{display:inline-flex;align-items:center;gap:5px}
+.chartLegend .legendSwatch{width:15px;height:8px;border-radius:3px;display:inline-block}
+@media(max-width:600px){.chartProOverlay .zoneLabel{font-size:9px}.chartProOverlay .levelLabel{font-size:9px}.chartProOverlay .planLabel{font-size:9px}}
+
 </style></head><body>
-<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.9.0 · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
+<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.9.1 · PRO CHART · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
 <main>
 <div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for ticks and native OHLC candles. No Deriv password or account token is required. Market data and CRT conditions are for analysis only; signals are preliminary and this app never places trades.</div>
 <section class="card">
@@ -211,7 +225,8 @@ body{background:radial-gradient(ellipse at top,#17263c 0,#090f1b 56%)}
  <div class="overlayControls">
   <label><input type="checkbox" id="ovRange" checked> CRT range</label>
   <label><input type="checkbox" id="ovLiquidity" checked> Liquidity levels</label>
-  <label><input type="checkbox" id="ovStructure"> Swing structure</label>
+  <label><input type="checkbox" id="ovStructure" checked> Structure labels</label>
+  <label><input type="checkbox" id="ovFvg" checked> 15M imbalance zones</label>
   <label><input type="checkbox" id="ovRR" checked> Risk / Reward</label>
  </div>
  <div class="chartGrid" id="chartGrid">
@@ -233,7 +248,13 @@ body{background:radial-gradient(ellipse at top,#17263c 0,#090f1b 56%)}
     <div class="candleInspectorMeta" id="inspectMeta">Tap a candle on the chart to inspect its exact Deriv OHLC values. Select a completed candle for historical verification.</div>
    </section>
    <div class="chartHints">Gestures: drag the chart to move through time; pinch the plot to zoom in or out; drag the right price scale to shift it; pinch on the right price scale to expand or compress prices; double-tap the price scale to auto-fit. Tap a candle to inspect OHLC. Use Auto scale · Go live to reset the view.</div>
-   <div class="chartLegend"><span><i class="legendDot" style="background:#28c7a5"></i>Bullish candle</span><span><i class="legendDot" style="background:#f07883"></i>Bearish candle</span><span><i class="legendDot" style="background:#f4bd50"></i>CRT range</span><span><i class="legendDot" style="background:#76aaff"></i>Liquidity / structure</span></div>
+   <div class="chartLegend">
+   <span class="legendKey"><i class="legendSwatch" style="background:#e8b85d"></i>CRT range / equilibrium</span>
+   <span class="legendKey"><i class="legendSwatch" style="background:#79aaff"></i>Liquidity levels</span>
+   <span class="legendKey"><i class="legendSwatch" style="background:#9c8be8"></i>15M imbalance</span>
+   <span class="legendKey"><i class="legendSwatch" style="background:#f07883"></i>Stop / invalidation</span>
+   <span class="legendKey"><i class="legendSwatch" style="background:#28c7a5"></i>Target area</span>
+  </div>
    <div class="chartInfo" id="chartExplanation">Chart overlays will appear when Deriv candle history is available. The chart uses the same public feed as the analysis engine.</div>
    <div class="muted tiny" id="candleIntegrity" style="margin-top:8px">OHLC integrity: waiting for validated Deriv candle history and live updates.</div>
   </div>
@@ -303,7 +324,7 @@ body{background:radial-gradient(ellipse at top,#17263c 0,#090f1b 56%)}
 </div><p class="muted tiny">V1.9 strategies: CRT reversal, trend continuation (4H/1H alignment, 15M EMA21 pullback and 5M impulse) and breakout/retest (completed 15M break with 5M retest/hold). The strategy rules are initial, evidence-based heuristics and have not yet been statistically backtested or calibrated separately for each market category. FVG lifecycle, order blocks, session filters, market-specific calibration and full historical performance testing remain future modules. Evidence scores are not win probabilities.</p></section>
 </details>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.9.0 · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+<div class="foot">TEBZA CRT ANALYST V1.9.1 · Professional annotated chart · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
 </main>
 <script>
 // Load the pinned Lightweight Charts v5 standalone library, with a second CDN fallback.
@@ -359,6 +380,8 @@ let candleSeries = null;
 let chartPriceLine = null;
 let chartOverlayLines = [];
 let chartOverlaySignature = "";
+let chartPlanScaleKey = "";
+let chartOverlayPendingLabels = [];
 let chartDataCache = {symbol:"", timeframe:0, length:0, firstEpoch:0, lastEpoch:0, lastBar:null};
 let chartSubscribedTimeframes = new Set([300]);
 let subscriptionMeta = new Map();
@@ -402,6 +425,7 @@ function connect() {
   selected = "";
   candles = {300: [], 900: [], 3600: [], 14400: []};
   chartDataCache = {symbol:"", timeframe:0, length:0, firstEpoch:0, lastEpoch:0, lastBar:null};
+  chartPlanScaleKey = "";
   if(candleSeries)candleSeries.setData([]);
   if(candleSeries&&chartPriceLine){try{candleSeries.removePriceLine(chartPriceLine);}catch(_){}}
   chartPriceLine=null;
@@ -673,6 +697,7 @@ function loadMarket(code) {
   candles = {300: [], 900: [], 3600: [], 14400: []};
   chartSubscribedTimeframes = new Set();
   chartDataCache = {symbol:"", timeframe:0, length:0, firstEpoch:0, lastEpoch:0, lastBar:null};
+  chartPlanScaleKey = "";
   if(candleSeries)candleSeries.setData([]);
   if(candleSeries&&chartPriceLine){try{candleSeries.removePriceLine(chartPriceLine);}catch(_){}}
   chartPriceLine=null;
@@ -1206,7 +1231,7 @@ function analyse() {
   updateMarketNarrative();
   renderTradePlan();
   renderChart(false);
-  setStatus("V1.9.0 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  setStatus("V1.9.1 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
   if (direction !== "WAIT") {
     const signalKey=[selected,selectedStrategy||"CRT REVERSAL",direction,last5.epoch].join("|");
     if(signalKey!==lastNotifiedSignalKey){
@@ -1230,7 +1255,7 @@ function resizeTradingChart(){
  const rect=container.getBoundingClientRect();
  const width=Math.max(280,Math.floor(rect.width));
  const height=Math.max(260,Math.floor(rect.height));
- try{chartApi.resize(width,height);}catch(error){console.warn("Chart resize failed",error);}
+ try{chartApi.resize(width,height);renderChartOverlays();}catch(error){console.warn("Chart resize failed",error);}
 }
 function clearCandleInspector(){
  selectedCandleEpoch=0;selectedCandleSymbol="";selectedCandleTimeframe=0;
@@ -1307,12 +1332,12 @@ function initTradingChart(){
      const distance=Math.max(12,touchDistance(ev.touches));
      const nextSpan=clamp(priceTouchStart.span*(priceTouchStart.distance/distance),priceTouchStart.span*0.18,priceTouchStart.span*5);
      candleSeries.priceScale().setVisibleRange({from:priceTouchStart.center-nextSpan/2,to:priceTouchStart.center+nextSpan/2});
-     ev.preventDefault();
+     renderChartOverlays();ev.preventDefault();
    }else if(priceTouchStart.mode==='pan'&&ev.touches.length===1){
      const rect=container.getBoundingClientRect(),dy=ev.touches[0].clientY-priceTouchStart.y;
      if(Math.abs(dy)>3)priceTouchStart.moved=true;
      const span=priceTouchStart.to-priceTouchStart.from,shift=(dy/Math.max(180,rect.height))*span*1.4;
-     candleSeries.priceScale().setVisibleRange({from:priceTouchStart.from+shift,to:priceTouchStart.to+shift});ev.preventDefault();
+     candleSeries.priceScale().setVisibleRange({from:priceTouchStart.from+shift,to:priceTouchStart.to+shift});renderChartOverlays();ev.preventDefault();
    }
  },{passive:false});
  priceTouch.addEventListener('dblclick',()=>autoPriceScale());
@@ -1339,7 +1364,10 @@ function initTradingChart(){
    const epoch=typeof param.time==="number"?param.time:0;
    if(epoch>0)showCandleInspector(epoch);
  });
- chartApi.timeScale().subscribeVisibleLogicalRangeChange(()=>{});
+ chartApi.timeScale().subscribeVisibleLogicalRangeChange(()=>renderChartOverlays());
+ if(candleSeries.priceScale().subscribeVisibleLogicalRangeChange){
+   candleSeries.priceScale().subscribeVisibleLogicalRangeChange(()=>renderChartOverlays());
+ }
  requestAnimationFrame(resizeTradingChart);
  return true;
  }catch(error){
@@ -1396,42 +1424,184 @@ function renderChart(force){
  }
  chartDataCache={symbol:selected,timeframe:tf,length:all.length,firstEpoch,lastEpoch:last.epoch,lastBar};
  refreshSelectedCandleInspector();
- const overlayItems=[];
- if(a&&$("ovRange").checked)overlayItems.push([a.hi,'1H HIGH','#f4bd50'],[a.mid,'50% EQ','#d8ad62','dot'],[a.lo,'1H LOW','#f4bd50']);
- if(a&&$("ovLiquidity").checked)overlayItems.push([a.buySideLevel,'BUY-SIDE LIQ.','#76aaff'],[a.sellSideLevel,'SELL-SIDE LIQ.','#76aaff']);
- if(a&&$("ovStructure").checked&&(tf===300||tf===900)){
-   const sw=confirmedSwings(completedCandles(candles[900],900),2,2);
-   sw.highs.slice(-6).forEach((p,i)=>overlayItems.push([p.price,'SH '+(i+1),'#ff9c67','dot']));
-   sw.lows.slice(-6).forEach((p,i)=>overlayItems.push([p.price,'SL '+(i+1),'#76aaff','dot']));
- }
- const previewCandidate=a?.projectedPlan;
- const plan=$("ovRR").checked?(a?.tradePlan||previewCandidate):null;
- if(plan){
-   const preview=plan.stage==='PROJECTED';
-   const invalid=(preview&&((plan.expiresEpoch>0&&latestTickEpoch>=plan.expiresEpoch)||(hasLiveQuote()&&(plan.side==="BUY"?Number(quote)<=plan.stop:Number(quote)>=plan.stop))||(plan.volatility>0&&hasLiveQuote()&&Math.abs(Number(quote)-plan.entry)>plan.volatility*1.5)))||(!preview&&hasLiveQuote()&&(plan.side==="BUY"?Number(quote)<=plan.stop:Number(quote)>=plan.stop));
-   const entryColor=invalid?'#78616b':preview?'#d7b46a':'#edf4ff';
-   const stopColor=invalid?'#8a6670':'#f07883';
-   const targetColor=invalid?'#667d78':preview?'#83b8a8':'#28c7a5';
-   const prefix=invalid?'INVALID · ':preview?'PROPOSED · ':'';
-   if(plan.entryZone){overlayItems.push([plan.entryZone.from,prefix+'ENTRY ZONE',entryColor,'dot'],[plan.entryZone.to,prefix+'ENTRY ZONE',entryColor,'dot']);}
-   overlayItems.push([plan.entry,prefix+'ENTRY '+formatPrice(plan.entry,meta),entryColor,'dot'],[plan.stop,prefix+'STOP '+formatPrice(plan.stop,meta),stopColor,'dot']);
-   plan.targets.forEach((t,i)=>overlayItems.push([t.price,prefix+'TP'+(i+1)+' '+formatPrice(t.price,meta),targetColor,'dot']));
- }
- const mergedOverlayItems=mergeChartOverlayLabels(overlayItems,meta);
- const overlaySignature=JSON.stringify(mergedOverlayItems);
- if(overlaySignature!==chartOverlaySignature){
-   chartRemoveOverlayLines();
-   mergedOverlayItems.forEach(item=>chartAddLine(item[0],item[1],item[2],item[3]==='dot'?(chartLibrary()?.LineStyle?.Dotted??1):undefined));
-   chartOverlaySignature=overlaySignature;
- }
+ renderChartOverlays();
  updateChartLivePrice();
  const priceAge=latestTickEpoch?Math.max(0,Math.round(Date.now()/1000-latestTickEpoch)):null;
  const candleAge=candleUpdateAt[tf]?Math.max(0,Math.round((Date.now()-candleUpdateAt[tf])/1000)):null;
  $("chartLiveState").textContent='DERIV · '+granularityLabel(tf)+' · '+all.length+' candles'+(priceAge===null?'':' · tick '+(priceAge<=10?'fresh':priceAge+'s'))+(candleAge===null?'':' · OHLC '+candleAge+'s');
- $("chartExplanation").textContent='Native Deriv OHLC candles (historical `epoch`, live `open_time`) for '+displayName(meta)+' ['+selected+']. The live quote is a separate tick from the same selected symbol. CRT and liquidity overlays are derived from the selected symbol’s own completed candles.';
+ $("chartExplanation").textContent='Chart key: gold = previous 1H CRT high / 50% equilibrium / low; blue = mapped liquidity; purple = unfilled 15M price imbalance (shown on 5M and 15M charts); red = stop-loss / invalidation; green = target area; dashed amber = projected plan; solid outlines = rules-passed plan. HH / HL / LH / LL mark confirmed 15M swing structure. The live quote is shown on the right price axis. Order-block zones are not drawn until their detection rules are validated.';
  if(!chartHoverReadoutActive())$("chartReadout").textContent='Drag to pan · Pinch to zoom · Tap a candle to inspect OHLC · Go live returns to latest candles';
 }
 function chartHoverReadoutActive(){return false;}
+
+// Professional chart layer: every annotation is drawn as a labelled zone or marker.
+function chartSvgElement(tag,attrs={}){
+ const node=document.createElementNS('http://www.w3.org/2000/svg',tag);
+ Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,String(v)));
+ return node;
+}
+function chartOverlayText(svg,x,y,text,opts={}){
+ const size=Number(opts.size)||10,padX=Number(opts.padX)||6,padY=Number(opts.padY)||4;
+ const width=Math.max(Number(opts.minWidth)||0,String(text).length*size*0.59+padX*2),height=size+padY*2;
+ const left=opts.align==='right'?Math.max(3,x-width):Math.max(3,x);
+ const top=clamp(y-height/2,3,Math.max(3,(Number(svg.getAttribute('height'))||300)-height-3));
+ svg.appendChild(chartSvgElement('rect',{x:left,y:top,width,height,rx:5,fill:opts.fill||'#101d30',stroke:opts.stroke||'#405674','stroke-width':1,'fill-opacity':opts.opacity??0.96}));
+ const t=chartSvgElement('text',{x:left+padX,y:top+height/2+size*.34,fill:opts.color||'#edf4ff',class:opts.className||'levelLabel'});
+ t.textContent=String(text);svg.appendChild(t);return {x:left,y:top,width,height};
+}
+function chartOverlayLine(svg,y,color,dash='5 4',opacity=.85,width=1){
+ if(!Number.isFinite(y))return;
+ const w=Number(svg.getAttribute('width'))||0;
+ svg.appendChild(chartSvgElement('line',{x1:0,y1:y,x2:w,y2:y,stroke:color,'stroke-width':width,'stroke-dasharray':dash,'stroke-opacity':opacity}));
+}
+function chartOverlayBand(svg,upper,lower,fill,opacity,label,color){
+ const hi=candleSeries.priceToCoordinate(Number(upper)),lo=candleSeries.priceToCoordinate(Number(lower));
+ if(!Number.isFinite(hi)||!Number.isFinite(lo))return;
+ const height=Number(svg.getAttribute('height'))||300,y1=clamp(Math.min(hi,lo),0,height),y2=clamp(Math.max(hi,lo),0,height);
+ if(y2-y1<2)return;
+ svg.appendChild(chartSvgElement('rect',{x:0,y:y1,width:Number(svg.getAttribute('width'))||0,height:y2-y1,fill,'fill-opacity':opacity}));
+ if(label&&y2-y1>14)chartOverlayText(svg,8,(y1+y2)/2,label,{size:9,fill:'#0a1728',stroke:color,color,opacity:.94,className:'zoneLabel'});
+}
+function chartOverlayPriceLabel(svg,price,label,color,opts={}){
+ const y=candleSeries.priceToCoordinate(Number(price));if(!Number.isFinite(y))return;
+ chartOverlayLine(svg,y,color,opts.dash||'5 4',opts.opacity??.92,opts.width||1);
+ chartOverlayPendingLabels.push({y,label,color,opts:Object.assign({},opts)});
+}
+function chartFlushPriceLabels(svg){
+ const height=Number(svg.getAttribute('height'))||340,width=Number(svg.getAttribute('width'))||300;
+ ['left','right'].forEach(side=>{
+  const items=chartOverlayPendingLabels.filter(item=>(item.opts.align||'right')===side).sort((a,b)=>a.y-b.y);
+  const gap=15,placed=[];
+  items.forEach((item,i)=>{placed[i]=Math.max(item.y,i?placed[i-1]+gap:9);});
+  if(placed.length&&placed[placed.length-1]>height-10){const shift=placed[placed.length-1]-(height-10);for(let i=0;i<placed.length;i++)placed[i]-=shift;}
+  if(placed.length&&placed[0]<9){const shift=9-placed[0];for(let i=0;i<placed.length;i++)placed[i]+=shift;}
+  items.forEach((item,i)=>{
+   const y=placed[i],opts=item.opts;
+   if(Math.abs(y-item.y)>7){const anchorX=side==='right'?Math.max(10,width-142):8;svg.appendChild(chartSvgElement('line',{x1:anchorX,y1:item.y,x2:anchorX,y2:y,stroke:item.color,'stroke-width':1,'stroke-opacity':.75}));}
+   chartOverlayText(svg,opts.x??(side==='right'?width-7:8),y,item.label,{align:side,size:opts.size||9,fill:opts.fill||'#0c192b',stroke:item.color,color:opts.textColor||'#f0f5fc',className:opts.className||'levelLabel'});
+  });
+ });
+ chartOverlayPendingLabels=[];
+}
+function chartOverlayPlanState(plan,a){
+ if(!plan)return null;
+ const preview=plan.stage==='PROJECTED';
+ const price=hasLiveQuote()?Number(quote):Number(a?.price);
+ const stale=(preview&&((plan.expiresEpoch>0&&latestTickEpoch>=plan.expiresEpoch)||(Number.isFinite(price)&&(plan.side==='BUY'?price<=plan.stop:price>=plan.stop))||(plan.volatility>0&&Number.isFinite(price)&&Math.abs(price-plan.entry)>plan.volatility*1.5)))||(!preview&&Number.isFinite(price)&&(plan.side==='BUY'?price<=plan.stop:price>=plan.stop));
+ return {preview,stale,label:stale?'INVALIDATED':preview?'PROJECTED':'RULES PASSED'};
+}
+function chartDrawStatusPanel(svg,a,meta,plan){
+ const width=Number(svg.getAttribute('width'))||300;
+ const panelW=Math.min(190,Math.max(145,width*.46)),x=8,y=8,panelH=plan?76:66;
+ svg.appendChild(chartSvgElement('rect',{x,y,width:panelW,height:panelH,rx:8,fill:'#081525',stroke:'#405674','stroke-width':1,'fill-opacity':.95}));
+ const side=plan?plan.side:(a?.bias4==='Bullish'?'BULLISH BIAS':a?.bias4==='Bearish'?'BEARISH BIAS':'NEUTRAL');
+ const state=plan?chartOverlayPlanState(plan,a):null;
+ const status=state?.label||'WAIT · NO VALID PLAN';
+ const accent=state?.stale?'#f07883':state?.preview?'#e8b85d':plan?'#28c7a5':'#9db1ca';
+ const title=chartSvgElement('text',{x:x+9,y:y+16,fill:accent,class:'smallLabel'});title.textContent=status+(plan?' · '+side:'');svg.appendChild(title);
+ const line1=chartSvgElement('text',{x:x+9,y:y+36,fill:'#edf4ff',class:'smallLabel'});line1.textContent='4H '+(a?.bias4||'—')+'  ·  15M '+(a?.structure?.direction||'—');svg.appendChild(line1);
+ const line2=chartSvgElement('text',{x:x+9,y:y+53,fill:'#b7c9df',class:'smallLabel'});line2.textContent='5M '+(a?.displacementDirection||'Awaiting trigger');svg.appendChild(line2);
+ if(plan){const line3=chartSvgElement('text',{x:x+9,y:y+68,fill:state?.preview?'#e8b85d':'#a6e6d5',class:'smallLabel'});line3.textContent=(plan.strategy||'SETUP')+' · '+(state?.preview?'NOT CONFIRMED':'CHECKLIST PASSED');svg.appendChild(line3);}
+}
+function chartDrawStructure(svg,tf){
+ if(!document.getElementById('ovStructure')?.checked||!(tf===300||tf===900))return;
+ const source=completedCandles(candles[900],900),sw=confirmedSwings(source,2,2);
+ const draw=(points,kind,color)=>points.slice(-4).forEach((p,i)=>{
+  const x=chartApi.timeScale().timeToCoordinate(Number(p.epoch)),y=candleSeries.priceToCoordinate(Number(p.price));
+  if(!Number.isFinite(x)||!Number.isFinite(y))return;
+  const pointIndex=points.length-4+i,prior=pointIndex>0?points[pointIndex-1]:null;
+  const label=kind+(prior?(kind==='H'?(p.price>prior.price?'H':'L'):(p.price>prior.price?'H':'L')):'');
+  svg.appendChild(chartSvgElement('circle',{cx:x,cy:y,r:3.2,fill:color,stroke:'#081525','stroke-width':1.4}));
+  chartOverlayText(svg,x+5,y+(kind==='H'?-12:12),label,{size:8,fill:'#111e31',stroke:color,color:'#f4f7fb',minWidth:22});
+ });
+ draw(sw.highs,'H','#f0a66d');draw(sw.lows,'L','#79aaff');
+}
+function chartFindOpenFvgs(list){
+ const found=[];if(!Array.isArray(list)||list.length<3)return found;
+ for(let i=Math.max(2,list.length-80);i<list.length;i++){
+  const old=list[i-2],cur=list[i];let zone=null;
+  if(Number(cur.low)>Number(old.high))zone={side:'BULLISH',low:Number(old.high),high:Number(cur.low),epoch:Number(cur.epoch)};
+  else if(Number(cur.high)<Number(old.low))zone={side:'BEARISH',low:Number(cur.high),high:Number(old.low),epoch:Number(cur.epoch)};
+  if(!zone)continue;
+  const later=list.slice(i+1),filled=later.some(c=>zone.side==='BULLISH'?Number(c.low)<=zone.low:Number(c.high)>=zone.high);
+  if(!filled)found.push(zone);
+ }
+ return found.slice(-3);
+}
+function chartDrawFvgs(svg,tf){
+ if(!document.getElementById('ovFvg')?.checked||tf>900)return;
+ const list=completedCandles(candles[900],900),zones=chartFindOpenFvgs(list),w=Number(svg.getAttribute('width'))||0;
+ zones.forEach(zone=>{
+  const x0=chartApi.timeScale().timeToCoordinate(zone.epoch),y1=candleSeries.priceToCoordinate(zone.high),y2=candleSeries.priceToCoordinate(zone.low);
+  if(!Number.isFinite(x0)||!Number.isFinite(y1)||!Number.isFinite(y2))return;
+  const color='#9c8be8',top=Math.min(y1,y2),height=Math.max(3,Math.abs(y2-y1));
+  svg.appendChild(chartSvgElement('rect',{x:Math.max(0,x0),y:top,width:Math.max(0,w-Math.max(0,x0)),height,rx:2,fill:color,'fill-opacity':.11,stroke:color,'stroke-opacity':.72,'stroke-width':1,'stroke-dasharray':'4 3'}));
+  if(height>12)chartOverlayText(svg,Math.max(8,x0+5),top+Math.min(height/2,12),'15M '+zone.side+' FVG',{size:8,fill:'#0c192b',stroke:color,color:'#f6f8fc'});
+ });
+}
+function chartDrawPlan(svg,plan,a,meta){
+ if(!plan||!document.getElementById('ovRR')?.checked)return;
+ const state=chartOverlayPlanState(plan,a),w=Number(svg.getAttribute('width'))||0;
+ const yEntry=candleSeries.priceToCoordinate(Number(plan.entry)),yStop=candleSeries.priceToCoordinate(Number(plan.stop)),yTp3=candleSeries.priceToCoordinate(Number(plan.targets?.[2]?.price));
+ if(![yEntry,yStop,yTp3].every(Number.isFinite))return;
+ const xLast=chartApi.timeScale().timeToCoordinate(Number((currentChartCandles(Number($('chartTf').value)||300).slice(-1)[0]||{}).epoch));
+ const x=Math.max(8,Math.min(w-154,Number.isFinite(xLast)?xLast+4:w*.58)),boxW=Math.max(40,w-x-6);
+ const preview=state.preview,invalid=state.stale;
+ const green=invalid?'#778b86':'#28c7a5',red=invalid?'#91747c':'#f07883',gold='#e8b85d';
+ const targetTop=plan.side==='BUY'?Math.min(yEntry,yTp3):Math.min(yEntry,yTp3),targetBottom=Math.max(yEntry,yTp3);
+ const riskTop=Math.min(yEntry,yStop),riskBottom=Math.max(yEntry,yStop);
+ svg.appendChild(chartSvgElement('rect',{x,y:targetTop,width:boxW,height:Math.max(2,targetBottom-targetTop),rx:3,fill:green,'fill-opacity':preview ? 0.10 : 0.16,stroke:green,'stroke-opacity':.9,'stroke-width':1,'stroke-dasharray':preview?'5 4':'none'}));
+ svg.appendChild(chartSvgElement('rect',{x,y:riskTop,width:boxW,height:Math.max(2,riskBottom-riskTop),rx:3,fill:red,'fill-opacity':preview ? 0.12 : 0.18,stroke:red,'stroke-opacity':.9,'stroke-width':1,'stroke-dasharray':preview?'5 4':'none'}));
+ const prefix=invalid?'INVALID':preview?'PROJECTED':'CONFIRMED';
+ chartOverlayLine(svg,yEntry,preview?gold:'#f1f5fb',preview?'5 3':'2 2',1.0,1.5);
+ chartOverlayText(svg,x+5,yEntry-12,prefix+' '+plan.side+' · ENTRY '+formatPrice(plan.entry,meta),{size:9,fill:'#122033',stroke:preview?gold:'#e5edf7',color:'#fff',className:'planLabel'});
+ chartOverlayPriceLabel(svg,plan.stop,'SL '+formatPrice(plan.stop,meta),red,{size:9,fill:'#321923',textColor:'#ffdce1'});
+ (plan.targets||[]).forEach((t,i)=>chartOverlayPriceLabel(svg,t.price,'TP'+(i+1)+' '+formatPrice(t.price,meta),green,{size:9,fill:'#10332e',textColor:'#c7f8e9',dash:preview?'5 3':'2 2'}));
+ const rText='R:R 1:'+((plan.targets?.[0]?.r)||1)+' / 1:'+((plan.targets?.[1]?.r)||2)+' / 1:'+((plan.targets?.[2]?.r)||3);
+ chartOverlayText(svg,x+5,Math.min(Number(svg.getAttribute('height'))-15,riskBottom+17),rText,{size:8,fill:'#102033',stroke:preview?gold:'#607c93',color:'#f1f6fb'});
+}
+function chartFitPlanRange(plan,tf){
+ if(!plan||!candleSeries)return;
+ const targets=(plan.targets||[]).map(t=>Number(t.price)).filter(Number.isFinite);
+ const levels=[Number(plan.entry),Number(plan.stop),...targets].filter(Number.isFinite);
+ if(levels.length<3)return;
+ const key=[selected,tf,plan.stage,plan.side,...levels.map(x=>x.toPrecision(12))].join('|');
+ if(key===chartPlanScaleKey)return;
+ const bars=currentChartCandles(tf).slice(-55),values=levels.concat(bars.flatMap(b=>[Number(b.high),Number(b.low)]).filter(Number.isFinite));
+ if(values.length<3)return;
+ const lo=Math.min(...values),hi=Math.max(...values),pad=Math.max((hi-lo)*0.075,Math.pow(10,-decimalPlacesFromPip(findSymbol(selected)?.pip_size,hi))*5);
+ try{chartPlanScaleKey=key;candleSeries.priceScale().setAutoScale(false);candleSeries.priceScale().setVisibleRange({from:lo-pad,to:hi+pad});}catch(error){chartPlanScaleKey='';console.warn('Could not frame projected risk/reward levels',error);}
+}
+
+function renderChartOverlays(){
+ if(!chartApi||!candleSeries||!selected)return;
+ const host=$('liveChart');if(!host)return;
+ let svg=host.querySelector('#chartProOverlay');
+ const width=Math.max(1,Math.floor(chartApi.timeScale().width()||host.clientWidth)),height=Math.max(1,Math.floor(host.clientHeight||340));
+ if(!svg){svg=chartSvgElement('svg',{id:'chartProOverlay','aria-hidden':'true'});svg.classList.add('chartProOverlay');host.appendChild(svg);}
+ svg.setAttribute('width',width);svg.setAttribute('height',height);svg.setAttribute('viewBox','0 0 '+width+' '+height);svg.replaceChildren();chartOverlayPendingLabels=[];
+ const tf=Number($('chartTf')?.value||300),a=latestAnalysis,meta=findSymbol(selected),price=hasLiveQuote()?Number(quote):Number(a?.price);
+ if(a)chartFitPlanRange(a.tradePlan||a.projectedPlan,tf);
+ if(!a){chartOverlayText(svg,10,20,'WAIT · ANALYSIS NOT READY',{size:10,fill:'#14253a',stroke:'#526b86'});return;}
+ const rangeOn=$('ovRange')?.checked!==false,liqOn=$('ovLiquidity')?.checked!==false;
+ if(rangeOn&&Number.isFinite(a.hi)&&Number.isFinite(a.lo)&&a.hi>a.lo){
+  const mid=(a.hi+a.lo)/2,half=(a.hi-a.lo)*.05;
+  chartOverlayBand(svg,a.hi,mid+half,'#e8b85d',.045,'PREMIUM · ABOVE 50%','#e8b85d');
+  chartOverlayBand(svg,mid+half,mid-half,'#91a7c2',.025,'EQUILIBRIUM','#91a7c2');
+  chartOverlayBand(svg,mid-half,a.lo,'#28c7a5',.045,'DISCOUNT · BELOW 50%','#28c7a5');
+  chartOverlayPriceLabel(svg,a.hi,'CRT HIGH '+formatPrice(a.hi,meta),'#e8b85d',{size:9,fill:'#342a16',textColor:'#f8e4b4',dash:'7 4',align:'left'});
+  chartOverlayPriceLabel(svg,a.mid,'50% EQ '+formatPrice(a.mid,meta),'#b9a16c',{size:9,fill:'#2a261d',textColor:'#f7e7bd',dash:'2 4',align:'left'});
+  chartOverlayPriceLabel(svg,a.lo,'CRT LOW '+formatPrice(a.lo,meta),'#e8b85d',{size:9,fill:'#342a16',textColor:'#f8e4b4',dash:'7 4',align:'left'});
+ }
+ if(liqOn){
+  if(Number.isFinite(a.buySideLevel))chartOverlayPriceLabel(svg,a.buySideLevel,'BUY-SIDE LIQ. '+formatPrice(a.buySideLevel,meta),'#79aaff',{size:9,fill:'#142a45',textColor:'#d8e8ff',dash:'3 4'});
+  if(Number.isFinite(a.sellSideLevel))chartOverlayPriceLabel(svg,a.sellSideLevel,'SELL-SIDE LIQ. '+formatPrice(a.sellSideLevel,meta),'#79aaff',{size:9,fill:'#142a45',textColor:'#d8e8ff',dash:'3 4'});
+ }
+ chartDrawStructure(svg,tf);chartDrawFvgs(svg,tf);
+ const plan=a.tradePlan||a.projectedPlan;chartDrawPlan(svg,plan,a,meta);
+ chartDrawStatusPanel(svg,a,meta,plan);
+ chartFlushPriceLabels(svg);
+}
 
 // Merge CRT/swing labels that resolve to the same tradable price so the
 // right-hand price scale does not draw duplicate overlapping labels.
@@ -1551,7 +1721,7 @@ function scalePrice(factor){
 }
 function autoPriceScale(){if(!candleSeries)return;try{candleSeries.priceScale().setAutoScale(true);}catch(error){console.warn('Auto price scale failed',error);}}
 function fitAllCandles(){if(chartApi){autoPriceScale();chartApi.timeScale().fitContent();}}
-function resetChartView(){if(chartApi){autoPriceScale();chartApi.timeScale().scrollToRealTime();}}
+function resetChartView(){if(chartApi){chartPlanScaleKey="";autoPriceScale();chartApi.timeScale().scrollToRealTime();requestAnimationFrame(()=>renderChartOverlays());}}
 function setChartFullscreen(on){
  const card=$("chartCard");card.classList.toggle("chartFullscreen",on);document.body.classList.toggle("chartNoScroll",on);
  $("chartFullscreen").textContent=on?"Exit full screen":"Full screen";
@@ -1563,7 +1733,7 @@ document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement
 window.addEventListener("resize",()=>setTimeout(resizeTradingChart,80));
 window.addEventListener("orientationchange",()=>setTimeout(resizeTradingChart,180));
 $("chartTf").addEventListener("change",()=>{clearCandleInspector();const tf=Number($("chartTf").value);requestChartTimeframe(tf);renderChart(true);});
-["ovRange","ovLiquidity","ovStructure","ovRR"].forEach(id=>$(id).addEventListener("change",()=>renderChart(false)));
+["ovRange","ovLiquidity","ovStructure","ovFvg","ovRR"].forEach(id=>$(id).addEventListener("change",()=>renderChartOverlays()));
 $("layoutChart").addEventListener("click",()=>setChartLayout("chart"));$("layoutSplit").addEventListener("click",()=>setChartLayout("split"));
 $("chartZoomIn").addEventListener("click",()=>zoomChart(.8));$("chartZoomOut").addEventListener("click",()=>zoomChart(1.25));
 $("timeZoomIn").addEventListener("click",()=>scaleTime(1.25));$("timeZoomOut").addEventListener("click",()=>scaleTime(.8));
