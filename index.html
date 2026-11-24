@@ -151,7 +151,7 @@ body{background:radial-gradient(ellipse at top,#17263c 0,#090f1b 56%)}
 @media(max-width:600px){main{padding:10px}.card{padding:12px}.chartToolbar{gap:6px}.chartToolbar button{font-size:10px}.chartWrap{height:400px;min-height:350px}}
 
 
-/* V1.9.1 professional chart annotations */
+/* V1.9.2 professional chart annotations */
 .chartCanvas{position:relative}
 .chartProOverlay{position:absolute;left:0;top:0;z-index:8;pointer-events:none;overflow:visible}
 .chartProOverlay text{font-family:system-ui,-apple-system,Segoe UI,sans-serif;paint-order:stroke;stroke:#07111f;stroke-width:1.5px;stroke-linejoin:round}
@@ -164,8 +164,14 @@ body{background:radial-gradient(ellipse at top,#17263c 0,#090f1b 56%)}
 .chartLegend .legendSwatch{width:15px;height:8px;border-radius:3px;display:inline-block}
 @media(max-width:600px){.chartProOverlay .zoneLabel{font-size:9px}.chartProOverlay .levelLabel{font-size:9px}.chartProOverlay .planLabel{font-size:9px}}
 
+
+/* V1.9.2 refinement: legible overlays, clear plan hierarchy and mobile-safe chart labels */
+.chartProOverlay .levelLabel,.chartProOverlay .planLabel{font-size:9px;font-weight:850;letter-spacing:0}
+.chartProOverlay .zoneLabel{font-size:9px;font-weight:850;letter-spacing:.3px;stroke:none;paint-order:normal}
+.chartProOverlay .smallLabel{font-size:9px;font-weight:850;letter-spacing:0}
+@media(max-width:600px){.chartProOverlay .levelLabel,.chartProOverlay .planLabel{font-size:8px}.chartProOverlay .smallLabel{font-size:8px}.chartProOverlay .zoneLabel{font-size:8px}}
 </style></head><body>
-<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.9.1 · PRO CHART · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
+<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.9.2 · PRO CHART · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
 <main>
 <div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for ticks and native OHLC candles. No Deriv password or account token is required. Market data and CRT conditions are for analysis only; signals are preliminary and this app never places trades.</div>
 <section class="card">
@@ -321,10 +327,10 @@ body{background:radial-gradient(ellipse at top,#17263c 0,#090f1b 56%)}
 <section class="card"><h2>Analysis summary</h2><div class="grid">
  <div class="tile"><small>Potential direction</small><b id="direction">WAIT</b></div><div class="tile"><small>Entry reference</small><b id="entry">—</b></div>
  <div class="tile"><small>Invalidation reference</small><b id="stop">—</b></div><div class="tile"><small>Opposing range target</small><b id="target">—</b></div>
-</div><p class="muted tiny">V1.9 strategies: CRT reversal, trend continuation (4H/1H alignment, 15M EMA21 pullback and 5M impulse) and breakout/retest (completed 15M break with 5M retest/hold). The strategy rules are initial, evidence-based heuristics and have not yet been statistically backtested or calibrated separately for each market category. FVG lifecycle, order blocks, session filters, market-specific calibration and full historical performance testing remain future modules. Evidence scores are not win probabilities.</p></section>
+</div><p class="muted tiny">V1.9.2 strategies: CRT reversal, trend continuation (4H/1H alignment, 15M EMA21 pullback and 5M impulse) and breakout/retest (completed 15M break with 5M retest/hold). The strategy rules are initial, evidence-based heuristics and have not yet been statistically backtested or calibrated separately for each market category. FVG lifecycle, order blocks, session filters, market-specific calibration and full historical performance testing remain future modules. Evidence scores are not win probabilities.</p></section>
 </details>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.9.1 · Professional annotated chart · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+<div class="foot">TEBZA CRT ANALYST V1.9.2 · Professional annotated chart · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
 </main>
 <script>
 // Load the pinned Lightweight Charts v5 standalone library, with a second CDN fallback.
@@ -381,6 +387,7 @@ let chartPriceLine = null;
 let chartOverlayLines = [];
 let chartOverlaySignature = "";
 let chartPlanScaleKey = "";
+const marketPrecisionBySymbol = new Map();
 let chartOverlayPendingLabels = [];
 let chartDataCache = {symbol:"", timeframe:0, length:0, firstEpoch:0, lastEpoch:0, lastBar:null};
 let chartSubscribedTimeframes = new Set([300]);
@@ -554,7 +561,9 @@ function handleMessage(data) {
       if (!Number.isFinite(nextQuote)) return;
       quote = nextQuote;
       latestTickEpoch = Number(data.tick.epoch) || latestTickEpoch;
-      const decimals = Number.isInteger(Number(data.tick.pip_size)) ? Math.max(0, Math.min(8, Number(data.tick.pip_size))) : decimalPlaces(data.tick.quote);
+      const tickPrecision = Number(data.tick.pip_size);
+      const decimals = Number.isInteger(tickPrecision) && tickPrecision >= 0 && tickPrecision <= 8 ? tickPrecision : decimalPlaces(data.tick.quote);
+      if (Number.isInteger(tickPrecision) && tickPrecision >= 0 && tickPrecision <= 8) marketPrecisionBySymbol.set(tickSymbol, tickPrecision);
       $("quote").textContent = quote.toFixed(decimals);
       const meta = findSymbol(selected);
       $("symbolName").textContent = displayName(meta) + " · live tick";
@@ -859,13 +868,27 @@ function num(value) { return Number(value); }
 function formatPrice(value, meta) {
   const n = Number(value);
   if (!Number.isFinite(n)) return "—";
-  const decimals = decimalPlacesFromPip(meta?.pip_size, n);
+  const decimals = decimalPlacesFromPip(meta?.pip_size, n, symbolCode(meta));
   return n.toFixed(decimals);
 }
-function decimalPlacesFromPip(pipSize, fallback) {
+function decimalPlacesFromPip(pipSize, fallback, code = selected) {
   const n = Number(pipSize);
   if (Number.isInteger(n) && n >= 0 && n <= 8) return n;
-  return decimalPlaces(fallback);
+  const known = marketPrecisionBySymbol.get(code);
+  if (Number.isInteger(known) && known >= 0 && known <= 8) return known;
+  // Deriv feeds can serialise floating prices with excess trailing precision.
+  // Keep a practical fallback until an instrument-specific pip_size arrives.
+  return Math.min(5, decimalPlaces(fallback));
+}
+function classifyRangePosition(price, high, low) {
+  const p=Number(price), hi=Number(high), lo=Number(low), width=hi-lo;
+  if(![p,hi,lo,width].every(Number.isFinite)||width<=0) return {percent:null,label:"Range unavailable",inside:false};
+  const percent=((p-lo)/width)*100;
+  if(p>hi) return {percent,label:"Above reference range",inside:false};
+  if(p<lo) return {percent,label:"Below reference range",inside:false};
+  if(percent<45) return {percent,label:"Discount",inside:true};
+  if(percent>55) return {percent,label:"Premium",inside:true};
+  return {percent,label:"Equilibrium",inside:true};
 }
 function granularityLabel(value) {
   return ({300: "5M", 900: "15M", 3600: "1H", 14400: "4H"})[value] || String(value);
@@ -950,9 +973,19 @@ function emaValue(list, period=21){
  let ema=seed;for(let i=period;i<values.length;i++)ema=values[i]*k+ema*(1-k);
  return Number.isFinite(ema)?ema:null;
 }
+function timeframeTrendDirection(list,tolerance=0){
+ if(!Array.isArray(list)||list.length<55)return "Neutral";
+ const close=Number(list[list.length-1]?.close);
+ const e21=emaValue(list.slice(-80),21),e50=emaValue(list.slice(-100),50),past21=emaValue(list.slice(-85,-5),21);
+ if(![close,e21,e50,past21].every(Number.isFinite))return "Neutral";
+ const pad=Math.max(Number(tolerance)*0.08,Math.abs(close)*0.000001);
+ if(close>e21+pad&&e21>e50+pad&&e21>past21+pad)return "Bullish";
+ if(close<e21-pad&&e21<e50-pad&&e21<past21-pad)return "Bearish";
+ return "Neutral";
+}
 function makeScenarioPlan(side,entry,stop,meta,strategy,stage,zoneHalfWidth,sourceEpoch,volatility){
  entry=Number(entry);stop=Number(stop);if(!Number.isFinite(entry)||!Number.isFinite(stop))return null;
- const risk=Math.abs(entry-stop),decimals=decimalPlacesFromPip(meta?.pip_size,entry),minTick=Math.pow(10,-decimals);
+ const risk=Math.abs(entry-stop),decimals=decimalPlacesFromPip(meta?.pip_size,entry,symbolCode(meta)),minTick=Math.pow(10,-decimals);
  if(risk<minTick*2||(side==='BUY'?stop>=entry:stop<=entry))return null;
  const sign=side==='BUY'?1:-1,targets=[1,2,3].map(r=>({r,price:entry+sign*risk*r}));
  const half=Math.max(minTick*2,Number(zoneHalfWidth)||minTick*2);
@@ -960,41 +993,64 @@ function makeScenarioPlan(side,entry,stop,meta,strategy,stage,zoneHalfWidth,sour
 }
 function evaluateAdditionalStrategies(args){
  const {c5,c15,c1,c4,meta,price,bias4,structure,atr5,atr15,tolerance}=args;
- const candidates=[];if(!c5?.length||!c15?.length||!c1?.length||!c4?.length)return {confirmedPlan:null,projectedPlan:null,bestScore:0,bestStrategy:null};
- const last5=c5[c5.length-1],last15=c15[c15.length-1],last1=c1[c1.length-1];
- const bias1=last1.close>last1.open?'Bullish':last1.close<last1.open?'Bearish':'Neutral';
- const minTick=Math.pow(10,-decimalPlacesFromPip(meta?.pip_size,price));
+ const candidates=[];
+ if(!c5?.length||!c15?.length||!c1?.length||!c4?.length)return {confirmedPlan:null,projectedPlan:null,bestScore:0,bestStrategy:null,checks:[],reason:null};
+ const last5=c5[c5.length-1],prev5=c5[c5.length-2],last15=c15[c15.length-1];
+ const bias1=timeframeTrendDirection(c1,tolerance);
+ const minTick=Math.pow(10,-decimalPlacesFromPip(meta?.pip_size,price,symbolCode(meta)));
  const buffer=Math.max(minTick*2,(atr5||minTick*4)*0.10),a15=atr15||atr5||minTick*10,a5=atr5||minTick*4;
  const body=Math.abs(last5.close-last5.open),barRange=Math.max(minTick,last5.high-last5.low),bodyRatio=body/barRange;
- const impulseUp=last5.close>last5.open&&bodyRatio>=0.55&&body>=a5*0.45;
- const impulseDown=last5.close<last5.open&&bodyRatio>=0.55&&body>=a5*0.45;
- // Trend continuation: aligned 4H/1H context, 15M structure and EMA21 pullback hold, then 5M impulse.
+ // A trigger must be a completed impulse candle that also closes through the prior 5M candle extreme.
+ const impulseUp=!!prev5&&last5.close>last5.open&&bodyRatio>=0.55&&body>=a5*0.45&&last5.close>prev5.high;
+ const impulseDown=!!prev5&&last5.close<last5.open&&bodyRatio>=0.55&&body>=a5*0.45&&last5.close<prev5.low;
+ const triggerAfter15mClose=Number(last5.epoch)>=Number(last15.epoch)+900;
+ // Trend continuation: multi-candle 4H/1H alignment, 15M EMA21 pullback, then a later 5M impulse.
  const ema21=emaValue(c15,21);
  if(ema21!==null){
   for(const side of ['BUY','SELL']){
    const bullish=side==='BUY',aligned=bias4===(bullish?'Bullish':'Bearish')&&bias1===bias4&&structure.direction===bias4;
    const pullback=bullish?(last15.low<=ema21+a15*0.30&&last15.close>=ema21-tolerance):(last15.high>=ema21-a15*0.30&&last15.close<=ema21+tolerance);
    const impulse=bullish?impulseUp:impulseDown;
-   const score=(aligned?30:0)+(pullback?30:0)+(impulse?25:0)+(c15.length>=30?15:0);
+   const historyOk=c15.length>=30;
+   const score=(aligned?30:0)+(pullback?25:0)+(impulse?25:0)+(historyOk?10:0)+(triggerAfter15mClose?10:0);
    if(aligned&&(pullback||impulse)&&score>=60){
     const entry=ema21,anchor=bullish?Math.min(last15.low,structure.lastLow?.price??last15.low):Math.max(last15.high,structure.lastHigh?.price??last15.high);
     const stop=bullish?anchor-buffer:anchor+buffer;
-    const plan=makeScenarioPlan(side,entry,stop,meta,'TREND CONTINUATION',score>=100?'CONFIRMED':'PROJECTED',a15*0.12,last5.epoch,a5);
+    const risk=Math.abs(entry-stop),riskIsReasonable=risk<=a15*2.0;
+    const plan=makeScenarioPlan(side,entry,stop,meta,'TREND CONTINUATION',score>=100&&riskIsReasonable?'CONFIRMED':'PROJECTED',a15*0.12,last5.epoch,a5);
     const distance=Math.abs(Number(price)-entry);
-    if(plan&&distance<=a15*1.1&&(bullish?Number(price)>stop:Number(price)<stop))candidates.push({plan,score,confirmed:score>=100,checks:[{label:'4H and 1H trend alignment',ok:aligned},{label:'15M EMA21 pullback hold',ok:pullback},{label:'5M continuation impulse',ok:impulse},{label:'Sufficient 15M history',ok:c15.length>=30}],reason:'4H/1H trend aligned · 15M EMA21 pullback '+(pullback?'held':'developing')+' · 5M impulse '+(impulse?'confirmed':'pending')});
+    if(plan&&riskIsReasonable&&distance<=a15*1.1&&(bullish?Number(price)>stop:Number(price)<stop)){
+     const confirmed=score>=100&&impulse&&triggerAfter15mClose;
+     plan.stage=confirmed?'CONFIRMED':'PROJECTED';
+     candidates.push({plan,score,confirmed,checks:[
+      {label:'4H and 1H multi-candle trend alignment',ok:aligned},
+      {label:'15M EMA21 pullback hold',ok:pullback},
+      {label:'5M impulse breaks prior candle extreme',ok:impulse},
+      {label:'5M trigger formed after 15M close',ok:triggerAfter15mClose},
+      {label:'Sufficient 15M history and acceptable risk',ok:historyOk&&riskIsReasonable}
+     ],reason:'4H/1H multi-candle trend aligned · 15M EMA21 pullback '+(pullback?'held':'developing')+' · 5M impulse '+(impulse?(triggerAfter15mClose?'confirmed after 15M close':'formed before 15M confirmation window'):'pending')});
+    }
    }
   }
  }
- // Breakout/retest: a completed 15M break is only confirmed after a completed 5M retest and hold.
+ // Breakout/retest: the 5M retest must occur after the 15M break candle has completed.
  const breakoutSpecs=[{side:'BUY',ok:!!structure.breakUp,level:structure.lastHigh?.price,retouched:last5.low,held:last5.close},{side:'SELL',ok:!!structure.breakDown,level:structure.lastLow?.price,retouched:last5.high,held:last5.close}];
  breakoutSpecs.forEach(spec=>{
   if(!spec.ok||!Number.isFinite(Number(spec.level)))return;
   const bullish=spec.side==='BUY',level=Number(spec.level),touchTol=Math.max(tolerance,a5*0.18);
-  const retest=bullish?(spec.retouched<=level+touchTol&&spec.held>level+tolerance):(spec.retouched>=level-touchTol&&spec.held<level-tolerance);
-  const score=retest?100:65,entry=level,stop=bullish?Math.min(last5.low,level-a5*0.55)-buffer:Math.max(last5.high,level+a5*0.55)+buffer;
+  const afterBreak=Number(last5.epoch)>=Number(last15.epoch)+900;
+  const touched=bullish?(spec.retouched<=level+touchTol&&spec.held>level+tolerance):(spec.retouched>=level-touchTol&&spec.held<level-tolerance);
+  const retest=afterBreak&&touched;
+  const score=retest?100:(touched?75:65),entry=level,stop=bullish?Math.min(last5.low,level-a5*0.55)-buffer:Math.max(last5.high,level+a5*0.55)+buffer;
   const plan=makeScenarioPlan(spec.side,entry,stop,meta,'BREAKOUT / RETEST',retest?'CONFIRMED':'PROJECTED',a5*0.12,last5.epoch,a5);
   const distance=Math.abs(Number(price)-entry);
-  if(plan&&distance<=a5*1.25&&(bullish?Number(price)>stop:Number(price)<stop))candidates.push({plan,score,confirmed:retest,checks:[{label:'Completed 15M structure break',ok:true},{label:'5M retest of broken level',ok:retest},{label:'5M candle held beyond level',ok:retest},{label:'Price remains near proposed entry',ok:distance<=a5*1.25}],reason:(bullish?'Bullish':'Bearish')+' 15M break '+(retest?'followed by a completed 5M retest and hold':'detected · waiting for 5M retest')});
+  if(plan&&distance<=a5*1.25&&(bullish?Number(price)>stop:Number(price)<stop))candidates.push({plan,score,confirmed:retest,checks:[
+   {label:'Completed 15M structure break',ok:true},
+   {label:'5M retest touched the broken level',ok:touched},
+   {label:'Retest occurred after the 15M close',ok:afterBreak},
+   {label:'5M candle closed beyond the level',ok:touched},
+   {label:'Price remains near proposed entry',ok:distance<=a5*1.25}
+  ],reason:(bullish?'Bullish':'Bearish')+' 15M break '+(retest?'followed by a later completed 5M retest and hold':'detected · waiting for a later 5M retest and hold')});
  });
  candidates.sort((a,b)=>(Number(b.confirmed)-Number(a.confirmed))||b.score-a.score);
  const chosen=candidates[0]||null;
@@ -1071,11 +1127,11 @@ function analyse() {
   const last4 = c4[c4.length - 1];
   const hi = num(reference1h.high), lo = num(reference1h.low), mid = (hi + lo) / 2;
   const price = hasLiveQuote() ? Number(quote) : num(last5.close);
-  const decimals = decimalPlacesFromPip(meta?.pip_size, price);
+  const decimals = decimalPlacesFromPip(meta?.pip_size, price, symbolCode(meta));
   const minTick = Math.pow(10, -decimals);
   const atr15 = averageTrueRange(c15, 14);
   const tolerance = Math.max(minTick * 2, (atr15 || 0) * 0.08, Math.abs(price) * 0.000002);
-  const bias4 = num(last4.close) > num(last4.open) ? "Bullish" : num(last4.close) < num(last4.open) ? "Bearish" : "Neutral";
+  const bias4 = timeframeTrendDirection(c4, tolerance);
   const swings = confirmedSwings(c15, 2, 2);
   const structure = classifyMarketStructure(c15, swings, tolerance);
   const eqh = latestEqualLevel(swings.highs, tolerance);
@@ -1085,10 +1141,11 @@ function analyse() {
   const buySideLevel = eqh ? eqh.price : latestSwingHigh;
   const sellSideLevel = eql ? eql.price : latestSwingLow;
 
-  const location = price > mid + tolerance ? (price > hi + tolerance ? "Above reference range" : "Premium")
-    : price < mid - tolerance ? (price < lo - tolerance ? "Below reference range" : "Discount") : "Equilibrium";
+  const rangeState = classifyRangePosition(price, hi, lo);
+  const location = rangeState.label;
   const width = hi - lo;
-  const rangePercent = width > 0 ? Math.max(0, Math.min(100, ((price - lo) / width) * 100)) : null;
+  const rangePercent = rangeState.percent;
+  const bias1 = timeframeTrendDirection(c1, tolerance);
 
   // Build candidate liquidity levels from the 1H range and confirmed 15M swing pools.
   const lowLevels = [{label:"1H reference low", price:lo}];
@@ -1135,8 +1192,8 @@ function analyse() {
   const bearScore = bearComponents.reduce((sum,item) => sum + (item.ok ? item.weight : 0), 0);
   const candidateScore = Math.max(bullScore, bearScore);
   let direction = "WAIT", entry = null, stop = null, target = null, tradePlan = null;
-  const bullReady = bullishSweep && !ambiguousSweep && bullishDisplacement && structureBull && bias4 === "Bullish" && bullScore >= 80;
-  const bearReady = bearishSweep && !ambiguousSweep && bearishDisplacement && structureBear && bias4 === "Bearish" && bearScore >= 80;
+  const bullReady = bullishSweep && !ambiguousSweep && bullishDisplacement && structureBull && bullScore >= 80;
+  const bearReady = bearishSweep && !ambiguousSweep && bearishDisplacement && structureBear && bearScore >= 80;
   const stopBuffer = Math.max(minTick * 2, (atr5 || minTick * 2) * 0.05);
   if (bullReady) {
     direction = "WATCH BUY"; entry = num(last5.close);
@@ -1159,7 +1216,7 @@ function analyse() {
         : [lo, sellSideLevel].filter(v => Number.isFinite(v) && v < entry).sort((a,b)=>b-a)[0];
       const obstacleBeforeTp3 = Number.isFinite(opposingLiquidity) && (longSide ? opposingLiquidity < targets[2].price : opposingLiquidity > targets[2].price);
       const basePlan=makeScenarioPlan(longSide?"BUY":"SELL",entry,stop,meta,"CRT REVERSAL","CONFIRMED",(atr5||minTick*8)*0.12,last5.epoch,atr5);
-      tradePlan = basePlan ? {...basePlan,opposingLiquidity:Number.isFinite(opposingLiquidity)?opposingLiquidity:null,obstacleBeforeTp3} : null;
+      tradePlan = basePlan ? {...basePlan,counterTrend:bias4!==(longSide?"Bullish":"Bearish"),opposingLiquidity:Number.isFinite(opposingLiquidity)?opposingLiquidity:null,obstacleBeforeTp3} : null;
       if(!tradePlan){direction="WAIT";entry=stop=target=null;}
     } else { direction = "WAIT"; entry = stop = target = null; }
   }
@@ -1190,19 +1247,19 @@ function analyse() {
     : "No completed 5M sweep/reclaim";
   const structureCandle = num(last15.close) > num(last15.open) ? "15M bullish candle" : num(last15.close) < num(last15.open) ? "15M bearish candle" : "15M neutral candle";
 
-  latestAnalysis = {meta, price, hi, lo, mid, location, rangePercent, structure, buySideLevel, sellSideLevel, eqh, eql, bullishSweep, bearishSweep, bullishLevel, bearishLevel, direction, entry, stop, target, tradePlan, projectedPlan, selectedStrategy, alternative, bias4, displacementDirection, liquidity, last5, last15, bullComponents, bearComponents, bullScore, bearScore, ambiguousSweep};
+  latestAnalysis = {meta, price, hi, lo, mid, location, rangePercent, structure, buySideLevel, sellSideLevel, eqh, eql, bullishSweep, bearishSweep, bullishLevel, bearishLevel, direction, entry, stop, target, tradePlan, projectedPlan, selectedStrategy, alternative, bias4, bias1, displacementDirection, liquidity, last5, last15, bullComponents, bearComponents, bullScore, bearScore, ambiguousSweep};
   renderChart();
   setText("hi", formatPrice(hi, meta));
   setText("lo", formatPrice(lo, meta));
   setText("mid", formatPrice(mid, meta));
   setText("liq", liquidity);
   setText("tf4", bias4);
-  setText("tf1", "Previous completed candle");
+  setText("tf1", bias1+" trend · previous completed candle reference");
   setText("tf15", structureCandle + " · " + structure.direction);
   setText("tf5", displacementDirection);
   setText("rangeLocation", location);
   setText("rangeWidth", formatPrice(width, meta));
-  setText("rangePosition", rangePercent === null ? "—" : rangePercent.toFixed(1) + "% from range low");
+  setText("rangePosition", rangePercent === null ? "—" : rangePercent.toFixed(1) + "% from range low"+(rangeState.inside?"":" · outside range"));
   setText("structureBias", structure.trend);
   setText("structureEvent", structure.event);
   setText("buyLiquidity", buySideLevel === null ? "Insufficient swing history" : formatPrice(buySideLevel, meta) + (eqh ? " · EQH" : " · swing high"));
@@ -1231,7 +1288,7 @@ function analyse() {
   updateMarketNarrative();
   renderTradePlan();
   renderChart(false);
-  setStatus("V1.9.1 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  setStatus("V1.9.2 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
   if (direction !== "WAIT") {
     const signalKey=[selected,selectedStrategy||"CRT REVERSAL",direction,last5.epoch].join("|");
     if(signalKey!==lastNotifiedSignalKey){
@@ -1379,7 +1436,7 @@ function initTradingChart(){
  }
 }
 function chartFormatOptions(){
- const meta=findSymbol(selected),pip=Number(meta?.pip_size),precision=Number.isInteger(pip)?clamp(pip,0,8):decimalPlaces(quote??(candles[Number($("chartTf").value)]||[]).at(-1)?.close??0);
+ const meta=findSymbol(selected),precision=decimalPlacesFromPip(meta?.pip_size,quote??(candles[Number($("chartTf").value)]||[]).at(-1)?.close??0,symbolCode(meta));
  return {type:'price',precision,minMove:Math.pow(10,-precision)};
 }
 function chartRemoveOverlayLines(){
@@ -1429,7 +1486,7 @@ function renderChart(force){
  const priceAge=latestTickEpoch?Math.max(0,Math.round(Date.now()/1000-latestTickEpoch)):null;
  const candleAge=candleUpdateAt[tf]?Math.max(0,Math.round((Date.now()-candleUpdateAt[tf])/1000)):null;
  $("chartLiveState").textContent='DERIV · '+granularityLabel(tf)+' · '+all.length+' candles'+(priceAge===null?'':' · tick '+(priceAge<=10?'fresh':priceAge+'s'))+(candleAge===null?'':' · OHLC '+candleAge+'s');
- $("chartExplanation").textContent='Chart key: gold = previous 1H CRT high / 50% equilibrium / low; blue = mapped liquidity; purple = unfilled 15M price imbalance (shown on 5M and 15M charts); red = stop-loss / invalidation; green = target area; dashed amber = projected plan; solid outlines = rules-passed plan. HH / HL / LH / LL mark confirmed 15M swing structure. The live quote is shown on the right price axis. Order-block zones are not drawn until their detection rules are validated.';
+ $("chartExplanation").textContent='Chart key: gold = previous 1H CRT range; blue = mapped liquidity; purple = unfilled 15M imbalance; red = stop / risk; green = reward targets; dashed amber = provisional setup. HH / HL / LH / LL mark confirmed 15M swings. Every timeframe displays the same selected-market setup status; switching chart timeframe does not create a separate signal. Order-block zones remain hidden until their rules are validated.';
  if(!chartHoverReadoutActive())$("chartReadout").textContent='Drag to pan · Pinch to zoom · Tap a candle to inspect OHLC · Go live returns to latest candles';
 }
 function chartHoverReadoutActive(){return false;}
@@ -1463,7 +1520,8 @@ function chartOverlayBand(svg,upper,lower,fill,opacity,label,color){
  if(label&&y2-y1>14)chartOverlayText(svg,8,(y1+y2)/2,label,{size:9,fill:'#0a1728',stroke:color,color,opacity:.94,className:'zoneLabel'});
 }
 function chartOverlayPriceLabel(svg,price,label,color,opts={}){
- const y=candleSeries.priceToCoordinate(Number(price));if(!Number.isFinite(y))return;
+ const y=candleSeries.priceToCoordinate(Number(price)),height=Number(svg.getAttribute('height'))||300;
+ if(!Number.isFinite(y)||y<8||y>height-8)return;
  chartOverlayLine(svg,y,color,opts.dash||'5 4',opts.opacity??.92,opts.width||1);
  chartOverlayPendingLabels.push({y,label,color,opts:Object.assign({},opts)});
 }
@@ -1471,7 +1529,7 @@ function chartFlushPriceLabels(svg){
  const height=Number(svg.getAttribute('height'))||340,width=Number(svg.getAttribute('width'))||300;
  ['left','right'].forEach(side=>{
   const items=chartOverlayPendingLabels.filter(item=>(item.opts.align||'right')===side).sort((a,b)=>a.y-b.y);
-  const gap=15,placed=[];
+  const gap=22,placed=[];
   items.forEach((item,i)=>{placed[i]=Math.max(item.y,i?placed[i-1]+gap:9);});
   if(placed.length&&placed[placed.length-1]>height-10){const shift=placed[placed.length-1]-(height-10);for(let i=0;i<placed.length;i++)placed[i]-=shift;}
   if(placed.length&&placed[0]<9){const shift=9-placed[0];for(let i=0;i<placed.length;i++)placed[i]+=shift;}
@@ -1485,32 +1543,46 @@ function chartFlushPriceLabels(svg){
 }
 function chartOverlayPlanState(plan,a){
  if(!plan)return null;
- const preview=plan.stage==='PROJECTED';
+ const preview=!!a?.projectedPlan&&a.projectedPlan===plan || plan.stage==='PROJECTED';
  const price=hasLiveQuote()?Number(quote):Number(a?.price);
  const stale=(preview&&((plan.expiresEpoch>0&&latestTickEpoch>=plan.expiresEpoch)||(Number.isFinite(price)&&(plan.side==='BUY'?price<=plan.stop:price>=plan.stop))||(plan.volatility>0&&Number.isFinite(price)&&Math.abs(price-plan.entry)>plan.volatility*1.5)))||(!preview&&Number.isFinite(price)&&(plan.side==='BUY'?price<=plan.stop:price>=plan.stop));
  return {preview,stale,label:stale?'INVALIDATED':preview?'PROJECTED':'RULES PASSED'};
 }
+function chartTriggerText(a){
+ if(a?.selectedStrategy==='TREND CONTINUATION'){
+  const checks=a.alternative?.checks||[],item=checks.find(x=>/5M impulse breaks prior candle extreme/i.test(x.label));
+  const sequence=checks.find(x=>/5M trigger formed after 15M close/i.test(x.label));
+  return 'IMPULSE '+(item?.ok?'PASSED':'WAITING')+(sequence&&!sequence.ok?' · 15M CLOSE PENDING':'');
+ }
+ if(a?.selectedStrategy==='BREAKOUT / RETEST'){
+  const checks=a.alternative?.checks||[],item=checks.find(x=>/5M retest occurred after/i.test(x.label));
+  return 'RETEST '+(item?.ok?'PASSED':'WAITING');
+ }
+ return a?.bullishDisplacement?'BULLISH DISPLACEMENT':a?.bearishDisplacement?'BEARISH DISPLACEMENT':'DISPLACEMENT WAITING';
+}
 function chartDrawStatusPanel(svg,a,meta,plan){
  const width=Number(svg.getAttribute('width'))||300;
- const panelW=Math.min(190,Math.max(145,width*.46)),x=8,y=8,panelH=plan?76:66;
- svg.appendChild(chartSvgElement('rect',{x,y,width:panelW,height:panelH,rx:8,fill:'#081525',stroke:'#405674','stroke-width':1,'fill-opacity':.95}));
+ const panelW=Math.min(224,Math.max(170,width*.55)),x=8,y=8,panelH=plan?94:70;
+ svg.appendChild(chartSvgElement('rect',{x,y,width:panelW,height:panelH,rx:8,fill:'#081525',stroke:'#405674','stroke-width':1,'fill-opacity':.96}));
  const side=plan?plan.side:(a?.bias4==='Bullish'?'BULLISH BIAS':a?.bias4==='Bearish'?'BEARISH BIAS':'NEUTRAL');
  const state=plan?chartOverlayPlanState(plan,a):null;
  const status=state?.label||'WAIT · NO VALID PLAN';
  const accent=state?.stale?'#f07883':state?.preview?'#e8b85d':plan?'#28c7a5':'#9db1ca';
- const title=chartSvgElement('text',{x:x+9,y:y+16,fill:accent,class:'smallLabel'});title.textContent=status+(plan?' · '+side:'');svg.appendChild(title);
- const line1=chartSvgElement('text',{x:x+9,y:y+36,fill:'#edf4ff',class:'smallLabel'});line1.textContent='4H '+(a?.bias4||'—')+'  ·  15M '+(a?.structure?.direction||'—');svg.appendChild(line1);
- const line2=chartSvgElement('text',{x:x+9,y:y+53,fill:'#b7c9df',class:'smallLabel'});line2.textContent='5M '+(a?.displacementDirection||'Awaiting trigger');svg.appendChild(line2);
- if(plan){const line3=chartSvgElement('text',{x:x+9,y:y+68,fill:state?.preview?'#e8b85d':'#a6e6d5',class:'smallLabel'});line3.textContent=(plan.strategy||'SETUP')+' · '+(state?.preview?'NOT CONFIRMED':'CHECKLIST PASSED');svg.appendChild(line3);}
+ const add=(text,yy,color)=>{const t=chartSvgElement('text',{x:x+9,y:yy,fill:color,class:'smallLabel'});t.textContent=text;svg.appendChild(t);};
+ add(status+(plan?' · '+side:''),y+16,accent);
+ add('4H '+(a?.bias4||'—')+'  ·  1H '+(a?.bias1||'—'),y+34,'#edf4ff');
+ add('15M STRUCTURE '+(a?.structure?.direction||'—'),y+51,'#b7c9df');
+ add('5M '+chartTriggerText(a),y+68,'#b7c9df');
+ if(plan)add((plan.strategy||'SETUP')+(state?.preview?' · PROVISIONAL':state?.stale?' · INVALIDATED':' · RULES PASSED')+(plan.counterTrend?' · COUNTERTREND':''),y+85,state?.preview?'#e8b85d':'#a6e6d5');
 }
 function chartDrawStructure(svg,tf){
  if(!document.getElementById('ovStructure')?.checked||!(tf===300||tf===900))return;
  const source=completedCandles(candles[900],900),sw=confirmedSwings(source,2,2);
- const draw=(points,kind,color)=>points.slice(-4).forEach((p,i)=>{
+ const draw=(points,kind,color)=>points.slice(-3).forEach((p,i)=>{
   const x=chartApi.timeScale().timeToCoordinate(Number(p.epoch)),y=candleSeries.priceToCoordinate(Number(p.price));
   if(!Number.isFinite(x)||!Number.isFinite(y))return;
-  const pointIndex=points.length-4+i,prior=pointIndex>0?points[pointIndex-1]:null;
-  const label=kind+(prior?(kind==='H'?(p.price>prior.price?'H':'L'):(p.price>prior.price?'H':'L')):'');
+  const pointIndex=points.length-3+i,prior=pointIndex>0?points[pointIndex-1]:null;
+  const label=!prior?kind:(kind==='H'?(p.price>prior.price?'HH':'LH'):(p.price>prior.price?'HL':'LL'));
   svg.appendChild(chartSvgElement('circle',{cx:x,cy:y,r:3.2,fill:color,stroke:'#081525','stroke-width':1.4}));
   chartOverlayText(svg,x+5,y+(kind==='H'?-12:12),label,{size:8,fill:'#111e31',stroke:color,color:'#f4f7fb',minWidth:22});
  });
@@ -1523,10 +1595,10 @@ function chartFindOpenFvgs(list){
   if(Number(cur.low)>Number(old.high))zone={side:'BULLISH',low:Number(old.high),high:Number(cur.low),epoch:Number(cur.epoch)};
   else if(Number(cur.high)<Number(old.low))zone={side:'BEARISH',low:Number(cur.high),high:Number(old.low),epoch:Number(cur.epoch)};
   if(!zone)continue;
-  const later=list.slice(i+1),filled=later.some(c=>zone.side==='BULLISH'?Number(c.low)<=zone.low:Number(c.high)>=zone.high);
+  const later=list.slice(i+1),filled=later.some(c=>zone.side==='BULLISH'?Number(c.low)<=zone.high:Number(c.high)>=zone.low);
   if(!filled)found.push(zone);
  }
- return found.slice(-3);
+ return found.slice(-2);
 }
 function chartDrawFvgs(svg,tf){
  if(!document.getElementById('ovFvg')?.checked||tf>900)return;
@@ -1536,40 +1608,42 @@ function chartDrawFvgs(svg,tf){
   if(!Number.isFinite(x0)||!Number.isFinite(y1)||!Number.isFinite(y2))return;
   const color='#9c8be8',top=Math.min(y1,y2),height=Math.max(3,Math.abs(y2-y1));
   svg.appendChild(chartSvgElement('rect',{x:Math.max(0,x0),y:top,width:Math.max(0,w-Math.max(0,x0)),height,rx:2,fill:color,'fill-opacity':.11,stroke:color,'stroke-opacity':.72,'stroke-width':1,'stroke-dasharray':'4 3'}));
-  if(height>12)chartOverlayText(svg,Math.max(8,x0+5),top+Math.min(height/2,12),'15M '+zone.side+' FVG',{size:8,fill:'#0c192b',stroke:color,color:'#f6f8fc'});
+  if(height>12)chartOverlayText(svg,Math.max(8,x0+5),top+Math.min(height/2,12),'15M '+zone.side+' IMBALANCE',{size:8,fill:'#0c192b',stroke:color,color:'#f6f8fc'});
  });
 }
 function chartDrawPlan(svg,plan,a,meta){
  if(!plan||!document.getElementById('ovRR')?.checked)return;
- const state=chartOverlayPlanState(plan,a),w=Number(svg.getAttribute('width'))||0;
+ const state=chartOverlayPlanState(plan,a),w=Number(svg.getAttribute('width'))||0,h=Number(svg.getAttribute('height'))||340;
  const yEntry=candleSeries.priceToCoordinate(Number(plan.entry)),yStop=candleSeries.priceToCoordinate(Number(plan.stop)),yTp3=candleSeries.priceToCoordinate(Number(plan.targets?.[2]?.price));
- if(![yEntry,yStop,yTp3].every(Number.isFinite))return;
+ if(!Number.isFinite(yEntry)||!Number.isFinite(yStop))return;
  const xLast=chartApi.timeScale().timeToCoordinate(Number((currentChartCandles(Number($('chartTf').value)||300).slice(-1)[0]||{}).epoch));
- const x=Math.max(8,Math.min(w-154,Number.isFinite(xLast)?xLast+4:w*.58)),boxW=Math.max(40,w-x-6);
- const preview=state.preview,invalid=state.stale;
- const green=invalid?'#778b86':'#28c7a5',red=invalid?'#91747c':'#f07883',gold='#e8b85d';
- const targetTop=plan.side==='BUY'?Math.min(yEntry,yTp3):Math.min(yEntry,yTp3),targetBottom=Math.max(yEntry,yTp3);
- const riskTop=Math.min(yEntry,yStop),riskBottom=Math.max(yEntry,yStop);
- svg.appendChild(chartSvgElement('rect',{x,y:targetTop,width:boxW,height:Math.max(2,targetBottom-targetTop),rx:3,fill:green,'fill-opacity':preview ? 0.10 : 0.16,stroke:green,'stroke-opacity':.9,'stroke-width':1,'stroke-dasharray':preview?'5 4':'none'}));
- svg.appendChild(chartSvgElement('rect',{x,y:riskTop,width:boxW,height:Math.max(2,riskBottom-riskTop),rx:3,fill:red,'fill-opacity':preview ? 0.12 : 0.18,stroke:red,'stroke-opacity':.9,'stroke-width':1,'stroke-dasharray':preview?'5 4':'none'}));
- const prefix=invalid?'INVALID':preview?'PROJECTED':'CONFIRMED';
- chartOverlayLine(svg,yEntry,preview?gold:'#f1f5fb',preview?'5 3':'2 2',1.0,1.5);
+ const x=Math.max(8,Math.min(w-170,Number.isFinite(xLast)?xLast+4:w*.58)),boxW=Math.max(40,w-x-6);
+ const preview=state.preview,invalid=state.stale,green=invalid?'#778b86':'#28c7a5',red=invalid?'#91747c':'#f07883',gold='#e8b85d';
+ const clampRect=(top,bottom,fill,opacity,stroke,dash)=>{const y=Math.max(0,Math.min(top,bottom)),end=Math.min(h,Math.max(top,bottom));if(end-y>=2)svg.appendChild(chartSvgElement('rect',{x,y,width:boxW,height:end-y,rx:3,fill,'fill-opacity':opacity,stroke,'stroke-opacity':.9,'stroke-width':1,'stroke-dasharray':dash}));};
+ if(Number.isFinite(yTp3))clampRect(yEntry,yTp3,green,preview?0.10:0.16,green,preview?'5 4':'none');
+ clampRect(yEntry,yStop,red,preview?0.12:0.18,red,preview?'5 4':'none');
+ // Highlight the proposed entry zone separately from the entry reference line.
+ if(plan.entryZone){const ya=candleSeries.priceToCoordinate(Number(plan.entryZone.from)),yb=candleSeries.priceToCoordinate(Number(plan.entryZone.to));if(Number.isFinite(ya)&&Number.isFinite(yb))clampRect(ya,yb,gold,preview?0.18:0.10,gold,preview?'4 3':'2 2');}
+ const prefix=invalid?'INVALIDATED':preview?'PROJECTED':'CONFIRMED';
+ chartOverlayLine(svg,yEntry,preview?gold:'#f1f5fb',preview?'5 3':'2 2',1.0,1.6);
  chartOverlayText(svg,x+5,yEntry-12,prefix+' '+plan.side+' · ENTRY '+formatPrice(plan.entry,meta),{size:9,fill:'#122033',stroke:preview?gold:'#e5edf7',color:'#fff',className:'planLabel'});
- chartOverlayPriceLabel(svg,plan.stop,'SL '+formatPrice(plan.stop,meta),red,{size:9,fill:'#321923',textColor:'#ffdce1'});
+ chartOverlayPriceLabel(svg,plan.stop,'SL '+formatPrice(plan.stop,meta),red,{size:9,fill:'#321923',textColor:'#ffdce1',dash:preview?'5 3':'2 2'});
  (plan.targets||[]).forEach((t,i)=>chartOverlayPriceLabel(svg,t.price,'TP'+(i+1)+' '+formatPrice(t.price,meta),green,{size:9,fill:'#10332e',textColor:'#c7f8e9',dash:preview?'5 3':'2 2'}));
  const rText='R:R 1:'+((plan.targets?.[0]?.r)||1)+' / 1:'+((plan.targets?.[1]?.r)||2)+' / 1:'+((plan.targets?.[2]?.r)||3);
- chartOverlayText(svg,x+5,Math.min(Number(svg.getAttribute('height'))-15,riskBottom+17),rText,{size:8,fill:'#102033',stroke:preview?gold:'#607c93',color:'#f1f6fb'});
+ chartOverlayText(svg,x+5,Math.min(h-15,Math.max(18,yEntry+20)),rText,{size:8,fill:'#102033',stroke:preview?gold:'#607c93',color:'#f1f6fb'});
+ const offscreen=(plan.targets||[]).filter(t=>{const y=candleSeries.priceToCoordinate(Number(t.price));return !Number.isFinite(y)||y<10||y>h-10;}).map(t=>'TP'+t.r);
+ if(offscreen.length)chartOverlayText(svg,x+5,Math.min(h-34,Math.max(34,yEntry+42)),offscreen.join(' / ')+' BELOW VIEW · ZOOM OUT',{size:8,fill:'#102033',stroke:gold,color:'#f5dfad'});
 }
 function chartFitPlanRange(plan,tf){
  if(!plan||!candleSeries)return;
  const targets=(plan.targets||[]).map(t=>Number(t.price)).filter(Number.isFinite);
- const levels=[Number(plan.entry),Number(plan.stop),...targets].filter(Number.isFinite);
+ const levels=[Number(plan.entry),Number(plan.stop),Number(targets[0])].filter(Number.isFinite);
  if(levels.length<3)return;
  const key=[selected,tf,plan.stage,plan.side,...levels.map(x=>x.toPrecision(12))].join('|');
  if(key===chartPlanScaleKey)return;
- const bars=currentChartCandles(tf).slice(-55),values=levels.concat(bars.flatMap(b=>[Number(b.high),Number(b.low)]).filter(Number.isFinite));
+ const bars=currentChartCandles(tf).slice(-55),focusLevels=[Number(plan.entry),Number(plan.stop),Number(plan.targets?.[0]?.price),Number(quote)].filter(Number.isFinite),values=focusLevels.concat(bars.flatMap(b=>[Number(b.high),Number(b.low)]).filter(Number.isFinite));
  if(values.length<3)return;
- const lo=Math.min(...values),hi=Math.max(...values),pad=Math.max((hi-lo)*0.075,Math.pow(10,-decimalPlacesFromPip(findSymbol(selected)?.pip_size,hi))*5);
+ const lo=Math.min(...values),hi=Math.max(...values),pad=Math.max((hi-lo)*0.075,Math.pow(10,-decimalPlacesFromPip(findSymbol(selected)?.pip_size,hi,selected))*5);
  try{chartPlanScaleKey=key;candleSeries.priceScale().setAutoScale(false);candleSeries.priceScale().setVisibleRange({from:lo-pad,to:hi+pad});}catch(error){chartPlanScaleKey='';console.warn('Could not frame projected risk/reward levels',error);}
 }
 
@@ -1586,12 +1660,14 @@ function renderChartOverlays(){
  const rangeOn=$('ovRange')?.checked!==false,liqOn=$('ovLiquidity')?.checked!==false;
  if(rangeOn&&Number.isFinite(a.hi)&&Number.isFinite(a.lo)&&a.hi>a.lo){
   const mid=(a.hi+a.lo)/2,half=(a.hi-a.lo)*.05;
-  chartOverlayBand(svg,a.hi,mid+half,'#e8b85d',.045,'PREMIUM · ABOVE 50%','#e8b85d');
-  chartOverlayBand(svg,mid+half,mid-half,'#91a7c2',.025,'EQUILIBRIUM','#91a7c2');
-  chartOverlayBand(svg,mid-half,a.lo,'#28c7a5',.045,'DISCOUNT · BELOW 50%','#28c7a5');
+  chartOverlayBand(svg,a.hi,mid+half,'#e8b85d',.045,null,'#e8b85d');
+  chartOverlayBand(svg,mid+half,mid-half,'#91a7c2',.025,null,'#91a7c2');
+  chartOverlayBand(svg,mid-half,a.lo,'#28c7a5',.045,null,'#28c7a5');
   chartOverlayPriceLabel(svg,a.hi,'CRT HIGH '+formatPrice(a.hi,meta),'#e8b85d',{size:9,fill:'#342a16',textColor:'#f8e4b4',dash:'7 4',align:'left'});
   chartOverlayPriceLabel(svg,a.mid,'50% EQ '+formatPrice(a.mid,meta),'#b9a16c',{size:9,fill:'#2a261d',textColor:'#f7e7bd',dash:'2 4',align:'left'});
   chartOverlayPriceLabel(svg,a.lo,'CRT LOW '+formatPrice(a.lo,meta),'#e8b85d',{size:9,fill:'#342a16',textColor:'#f8e4b4',dash:'7 4',align:'left'});
+  const zoneText=(label,upper,lower,color)=>{const y1=candleSeries.priceToCoordinate(upper),y2=candleSeries.priceToCoordinate(lower);if(Number.isFinite(y1)&&Number.isFinite(y2)&&Math.abs(y2-y1)>38){const t=chartSvgElement('text',{x:Math.max(12,(Number(svg.getAttribute('width'))||300)*.44),y:(y1+y2)/2,fill:color,class:'zoneLabel','text-anchor':'middle'});t.textContent=label;svg.appendChild(t);}};
+  zoneText('PREMIUM',a.hi,mid+half,'#e7c77b');zoneText('EQUILIBRIUM',mid+half,mid-half,'#c4d2e2');zoneText('DISCOUNT',mid-half,a.lo,'#8fe3cc');
  }
  if(liqOn){
   if(Number.isFinite(a.buySideLevel))chartOverlayPriceLabel(svg,a.buySideLevel,'BUY-SIDE LIQ. '+formatPrice(a.buySideLevel,meta),'#79aaff',{size:9,fill:'#142a45',textColor:'#d8e8ff',dash:'3 4'});
@@ -1622,10 +1698,13 @@ function mergeChartOverlayLabels(items, meta) {
 function updateMarketNarrative(){renderMarketNarrative();}
 function renderMarketNarrative(){
  const a=latestAnalysis;if(!a)return;const meta=a.meta||findSymbol(selected),fmt=v=>formatPrice(v,meta),price=hasLiveQuote()?Number(quote):a.price;
- const pct=a.hi>a.lo?((price-a.lo)/(a.hi-a.lo))*100:null;
- const location=pct===null?"unknown":price>a.hi?"above the 1H reference range":price<a.lo?"below the 1H reference range":pct>55?"in premium":pct<45?"in discount":"near equilibrium";
- a.price=price;a.rangePercent=pct;a.location=location;
- $("narrativeState").textContent=a.direction!=="WAIT"?a.direction:(a.projectedPlan?"PROJECTED "+a.projectedPlan.side:"WAIT");
+ const rangeState=classifyRangePosition(price,a.hi,a.lo),pct=rangeState.percent;
+ const location=rangeState.label==="Above reference range"?"above the 1H reference range":rangeState.label==="Below reference range"?"below the 1H reference range":rangeState.label==="Discount"?"in discount":rangeState.label==="Premium"?"in premium":"near equilibrium";
+ a.price=price;a.rangePercent=pct;a.location=rangeState.label;
+ const activePlan=a.tradePlan||a.projectedPlan,preview=!!a.projectedPlan,planExpired=preview&&activePlan?.expiresEpoch>0&&latestTickEpoch>=activePlan.expiresEpoch;
+ const planTooFar=preview&&activePlan?.volatility>0&&Math.abs(price-activePlan.entry)>activePlan.volatility*1.5;
+ const planHit=activePlan&&(activePlan.side==='BUY'?price<=activePlan.stop:price>=activePlan.stop);
+ $("narrativeState").textContent=activePlan&&(planExpired||planTooFar||planHit)?"INVALIDATED "+activePlan.side:a.tradePlan?"CONFIRMED "+a.tradePlan.side:(a.projectedPlan?"PROJECTED "+a.projectedPlan.side:"WAIT");
  $("narrativeLead").textContent=""+displayName(meta)+" is trading at "+fmt(price)+", "+(pct===null?"with no valid range percentage":(pct.toFixed(1)+"% through the previous completed 1H range, "+location))+". The range high is "+fmt(a.hi)+", low is "+fmt(a.lo)+" and equilibrium is "+fmt(a.mid)+".";
  const sweep=a.bullishSweep?"Sell-side liquidity has been swept and reclaimed on the completed 5M candle.":a.bearishSweep?"Buy-side liquidity has been swept and rejected on the completed 5M candle.":a.ambiguousSweep?"Both sides were swept in one completed 5M candle; direction is ambiguous.":"No completed 5M sweep-and-reclaim is confirmed.";
  const structure=a.structure?.trend||"Neutral / developing";
@@ -1666,7 +1745,7 @@ function renderTradePlan(){
  $("planEntry").textContent=fmt(plan.entry)+(plan.entryZone?" · zone "+fmt(plan.entryZone.from)+"–"+fmt(plan.entryZone.to):"");
  $("planStop").textContent=fmt(plan.stop);$("planRisk").textContent=fmt(plan.risk)+" points";
  (plan.targets||[]).forEach((t,i)=>{$("planTp"+(i+1)).textContent=fmt(t.price);$("planRr"+(i+1)).textContent="Risk/reward 1:"+t.r.toFixed(1);});
- if(confirmed){$("planIntro").textContent=(plan.strategy||"Strategy")+" passed its defined completed-candle confirmation rules. The levels are a model-generated scenario; independently review the market before any decision.";}
+ if(confirmed){$("planIntro").textContent=(plan.strategy||"Strategy")+" passed its defined completed-candle confirmation rules. The levels are a model-generated scenario; independently review the market before any decision."+(plan.counterTrend?" This is countertrend relative to the 4H direction and should be treated as a higher-caution reversal scenario.":"");}
  else {$("planIntro").textContent=(plan.strategy||"Setup")+" has enough evidence to display a proposed entry zone, invalidation level and projected targets. The setup is NOT confirmed. Wait for the stated trigger conditions before treating it as validated.";}
  let warning=confirmed?"Review spread, slippage, nearby liquidity and current price. A confirmed analytical setup is not a guaranteed outcome.":(plan.reason||"Await the missing confirmation conditions.")+" The projection expires after three completed 5M candles, or earlier if price invalidates the level or moves too far from the proposed zone.";
  if(plan.obstacleBeforeTp3)warning+=" Nearby opposing liquidity at "+fmt(plan.opposingLiquidity)+" lies before TP3 and may obstruct the full target ladder.";
@@ -1675,9 +1754,9 @@ function renderTradePlan(){
 }
 function updateLiveRangeFromQuote(){
  if(!latestAnalysis||!hasLiveQuote())return;const a=latestAnalysis,meta=a.meta||findSymbol(selected),p=Number(quote),width=a.hi-a.lo;
- a.price=p;a.rangePercent=width>0?((p-a.lo)/width)*100:null;
- a.location=p>a.hi?"Above reference range":p<a.lo?"Below reference range":p>a.mid?"Premium":p<a.mid?"Discount":"Equilibrium";
- $("rangeLocation").textContent=a.location;$("rangePosition").textContent=a.rangePercent===null?"—":a.rangePercent.toFixed(1)+"% from range low";
+ const rangeState=classifyRangePosition(p,a.hi,a.lo);
+ a.price=p;a.rangePercent=rangeState.percent;a.location=rangeState.label;
+ $("rangeLocation").textContent=a.location;$("rangePosition").textContent=a.rangePercent===null?"—":a.rangePercent.toFixed(1)+"% from range low"+(rangeState.inside?"":" · outside range");
  renderMarketNarrative();renderTradePlan();
  if(latestAnalysis?.tradePlan){
   const p=latestAnalysis.tradePlan,invalid=p.side==="BUY"?Number(quote)<=p.stop:Number(quote)>=p.stop;
@@ -1906,8 +1985,8 @@ function scannerHandleHistory(data,meta){
 function scannerHandleTick(data,meta){
  const rec=scanner.records.get(meta.symbol);
  if(!rec||!data.tick){if(meta.countsBatch!==false)scannerBatchComplete(false,meta);return;}
- const q=Number(data.tick.quote),epoch=Number(data.tick.epoch);
- if(Number.isFinite(q)&&q>0){rec.latestPrice=q;rec.latestTickEpoch=Number.isFinite(epoch)?epoch:rec.latestTickEpoch;}
+ const q=Number(data.tick.quote),epoch=Number(data.tick.epoch),tickPrecision=Number(data.tick.pip_size);
+ if(Number.isFinite(q)&&q>0){rec.latestPrice=q;rec.latestTickEpoch=Number.isFinite(epoch)?epoch:rec.latestTickEpoch;if(Number.isInteger(tickPrecision)&&tickPrecision>=0&&tickPrecision<=8)marketPrecisionBySymbol.set(meta.symbol,tickPrecision);}
  if(data.subscription?.id)scannerAddSubscription(data,meta);
  if(meta.countsBatch!==false){scanner.stats.received++;scannerBatchComplete(true,meta);}
  scannerEvaluateRecord(rec,"tick");scannerRenderOpportunities();
@@ -1937,8 +2016,8 @@ function scannerBuildContext(rec){
  const now=scannerNow(rec),c1=scannerCompleted(rec.history[3600],3600,now),c4=scannerCompleted(rec.history[14400],14400,now);
  if(c1.length<8||c4.length<4)return {ready:false,score:0,direction:"Neutral",reason:"Insufficient completed 1H/4H candles"};
  const last1=c1[c1.length-1],prev1=c1[c1.length-2],last4=c4[c4.length-1];
- const bias=num(last4.close)>num(last4.open)?"Bullish":num(last4.close)<num(last4.open)?"Bearish":"Neutral";
- const oneHourDirection=num(last1.close)>num(last1.open)?"Bullish":num(last1.close)<num(last1.open)?"Bearish":"Neutral";
+ const bias=timeframeTrendDirection(c4,0);
+ const oneHourDirection=timeframeTrendDirection(c1,0);
  const atr1=averageTrueRange(c1,14)||Math.max(num(last1.high)-num(last1.low),Math.abs(num(last1.close))*0.0001);
  const refHigh=num(prev1.high),refLow=num(prev1.low),refMid=(refHigh+refLow)/2,price=num(last1.close);
  const range=refHigh-refLow;
@@ -1954,7 +2033,7 @@ function scannerBuildContext(rec){
  if(alignedLocation)score+=15;
  if(bodyRatio>=0.55)score+=10;
  if(c1.length>=20&&c4.length>=8)score+=10;
- const location=price>refHigh?"Above range":price<refLow?"Below range":price>refMid?"Premium":"Discount";
+ const location=classifyRangePosition(price,refHigh,refLow).label;
  return {ready:true,score,direction:bias,oneHourDirection,price,atr1,reference:{high:refHigh,low:refLow,mid:refMid,epoch:prev1.epoch},nearest,location,reason:bias+" 4H context · "+(oneHourDirection===bias?"1H aligned":"1H mixed")+" · nearest 1H reference "+nearest.side.toLowerCase()+" "+scannerFmt(nearest.price,rec.meta)+" ("+nearest.distanceAtr.toFixed(2)+" ATR)"};
 }
 function scannerEvaluateRecord(rec,source){
@@ -1972,15 +2051,15 @@ function scannerEvaluateRecord(rec,source){
  const last5=c5[c5.length-1],last15=c15[c15.length-1],reference1h=c1[c1.length-1],last4=c4[c4.length-1];
  const isNewCompleted5=last5.epoch>rec.lastEval5Epoch;
  const hi=num(reference1h.high),lo=num(reference1h.low),mid=(hi+lo)/2,width=hi-lo;
- const decimals=decimalPlacesFromPip(rec.meta?.pip_size,price),minTick=Math.pow(10,-decimals);
+ const decimals=decimalPlacesFromPip(rec.meta?.pip_size,price,symbolCode(rec.meta)),minTick=Math.pow(10,-decimals);
  const atr15=averageTrueRange(c15,14),tolerance=Math.max(minTick*2,(atr15||0)*0.08,Math.abs(price)*0.000002);
- const bias4=num(last4.close)>num(last4.open)?"Bullish":num(last4.close)<num(last4.open)?"Bearish":"Neutral";
+ const bias4=timeframeTrendDirection(c4,tolerance);
  const swings=confirmedSwings(c15,2,2),structure=classifyMarketStructure(c15,swings,tolerance);
  const eqh=latestEqualLevel(swings.highs,tolerance),eql=latestEqualLevel(swings.lows,tolerance);
  const latestSwingHigh=swings.highs.length?swings.highs[swings.highs.length-1].price:null;
  const latestSwingLow=swings.lows.length?swings.lows[swings.lows.length-1].price:null;
  const buySideLevel=eqh?eqh.price:latestSwingHigh,sellSideLevel=eql?eql.price:latestSwingLow;
- const location=price>mid+tolerance?(price>hi+tolerance?"Above reference range":"Premium"):price<mid-tolerance?(price<lo-tolerance?"Below reference range":"Discount"):"Equilibrium";
+ const location=classifyRangePosition(price,hi,lo).label;
  const lowLevels=[{label:"1H reference low",price:lo,epoch:reference1h.epoch}];
  const highLevels=[{label:"1H reference high",price:hi,epoch:reference1h.epoch}];
  if(sellSideLevel!==null)lowLevels.push({label:eql?"15M equal-low pool":"15M swing low",price:sellSideLevel,epoch:eql?.second?.epoch||0});
@@ -2013,14 +2092,14 @@ function scannerEvaluateRecord(rec,source){
  const bullScore=bullComponents.reduce((sum,x)=>sum+(x.ok?x.weight:0),0),bearScore=bearComponents.reduce((sum,x)=>sum+(x.ok?x.weight:0),0);
  const side=bullScore>bearScore?"Bullish":bearScore>bullScore?"Bearish":ctx.direction;
  const score=Math.max(bullScore,bearScore);
- const bullReady=bullishSweep&&!ambiguousSweep&&bullishDisplacement&&structure.direction==="Bullish"&&bias4==="Bullish"&&bullScore>=80;
- const bearReady=bearishSweep&&!ambiguousSweep&&bearishDisplacement&&structure.direction==="Bearish"&&bias4==="Bearish"&&bearScore>=80;
+ const bullReady=bullishSweep&&!ambiguousSweep&&bullishDisplacement&&structure.direction==="Bullish"&&bullScore>=80;
+ const bearReady=bearishSweep&&!ambiguousSweep&&bearishDisplacement&&structure.direction==="Bearish"&&bearScore>=80;
  let plan=null;
  if(bullReady||bearReady){
   const long=bullReady,entry=num(last5.close),sweep=long?(bullishLevel?.price??num(last5.low)):(bearishLevel?.price??num(last5.high));
   const stopBuffer=Math.max(minTick*2,(atr5||minTick*2)*0.05),stop=long?Math.min(num(last5.low),sweep)-stopBuffer:Math.max(num(last5.high),sweep)+stopBuffer;
   const risk=Math.abs(entry-stop);
-  if(risk>minTick&&(long?stop<entry:stop>entry))plan={side:long?"BUY":"SELL",entry,stop,risk,targets:[1,2,3].map(r=>({r,price:entry+(long?1:-1)*risk*r})),strategy:"CRT REVERSAL",stage:"CONFIRMED"};
+  if(risk>minTick&&(long?stop<entry:stop>entry))plan={side:long?"BUY":"SELL",entry,stop,risk,targets:[1,2,3].map(r=>({r,price:entry+(long?1:-1)*risk*r})),strategy:"CRT REVERSAL",stage:"CONFIRMED",counterTrend:bias4!==(long?"Bullish":"Bearish")};
  }
  const alternative=evaluateAdditionalStrategies({c5,c15,c1,c4,meta:rec.meta,price,bias4,structure,atr5,atr15,tolerance});
  if(!plan&&alternative.confirmedPlan)plan=alternative.confirmedPlan;
@@ -2039,7 +2118,7 @@ function scannerEvaluateRecord(rec,source){
  // Keep the old invalidation in alert history; this only permits a genuinely new setup cycle.
  const canRearm=rec.invalidated&&rec.lastSignal&&last5.epoch>rec.lastSignal.epoch&&!plan;
  if(canRearm){rec.lastSignal=null;rec.invalidated=false;rec.reason="Previous candidate invalidated; a new completed 5M candle has started a fresh monitoring cycle";}
- if(plan){const activeStrategyScore=(plan.strategy&&plan.strategy!=="CRT REVERSAL")?(alternative.bestScore||100):score;rec.stage="CONFIRMED";rec.reason=(plan.strategy||"CRT REVERSAL")+" · "+plan.side+" confirmation passed · "+activeStrategyScore+"/100 strategy evidence";rec.rank=400+activeStrategyScore;if(isNewCompleted5&&recentCompletedEvent&&!rec.lastSignal){scannerAlertConfirmed(rec,plan,last5);rec.lastSignal={plan,epoch:last5.epoch};}}
+ if(plan){const activeStrategyScore=(plan.strategy&&plan.strategy!=="CRT REVERSAL")?(alternative.bestScore||100):score;rec.stage="CONFIRMED";rec.reason=(plan.counterTrend?"Countertrend reversal · ":"")+(plan.strategy||"CRT REVERSAL")+" · "+plan.side+" confirmation passed · "+activeStrategyScore+"/100 strategy evidence";rec.rank=400+activeStrategyScore;if(isNewCompleted5&&recentCompletedEvent&&!rec.lastSignal){scannerAlertConfirmed(rec,plan,last5);rec.lastSignal={plan,epoch:last5.epoch};}}
  else if(projectedPlan||bullishSweep||bearishSweep||structure.breakUp||structure.breakDown||bullishDisplacement||bearishDisplacement){
   const activeStrategyScore=projectedPlan&&projectedPlan.strategy!=="CRT REVERSAL"?(alternative.bestScore||score):score;
   rec.stage="DEVELOPING";rec.reason=projectedPlan?(projectedPlan.strategy+" · projected "+projectedPlan.side+" entry "+scannerFmt(projectedPlan.entry,rec.meta)+" · awaiting confirmation"):(bullishSweep?"Sell-side sweep and reclaim":bearishSweep?"Buy-side sweep and rejection":structure.breakUp?"Bullish structure break candidate":structure.breakDown?"Bearish structure break candidate":bullishDisplacement?"Bullish displacement":"Bearish displacement")+" · "+activeStrategyScore+"/100; entry conditions incomplete";rec.rank=300+Math.max(score,alternative.bestScore||0);
@@ -2064,7 +2143,7 @@ function scannerCheckApproach(rec,price,analysis){
  else if(ctx.reference)levels=[{price:ctx.reference.high,label:"Previous 1H high",side:"BUY-SIDE",epoch:ctx.reference.epoch},{price:ctx.reference.low,label:"Previous 1H low",side:"SELL-SIDE",epoch:ctx.reference.epoch}];
  const atr=analysis?.atr5||ctx.atr1/Math.sqrt(12); // approximate 5M volatility only before the deeper data arrives
  const multiplier=clamp(Number($s("scannerAtrMultiplier")?.value||0.35),0.1,1.5);
- const threshold=Math.max(atr*multiplier,Math.pow(10,-decimalPlacesFromPip(rec.meta?.pip_size,price))*8,Math.abs(price)*0.00001);
+ const threshold=Math.max(atr*multiplier,Math.pow(10,-decimalPlacesFromPip(rec.meta?.pip_size,price,symbolCode(rec.meta)))*8,Math.abs(price)*0.00001);
  levels.forEach(level=>{
   const target=Number(level.price);if(!Number.isFinite(target))return;
   const isHigh=level.side==="BUY-SIDE",approaching=isHigh?(price<target&&target-price<=threshold):(price>target&&price-target<=threshold);
@@ -2138,12 +2217,12 @@ function scannerRenderOpportunities(){
   const head=document.createElement("div");head.className="scannerMarketHead";
   const identity=document.createElement("div");identity.style.minWidth="0";
   const name=document.createElement("div");name.className="scannerMarketName";name.textContent=displayName(rec.meta)+" ["+symbolCode(rec.meta)+"]";
-  const cat=document.createElement("div");cat.className="scannerMarketMeta";cat.textContent=categoryOf(rec.meta).toUpperCase()+" · "+(rec.analysis?"4H / 1H / 15M / 5M":"4H / 1H discovery");
+  const cat=document.createElement("div");cat.className="scannerMarketMeta";cat.textContent=categoryOf(rec.meta).toUpperCase()+" · "+(rec.analysis?"4H / 1H / 15M / 5M":"4H / 1H discovery only");
   identity.append(name,cat);
   const badge=document.createElement("span"),projected=rec.stage!=="INVALIDATED"&&rec.stage!=="CONFIRMED"&&!!rec.analysis?.projectedPlan&&!rec.analysis?.plan;badge.className="scannerBadge "+(rec.stage==="CONFIRMED"?"confirmed":rec.stage==="DEVELOPING"?(projected?"projected":"developing"):rec.stage==="INVALIDATED"?"invalid":"early");badge.textContent=projected?"PROJECTED":rec.stage;
   head.append(identity,badge);card.appendChild(head);
   const cells=document.createElement("div");cells.className="scannerMarketGrid";
-  const values=[ ["Evidence score",rec.analysis?(rec.analysis.strategyScore??rec.analysis.score)+"/100":rec.context.score+"/100"], ["4H bias",rec.context.direction], ["Live / last price",scannerFmt(rec.latestPrice??rec.context.price,rec.meta)] ];
+  const values=rec.analysis?[["Setup evidence",(rec.analysis.strategyScore??rec.analysis.score)+"/100"],["4H direction",rec.context.direction],["Live / last price",scannerFmt(rec.latestPrice??rec.context.price,rec.meta)]]:[["Analysis depth","4H / 1H only"],["4H direction",rec.context.direction],["Live / last price",scannerFmt(rec.latestPrice??rec.context.price,rec.meta)]];
   values.forEach(([label,value])=>{const cell=document.createElement("div"),small=document.createElement("small"),bold=document.createElement("b");small.textContent=label;bold.textContent=value;cell.append(small,bold);cells.appendChild(cell);});
   card.appendChild(cells);
   const reason=document.createElement("div");reason.className="scannerReason";reason.textContent=rec.reason;card.appendChild(reason);
