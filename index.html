@@ -4,7 +4,7 @@
 <meta name="theme-color" content="#080f1c"><link rel="manifest" href="manifest.webmanifest">
 <title>TEBZA CRT ANALYST</title>
 <style>
-:root{--bg:#080f1c;--panel:#111d30;--panel2:#0b1627;--line:#263952;--txt:#edf4ff;--muted:#93a7c2;--green:#25d3a0;--red:#ff637d;--amber:#f4bd50;--blue:#76aaff}
+:root{--bg:#080f1c;--panel:#111d30;--panel2:#0b1627;--line:#263952;--txt:#edf4ff;--muted:#93a7c2;--green:#28c7a5;--red:#f07883;--amber:#e8b85d;--blue:#7daeff}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172b47 0,#080f1c 55%);color:var(--txt);font:14px system-ui,-apple-system,Segoe UI,sans-serif;padding-bottom:30px}
 header{position:sticky;top:0;z-index:4;background:#0b1424ed;backdrop-filter:blur(12px);padding:17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.brand{font-weight:900;letter-spacing:1.4px;font-size:17px}.brand em{font-style:normal;color:var(--green)}.muted{color:var(--muted)}.tiny{font-size:11px}.pill{font-size:10px;border:1px solid #376653;color:var(--green);padding:5px 9px;border-radius:30px}
 main{max-width:850px;margin:auto;padding:13px}.card{background:linear-gradient(145deg,#132139,#0e192a);border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:12px;box-shadow:0 8px 26px #0003}
@@ -18,7 +18,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{text-align:left;p
 @media(max-width:430px){.checklist{grid-template-columns:1fr}}
 @media(min-width:600px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 
-.chartToolbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:10px}.chartToolbar button{padding:8px 11px;font-size:11px}.chartToolbar button.active{background:#14795f;border-color:#25d3a0}.chartToolbar select{flex:0 1 105px;padding:8px;font-size:11px}.chartWrap{background:#081321;border:1px solid #263952;border-radius:11px;overflow:hidden;position:relative}.chartSvg{display:block;width:100%;height:auto;min-height:250px;touch-action:pan-y}.chartLegend{display:flex;gap:9px;flex-wrap:wrap;color:var(--muted);font-size:10px;margin-top:8px}.legendDot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}.chartInfo{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.45}.chartGrid{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}.chartSplit .chartGrid{grid-template-columns:minmax(0,1.7fr) minmax(190px,1fr);align-items:start}.chartMini{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.chartMini .tile{padding:8px}.chartMini .tile b{font-size:12px}.overlayControls{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin:8px 0}.overlayControls label{display:flex;gap:5px;align-items:center}.overlayControls input{accent-color:#25d3a0}
+.chartToolbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:10px}.chartToolbar button{padding:8px 11px;font-size:11px}.chartToolbar button.active{background:#14795f;border-color:#25d3a0}.chartToolbar select{flex:0 1 105px;padding:8px;font-size:11px}.chartWrap{background:#081321;border:1px solid #263952;border-radius:11px;overflow:hidden;position:relative}.chartSvg{display:block;width:100%;height:auto;min-height:250px;touch-action:none}.chartLegend{display:flex;gap:9px;flex-wrap:wrap;color:var(--muted);font-size:10px;margin-top:8px}.legendDot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}.chartInfo{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.45}.chartGrid{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}.chartSplit .chartGrid{grid-template-columns:minmax(0,1.7fr) minmax(190px,1fr);align-items:start}.chartMini{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.chartMini .tile{padding:8px}.chartMini .tile b{font-size:12px}.overlayControls{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin:8px 0}.overlayControls label{display:flex;gap:5px;align-items:center}.overlayControls input{accent-color:#25d3a0}
 @media(max-width:600px){.chartSplit .chartGrid{grid-template-columns:1fr}.chartSvg{min-height:235px}}
 
 
@@ -65,7 +65,7 @@ body.chartNoScroll{overflow:hidden!important}
 
 /* V1.7 responsive TradingView Lightweight Charts workspace */
 .chartWrap{height:430px;min-height:320px;overflow:hidden}
-.chartCanvas{width:100%;height:100%;min-height:320px;position:relative;touch-action:pan-y}
+.chartCanvas{width:100%;height:100%;min-height:320px;position:relative;touch-action:none}
 .chartLoading{display:flex;align-items:center;justify-content:center;height:100%;min-height:320px;color:#93a7c2;font-size:13px;text-align:center;padding:20px}
 .chartFullscreen .chartWrap{height:calc(100dvh - 190px)!important;min-height:calc(100dvh - 190px)!important;max-height:calc(100dvh - 190px)!important}
 .chartFullscreen .chartCanvas{height:100%!important;min-height:0!important}
@@ -122,20 +122,48 @@ body.chartNoScroll{overflow:hidden!important}
 .scannerInline input[type=number]{width:76px;background:#182942;color:var(--txt);border:1px solid #344c6c;border-radius:8px;padding:7px}
 @media(max-width:540px){.scannerStats{grid-template-columns:repeat(2,minmax(0,1fr))}.scannerMarketGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+
+/* V1.9 visual system: restrained navy, teal bulls, coral bears, compact controls */
+:root{--bg:#090f1b;--panel:#111c2c;--panel2:#0c1726;--line:#26374e;--green:#28c7a5;--red:#f07883;--amber:#e8b85d;--blue:#7daeff}
+body{background:radial-gradient(ellipse at top,#17263c 0,#090f1b 56%)}
+.card{background:linear-gradient(145deg,#121f31,#0d1827);border-color:#27384e;box-shadow:0 7px 22px #0002}
+.chartWrap{background:#0a1422;border-color:#293c54}
+.chartToolbar{gap:7px}
+.chartToolbar button{padding:8px 11px;font-size:11px}
+.chartToolbar button[hidden]{display:none!important}
+.chartToolbar #chartReset{background:#17283d;border-color:#405674;color:#e5efff}
+.chartToolbar #chartFullscreen{background:#176c60;border-color:#249c88}
+.advancedDetails{margin:0 0 12px;background:linear-gradient(145deg,#121f31,#0d1827);border:1px solid #27384e;border-radius:15px;padding:0 14px;box-shadow:0 7px 22px #0002}
+.advancedDetails>summary{cursor:pointer;list-style:none;padding:15px 2px;color:#c4d4e8;font-size:12px;font-weight:800;letter-spacing:.35px}
+.advancedDetails>summary::-webkit-details-marker{display:none}
+.advancedDetails>summary:after{content:'＋';float:right;color:var(--blue);font-size:15px}
+.advancedDetails[open]>summary:after{content:'−'}
+.advancedDetails>.card{margin:0 0 10px;box-shadow:none}
+.projectedNote{border:1px dashed #d2a34e;background:#2a2419;color:#f3dca8;padding:9px 10px;border-radius:9px;font-size:11px;line-height:1.45;margin-top:9px}
+.planBadge.projected{background:#3a301d;border-color:#8a6d34;color:#f0d28e}
+.planBadge.confirmed{background:#153b35;border-color:#277963;color:#9be7d2}
+.planBadge.invalidated{background:#2b2228;border-color:#6b4650;color:#d7abb5}
+.chartCanvas{touch-action:none!important}
+.chartPriceTouch{width:64px;pointer-events:none}
+@media(hover:none) and (pointer:coarse){.chartPriceTouch{pointer-events:auto}}
+.scannerBadge.projected{background:#3a301d;color:#f0d28e}
+.chartLegend{gap:12px}
+@media(max-width:600px){main{padding:10px}.card{padding:12px}.chartToolbar{gap:6px}.chartToolbar button{font-size:10px}.chartWrap{height:400px;min-height:350px}}
+
 </style></head><body>
-<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.8.0 · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
+<header><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny">LIVE MARKET DATA · ENGINE V1.9.0 · DERIV-SYNCED CHARTS · RISK/REWARD · ANALYSIS ONLY</div></div><span class="pill" id="connBadge">CONNECTING</span></header>
 <main>
 <div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for ticks and native OHLC candles. No Deriv password or account token is required. Market data and CRT conditions are for analysis only; signals are preliminary and this app never places trades.</div>
 <section class="card">
  <div class="row between"><div><h2 style="margin:0">Market selector</h2><div class="muted tiny" id="marketCount">Loading Deriv instruments…</div></div><button id="refresh" class="primary">Refresh</button></div>
  <div class="row" style="margin-top:12px"><select id="category"><option value="all">All markets</option><option value="synthetic">Synthetic / Derived</option><option value="forex">Forex</option><option value="commodities">Commodities / Metals</option><option value="indices">Stock indices</option><option value="crypto">Cryptocurrencies</option><option value="shares">Shares / ETFs</option></select><select id="symbol"><option>Loading…</option></select></div>
- <div class="row between" style="margin-top:16px"><div><div class="muted tiny">LIVE QUOTE</div><div class="big" id="quote">—</div></div><div style="text-align:right"><div class="muted tiny">CRT STATUS</div><div class="signal amber" id="decision">WAIT</div></div></div>
+ <div class="row between" style="margin-top:16px"><div><div class="muted tiny">LIVE QUOTE</div><div class="big" id="quote">—</div></div><div style="text-align:right"><div class="muted tiny">SETUP STATUS</div><div class="signal amber" id="decision">WAIT</div></div></div>
  <div class="muted tiny" id="symbolName">Waiting for active symbols…</div><div id="status">Connecting to Deriv public market data…</div><div id="apiDiagnostic" class="tiny muted" style="margin-top:6px;overflow-wrap:anywhere">API diagnostic: waiting for first response</div>
 </section>
 
 <section class="card" id="marketScanner">
  <div class="row between"><h2 style="margin:0">Multi-market opportunity scanner</h2><span class="planBadge" id="scannerState">STOPPED</span></div>
- <p class="sectionNote" style="margin-top:8px">Scans all currently active instruments returned by Deriv. Discovery uses 4H/1H context; shortlisted markets receive deeper 15M/5M monitoring. This is an analysis scanner, not a trading system.</p>
+ <p class="sectionNote" style="margin-top:8px">Discovers the active instruments returned by Deriv. It screens 4H/1H context, then applies deeper 15M/5M checks to a shortlist. CRT, trend-continuation and breakout/retest logic are assessed where sufficient candle history is available. This remains an analysis tool.</p>
  <div class="scannerTop">
   <button id="scannerStart" class="primary" type="button">Start scanning all markets</button>
   <button id="scannerPause" type="button" disabled>Pause</button>
@@ -165,6 +193,7 @@ body.chartNoScroll{overflow:hidden!important}
  <div class="row between" style="margin-top:14px"><h2 style="margin:0">Ranked opportunities</h2><span class="muted tiny" id="scannerUpdated">Not scanned</span></div>
  <div id="scannerOpportunityList" class="scannerCards"><div class="scannerEmpty">No scan results yet. Start scanning to build the watchlist.</div></div>
  <div class="row between" style="margin-top:14px"><h2 style="margin:0">Alert history</h2><button id="scannerClearAlerts" type="button" style="font-size:10px;padding:6px 9px">Clear history</button></div>
+ <div class="scannerNote">The latest 50 scanner events are saved locally in this browser. They are not synchronised to another device or a cloud account.</div>
  <div id="scannerAlertFeed" class="scannerAlerts"><div class="scannerEmpty">Approach, developing, confirmation and invalidation alerts will appear here.</div></div>
  <p class="scannerNote">Important: this browser-based scanner runs while this page remains open and connected. Android may suspend browser tabs in the background. Always-on scanning and push notifications while the page is closed require a separately deployed cloud scanning and push service; that service is not active in this build. No API token, account login or trade permission is required.</p>
 </section>
@@ -172,23 +201,23 @@ body.chartNoScroll{overflow:hidden!important}
  <div class="row between"><h2 style="margin:0">Live annotated chart</h2><span class="tag" id="chartLiveState">Waiting for candles</span></div>
  <div class="chartToolbar" style="margin-top:10px">
   <select id="chartTf" aria-label="Chart timeframe"><option value="300">5M</option><option value="900">15M</option><option value="3600">1H</option><option value="14400">4H</option></select>
-  <button id="layoutChart" class="active" type="button">Chart first</button><button id="layoutSplit" type="button">Split view</button>
-  <button id="chartZoomOut" type="button" aria-label="Zoom out">−</button><button id="chartZoomIn" type="button" aria-label="Zoom in">+</button>
-  <button id="timeZoomOut" type="button" title="Show more candles">Time −</button><button id="timeZoomIn" type="button" title="Show fewer, wider candles">Time +</button>
-  <button id="priceZoomOut" type="button" title="Expand vertical price range">Price −</button><button id="priceZoomIn" type="button" title="Compress vertical price range">Price +</button>
-  <button id="priceAuto" type="button">Auto price</button><button id="chartFit" type="button">Fit all</button>
-  <button id="chartReset" type="button">Go live</button><button id="chartFullscreen" class="primary" type="button">Full screen</button>
+  <button id="layoutChart" class="active" type="button" hidden>Chart first</button><button id="layoutSplit" type="button" hidden>Split view</button>
+  <button id="chartZoomOut" type="button" aria-label="Zoom out" hidden>−</button><button id="chartZoomIn" type="button" aria-label="Zoom in" hidden>+</button>
+  <button id="timeZoomOut" type="button" title="Show more candles" hidden>Time −</button><button id="timeZoomIn" type="button" title="Show fewer, wider candles" hidden>Time +</button>
+  <button id="priceZoomOut" type="button" title="Expand vertical price range" hidden>Price −</button><button id="priceZoomIn" type="button" title="Compress vertical price range" hidden>Price +</button>
+  <button id="priceAuto" type="button" hidden>Auto price</button><button id="chartFit" type="button" hidden>Fit all</button>
+  <button id="chartReset" type="button" title="Reset price scale and return to latest candles">Auto scale · Go live</button><button id="chartFullscreen" class="primary" type="button">Full screen</button>
  </div>
  <div class="overlayControls">
   <label><input type="checkbox" id="ovRange" checked> CRT range</label>
   <label><input type="checkbox" id="ovLiquidity" checked> Liquidity levels</label>
-  <label><input type="checkbox" id="ovStructure" checked> Swing structure</label>
+  <label><input type="checkbox" id="ovStructure"> Swing structure</label>
   <label><input type="checkbox" id="ovRR" checked> Risk / Reward</label>
  </div>
  <div class="chartGrid" id="chartGrid">
   <div>
    <div class="chartWrap" id="chartWrap"><div id="liveChart" class="chartCanvas" role="img" aria-label="Live Deriv candlestick chart with CRT overlays"><div class="chartLoading">Preparing live chart…</div></div></div>
-   <div id="chartReadout" class="chartReadout">Move crosshair to preview OHLC · Tap a candle to pin it in Candle Inspector</div>
+   <div id="chartReadout" class="chartReadout">Touch or move the crosshair to preview OHLC · Tap a candle to inspect it</div>
    <section class="candleInspector" id="candleInspector" aria-live="polite">
     <div class="candleInspectorHead"><div class="candleInspectorTitle">Candle inspector · select a candle</div><button id="clearCandleSelection" type="button">Clear selection</button></div>
     <div class="candleInspectorGrid">
@@ -203,8 +232,8 @@ body.chartNoScroll{overflow:hidden!important}
     </div>
     <div class="candleInspectorMeta" id="inspectMeta">Tap a candle on the chart to inspect its exact Deriv OHLC values. Select a completed candle for historical verification.</div>
    </section>
-   <div class="chartHints">TradingView-style controls: drag the plot to pan through time; pinch to zoom; drag the right price scale vertically on the phone; use Time −/+ and Price −/+ for independent axis scaling. Auto price restores vertical fitting; Fit all shows all loaded candles; Go live returns to the latest candles.</div>
-   <div class="chartLegend"><span><i class="legendDot" style="background:#25d3a0"></i>Bullish candle</span><span><i class="legendDot" style="background:#ff637d"></i>Bearish candle</span><span><i class="legendDot" style="background:#f4bd50"></i>CRT range</span><span><i class="legendDot" style="background:#76aaff"></i>Liquidity / structure</span></div>
+   <div class="chartHints">Gestures: drag the chart to move through time; pinch the plot to zoom in or out; drag the right price scale to shift it; pinch on the right price scale to expand or compress prices; double-tap the price scale to auto-fit. Tap a candle to inspect OHLC. Use Auto scale · Go live to reset the view.</div>
+   <div class="chartLegend"><span><i class="legendDot" style="background:#28c7a5"></i>Bullish candle</span><span><i class="legendDot" style="background:#f07883"></i>Bearish candle</span><span><i class="legendDot" style="background:#f4bd50"></i>CRT range</span><span><i class="legendDot" style="background:#76aaff"></i>Liquidity / structure</span></div>
    <div class="chartInfo" id="chartExplanation">Chart overlays will appear when Deriv candle history is available. The chart uses the same public feed as the analysis engine.</div>
    <div class="muted tiny" id="candleIntegrity" style="margin-top:8px">OHLC integrity: waiting for validated Deriv candle history and live updates.</div>
   </div>
@@ -227,8 +256,8 @@ body.chartNoScroll{overflow:hidden!important}
  <p class="sectionNote" id="narrativeCaveat">Narrative is generated from the completed-candle rules and current public quote. It is an explanation of the model, not a prediction.</p>
 </section>
 <section class="card" id="tradePlanCard">
- <div class="row between"><h2 style="margin:0">Trade planner · Risk / Reward</h2><span class="planBadge" id="planState">NO PLAN · WAIT</span></div>
- <p class="narrativeLead" id="planIntro">Entry, stop-loss and take-profit levels will only be shown when every mandatory setup confirmation passes. No plan is generated while the assessment is WAIT.</p>
+ <div class="row between"><h2 style="margin:0">Projected & confirmed setup plan</h2><span class="planBadge" id="planState">NO PLAN · WAIT</span></div>
+ <p class="narrativeLead" id="planIntro">A developing setup may show a clearly marked projection before confirmation. Confirmed plans remain distinct; no order is ever placed.</p>
  <div class="planGrid">
   <div class="planTile"><small>Direction</small><b id="planDirection">WAIT</b></div>
   <div class="planTile"><small>Entry reference</small><b id="planEntry">—</b></div>
@@ -242,6 +271,7 @@ body.chartNoScroll{overflow:hidden!important}
  </div>
  <p class="sectionNote" id="planWarning">The planner is analysis-only. Targets are calculated from the technical entry reference and stop distance; nearby liquidity, spread, slippage and execution conditions must still be reviewed.</p>
 </section>
+<details class="advancedDetails"><summary>Advanced analysis · CRT, market structure, liquidity and strategy scoring</summary>
 <section class="card"><h2>Multi-timeframe analysis</h2><div class="grid">
  <div class="tile"><small>4H directional context</small><b id="tf4">Loading</b></div>
  <div class="tile"><small>1H reference range</small><b id="tf1">Loading</b></div>
@@ -270,9 +300,10 @@ body.chartNoScroll{overflow:hidden!important}
 <section class="card"><h2>Analysis summary</h2><div class="grid">
  <div class="tile"><small>Potential direction</small><b id="direction">WAIT</b></div><div class="tile"><small>Entry reference</small><b id="entry">—</b></div>
  <div class="tile"><small>Invalidation reference</small><b id="stop">—</b></div><div class="tile"><small>Opposing range target</small><b id="target">—</b></div>
-</div><p class="muted tiny">V1.4 analytical foundation: completed 1H dealing range, premium/discount location, confirmed 15M swing structure, equal-high/low zones, 5M sweep/reclaim and displacement checklist. BOS/CHoCH event classification is preliminary; FVG lifecycle, order blocks, session filters and historical backtesting are future modules. WATCH labels are analysis candidates only.</p></section>
+</div><p class="muted tiny">V1.9 strategies: CRT reversal, trend continuation (4H/1H alignment, 15M EMA21 pullback and 5M impulse) and breakout/retest (completed 15M break with 5M retest/hold). The strategy rules are initial, evidence-based heuristics and have not yet been statistically backtested or calibrated separately for each market category. FVG lifecycle, order blocks, session filters, market-specific calibration and full historical performance testing remain future modules. Evidence scores are not win probabilities.</p></section>
+</details>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.8.0 · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+<div class="foot">TEBZA CRT ANALYST V1.9.0 · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
 </main>
 <script>
 // Load the pinned Lightweight Charts v5 standalone library, with a second CDN fallback.
@@ -321,6 +352,7 @@ let requestMeta = new Map();
 let lastMessageAt = 0;
 let messageCount = 0;
 let latestAnalysis = null;
+let lastNotifiedSignalKey = "";
 let chartLayout = "chart";
 let chartApi = null;
 let candleSeries = null;
@@ -886,6 +918,75 @@ function classifyMarketStructure(list, swings, tolerance) {
   }
   return {trend, direction, event, lastHigh, lastLow, breakUp, breakDown};
 }
+function emaValue(list, period=21){
+ if(!Array.isArray(list)||list.length<period)return null;
+ const values=list.map(x=>Number(x.close)).filter(Number.isFinite);if(values.length<period)return null;
+ const seed=values.slice(0,period).reduce((a,b)=>a+b,0)/period,k=2/(period+1);
+ let ema=seed;for(let i=period;i<values.length;i++)ema=values[i]*k+ema*(1-k);
+ return Number.isFinite(ema)?ema:null;
+}
+function makeScenarioPlan(side,entry,stop,meta,strategy,stage,zoneHalfWidth,sourceEpoch,volatility){
+ entry=Number(entry);stop=Number(stop);if(!Number.isFinite(entry)||!Number.isFinite(stop))return null;
+ const risk=Math.abs(entry-stop),decimals=decimalPlacesFromPip(meta?.pip_size,entry),minTick=Math.pow(10,-decimals);
+ if(risk<minTick*2||(side==='BUY'?stop>=entry:stop<=entry))return null;
+ const sign=side==='BUY'?1:-1,targets=[1,2,3].map(r=>({r,price:entry+sign*risk*r}));
+ const half=Math.max(minTick*2,Number(zoneHalfWidth)||minTick*2);
+ return {side,entry,entryZone:{from:entry-half,to:entry+half},stop,risk,targets,strategy,stage,sourceEpoch:Number(sourceEpoch)||0,expiresEpoch:stage==='PROJECTED'?(Number(sourceEpoch)||0)+1200:0,volatility:Number(volatility)||0};
+}
+function evaluateAdditionalStrategies(args){
+ const {c5,c15,c1,c4,meta,price,bias4,structure,atr5,atr15,tolerance}=args;
+ const candidates=[];if(!c5?.length||!c15?.length||!c1?.length||!c4?.length)return {confirmedPlan:null,projectedPlan:null,bestScore:0,bestStrategy:null};
+ const last5=c5[c5.length-1],last15=c15[c15.length-1],last1=c1[c1.length-1];
+ const bias1=last1.close>last1.open?'Bullish':last1.close<last1.open?'Bearish':'Neutral';
+ const minTick=Math.pow(10,-decimalPlacesFromPip(meta?.pip_size,price));
+ const buffer=Math.max(minTick*2,(atr5||minTick*4)*0.10),a15=atr15||atr5||minTick*10,a5=atr5||minTick*4;
+ const body=Math.abs(last5.close-last5.open),barRange=Math.max(minTick,last5.high-last5.low),bodyRatio=body/barRange;
+ const impulseUp=last5.close>last5.open&&bodyRatio>=0.55&&body>=a5*0.45;
+ const impulseDown=last5.close<last5.open&&bodyRatio>=0.55&&body>=a5*0.45;
+ // Trend continuation: aligned 4H/1H context, 15M structure and EMA21 pullback hold, then 5M impulse.
+ const ema21=emaValue(c15,21);
+ if(ema21!==null){
+  for(const side of ['BUY','SELL']){
+   const bullish=side==='BUY',aligned=bias4===(bullish?'Bullish':'Bearish')&&bias1===bias4&&structure.direction===bias4;
+   const pullback=bullish?(last15.low<=ema21+a15*0.30&&last15.close>=ema21-tolerance):(last15.high>=ema21-a15*0.30&&last15.close<=ema21+tolerance);
+   const impulse=bullish?impulseUp:impulseDown;
+   const score=(aligned?30:0)+(pullback?30:0)+(impulse?25:0)+(c15.length>=30?15:0);
+   if(aligned&&(pullback||impulse)&&score>=60){
+    const entry=ema21,anchor=bullish?Math.min(last15.low,structure.lastLow?.price??last15.low):Math.max(last15.high,structure.lastHigh?.price??last15.high);
+    const stop=bullish?anchor-buffer:anchor+buffer;
+    const plan=makeScenarioPlan(side,entry,stop,meta,'TREND CONTINUATION',score>=100?'CONFIRMED':'PROJECTED',a15*0.12,last5.epoch,a5);
+    const distance=Math.abs(Number(price)-entry);
+    if(plan&&distance<=a15*1.1&&(bullish?Number(price)>stop:Number(price)<stop))candidates.push({plan,score,confirmed:score>=100,checks:[{label:'4H and 1H trend alignment',ok:aligned},{label:'15M EMA21 pullback hold',ok:pullback},{label:'5M continuation impulse',ok:impulse},{label:'Sufficient 15M history',ok:c15.length>=30}],reason:'4H/1H trend aligned · 15M EMA21 pullback '+(pullback?'held':'developing')+' · 5M impulse '+(impulse?'confirmed':'pending')});
+   }
+  }
+ }
+ // Breakout/retest: a completed 15M break is only confirmed after a completed 5M retest and hold.
+ const breakoutSpecs=[{side:'BUY',ok:!!structure.breakUp,level:structure.lastHigh?.price,retouched:last5.low,held:last5.close},{side:'SELL',ok:!!structure.breakDown,level:structure.lastLow?.price,retouched:last5.high,held:last5.close}];
+ breakoutSpecs.forEach(spec=>{
+  if(!spec.ok||!Number.isFinite(Number(spec.level)))return;
+  const bullish=spec.side==='BUY',level=Number(spec.level),touchTol=Math.max(tolerance,a5*0.18);
+  const retest=bullish?(spec.retouched<=level+touchTol&&spec.held>level+tolerance):(spec.retouched>=level-touchTol&&spec.held<level-tolerance);
+  const score=retest?100:65,entry=level,stop=bullish?Math.min(last5.low,level-a5*0.55)-buffer:Math.max(last5.high,level+a5*0.55)+buffer;
+  const plan=makeScenarioPlan(spec.side,entry,stop,meta,'BREAKOUT / RETEST',retest?'CONFIRMED':'PROJECTED',a5*0.12,last5.epoch,a5);
+  const distance=Math.abs(Number(price)-entry);
+  if(plan&&distance<=a5*1.25&&(bullish?Number(price)>stop:Number(price)<stop))candidates.push({plan,score,confirmed:retest,checks:[{label:'Completed 15M structure break',ok:true},{label:'5M retest of broken level',ok:retest},{label:'5M candle held beyond level',ok:retest},{label:'Price remains near proposed entry',ok:distance<=a5*1.25}],reason:(bullish?'Bullish':'Bearish')+' 15M break '+(retest?'followed by a completed 5M retest and hold':'detected · waiting for 5M retest')});
+ });
+ candidates.sort((a,b)=>(Number(b.confirmed)-Number(a.confirmed))||b.score-a.score);
+ const chosen=candidates[0]||null;
+ return {confirmedPlan:chosen?.confirmed?chosen.plan:null,projectedPlan:chosen&&!chosen.confirmed?chosen.plan:null,bestScore:chosen?.score||0,bestStrategy:chosen?.plan.strategy||null,checks:chosen?.checks||[],reason:chosen?.reason||null};
+}
+function buildCrtProjection(args){
+ const {side,level,wick,meta,last5,atr5,minTick,score,price}=args;
+ const buffer=Math.max(minTick*2,(atr5||minTick*4)*0.10),entry=Number(level);
+ if(!Number.isFinite(entry))return null;
+ const stop=side==='BUY'?Math.min(Number(wick),entry)-buffer:Math.max(Number(wick),entry)+buffer;
+ const plan=makeScenarioPlan(side,entry,stop,meta,'CRT REVERSAL','PROJECTED',(atr5||minTick*8)*0.12,last5.epoch,atr5);
+ if(!plan||score<35||Math.abs(Number(price)-entry)>(atr5||minTick*10)*1.25)return null;
+ if(side==='BUY'&&Number(price)<=stop||side==='SELL'&&Number(price)>=stop)return null;
+ plan.evidenceScore=score;plan.reason='Liquidity sweep/reclaim detected · awaiting remaining structure and displacement confirmation';
+ return plan;
+}
+function hasLiveQuote(){return quote!==null&&quote!==undefined&&quote!==""&&Number.isFinite(Number(quote));}
 function setText(id, value) { const element = $(id); if (element) element.textContent = value; }
 function renderConfirmationChecks(items) {
   const host = $("confirmationList");
@@ -944,7 +1045,7 @@ function analyse() {
   const last15 = c15[c15.length - 1];
   const last4 = c4[c4.length - 1];
   const hi = num(reference1h.high), lo = num(reference1h.low), mid = (hi + lo) / 2;
-  const price = Number.isFinite(Number(quote)) ? Number(quote) : num(last5.close);
+  const price = hasLiveQuote() ? Number(quote) : num(last5.close);
   const decimals = decimalPlacesFromPip(meta?.pip_size, price);
   const minTick = Math.pow(10, -decimals);
   const atr15 = averageTrueRange(c15, 14);
@@ -1032,8 +1133,30 @@ function analyse() {
       const opposingLiquidity = longSide ? [hi, buySideLevel].filter(v => Number.isFinite(v) && v > entry).sort((a,b)=>a-b)[0]
         : [lo, sellSideLevel].filter(v => Number.isFinite(v) && v < entry).sort((a,b)=>b-a)[0];
       const obstacleBeforeTp3 = Number.isFinite(opposingLiquidity) && (longSide ? opposingLiquidity < targets[2].price : opposingLiquidity > targets[2].price);
-      tradePlan = {side: longSide ? "BUY" : "SELL", entry, stop, risk, targets, opposingLiquidity: Number.isFinite(opposingLiquidity) ? opposingLiquidity : null, obstacleBeforeTp3};
+      const basePlan=makeScenarioPlan(longSide?"BUY":"SELL",entry,stop,meta,"CRT REVERSAL","CONFIRMED",(atr5||minTick*8)*0.12,last5.epoch,atr5);
+      tradePlan = basePlan ? {...basePlan,opposingLiquidity:Number.isFinite(opposingLiquidity)?opposingLiquidity:null,obstacleBeforeTp3} : null;
+      if(!tradePlan){direction="WAIT";entry=stop=target=null;}
     } else { direction = "WAIT"; entry = stop = target = null; }
+  }
+
+  // Additional independent strategies supplement (but do not replace) CRT reversal.
+  const alternative = evaluateAdditionalStrategies({c5,c15,c1,c4,meta,price,bias4,structure,atr5,atr15,tolerance});
+  let projectedPlan = null, selectedStrategy = tradePlan ? "CRT REVERSAL" : null;
+  if (!tradePlan && alternative.confirmedPlan) {
+    tradePlan = alternative.confirmedPlan;
+    direction = tradePlan.side === "BUY" ? "WATCH BUY" : "WATCH SELL";
+    entry = tradePlan.entry; stop = tradePlan.stop;
+    target = tradePlan.targets?.[2]?.price ?? null;
+    selectedStrategy = tradePlan.strategy;
+  }
+  if (!tradePlan) {
+    if (bullishSweep && !bearishSweep) {
+      projectedPlan = buildCrtProjection({side:"BUY",level:bullishLevel?.price,wick:num(last5.low),meta,last5,atr5,minTick,score:bullScore,price});
+    } else if (bearishSweep && !bullishSweep) {
+      projectedPlan = buildCrtProjection({side:"SELL",level:bearishLevel?.price,wick:num(last5.high),meta,last5,atr5,minTick,score:bearScore,price});
+    }
+    if (!projectedPlan && alternative.projectedPlan) projectedPlan = alternative.projectedPlan;
+    if (projectedPlan) selectedStrategy = projectedPlan.strategy;
   }
 
   const liquidity = ambiguousSweep ? "Two-sided sweep · ambiguous"
@@ -1042,7 +1165,7 @@ function analyse() {
     : "No completed 5M sweep/reclaim";
   const structureCandle = num(last15.close) > num(last15.open) ? "15M bullish candle" : num(last15.close) < num(last15.open) ? "15M bearish candle" : "15M neutral candle";
 
-  latestAnalysis = {meta, price, hi, lo, mid, location, rangePercent, structure, buySideLevel, sellSideLevel, eqh, eql, bullishSweep, bearishSweep, bullishLevel, bearishLevel, direction, entry, stop, target, tradePlan, bias4, displacementDirection, liquidity, last5, last15, bullComponents, bearComponents, bullScore, bearScore, ambiguousSweep};
+  latestAnalysis = {meta, price, hi, lo, mid, location, rangePercent, structure, buySideLevel, sellSideLevel, eqh, eql, bullishSweep, bearishSweep, bullishLevel, bearishLevel, direction, entry, stop, target, tradePlan, projectedPlan, selectedStrategy, alternative, bias4, displacementDirection, liquidity, last5, last15, bullComponents, bearComponents, bullScore, bearScore, ambiguousSweep};
   renderChart();
   setText("hi", formatPrice(hi, meta));
   setText("lo", formatPrice(lo, meta));
@@ -1061,28 +1184,35 @@ function analyse() {
   setText("sellLiquidity", sellSideLevel === null ? "Insufficient swing history" : formatPrice(sellSideLevel, meta) + (eql ? " · EQL" : " · swing low"));
   setText("equalHighs", eqh ? formatPrice(eqh.price, meta) + " · zone" : "Not detected");
   setText("equalLows", eql ? formatPrice(eql.price, meta) + " · zone" : "Not detected");
-  setText("decision", direction);
-  $("decision").className = "signal " + (direction.includes("BUY") ? "green" : direction.includes("SELL") ? "red" : "amber");
+  const decisionText = direction !== "WAIT" ? direction : projectedPlan ? "PROJECTED " + projectedPlan.side : "WAIT";
+  setText("decision", decisionText);
+  $("decision").className = "signal " + (decisionText.includes("BUY") ? "green" : decisionText.includes("SELL") ? "red" : "amber");
   setText("direction", direction);
   setText("entry", entry === null ? "—" : formatPrice(entry, meta));
   setText("stop", stop === null ? "—" : formatPrice(stop, meta));
   setText("target", target === null ? "—" : formatPrice(target, meta));
 
   const chooseBull = bullScore > bearScore || (bullScore === bearScore && (bullishSweep && !bearishSweep || (!bearishSweep && bias4 === "Bullish")));
-  const chosenComponents = chooseBull ? bullComponents : bearComponents;
   const chosenSide = chooseBull ? "Bullish" : "Bearish";
-  setText("scoreValue", candidateScore + "/100");
-  setText("scoreLabel", direction !== "WAIT" ? direction + " conditions aligned · " + chosenSide : chosenSide + " checklist · WAIT for missing confirmations");
-  $("scoreFill").style.width = candidateScore + "%";
-  $("scoreFill").style.background = candidateScore >= 80 ? "linear-gradient(90deg,#178c70,#25d3a0)" : candidateScore >= 50 ? "linear-gradient(90deg,#b17a27,#f4bd50)" : "linear-gradient(90deg,#7a4d36,#cf8159)";
-  renderConfirmationChecks(chosenComponents);
-  setText("scoreNote", ambiguousSweep ? "Both sides were swept in the same completed 5M candle. Treat the event as ambiguous and wait for fresh structure." : direction !== "WAIT" ? "A WATCH candidate is present, not an execution instruction. Review the chart, spread, market conditions and invalidation before making any decision." : "At least one essential confirmation is missing. A high partial score alone does not create a setup.");
+  const alternativeActive = !!selectedStrategy && selectedStrategy !== "CRT REVERSAL";
+  const activeScore = alternativeActive ? alternative.bestScore : candidateScore;
+  const activeChecks = alternativeActive && alternative.checks.length ? alternative.checks : (chooseBull ? bullComponents : bearComponents);
+  setText("scoreValue", activeScore + "/100");
+  setText("scoreLabel", direction !== "WAIT" ? (selectedStrategy || "CRT REVERSAL") + " validated · evidence score, not win probability" : projectedPlan ? (selectedStrategy || "Strategy") + " projected · awaiting confirmation" : chosenSide + " CRT checklist · WAIT for missing confirmations");
+  $("scoreFill").style.width = activeScore + "%";
+  $("scoreFill").style.background = activeScore >= 80 ? "linear-gradient(90deg,#178c70,#28c7a5)" : activeScore >= 50 ? "linear-gradient(90deg,#b17a27,#e8b85d)" : "linear-gradient(90deg,#7a4d36,#cf8159)";
+  renderConfirmationChecks(activeChecks);
+  setText("scoreNote", ambiguousSweep && selectedStrategy === "CRT REVERSAL" ? "Both sides were swept in the same completed 5M candle. Treat the event as ambiguous and wait for fresh structure." : direction !== "WAIT" ? (selectedStrategy || "A strategy") + " passed its defined confirmation rules. The score measures rule agreement, not probability of profit." : projectedPlan ? "A projected setup is displayed for planning only. It is not confirmed; wait for the remaining trigger conditions." : "At least one essential confirmation is missing. A high partial score alone does not create a setup.");
   updateMarketNarrative();
   renderTradePlan();
   renderChart(false);
-  setStatus("V1.8.0 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
-  if (direction !== "WAIT" && "Notification" in window && Notification.permission === "granted") {
-    new Notification("CRT " + direction + " · " + selected, {body: "A preliminary CRT confirmation checklist aligned. Review independently; no trade was placed."});
+  setStatus("V1.9.0 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  if (direction !== "WAIT") {
+    const signalKey=[selected,selectedStrategy||"CRT REVERSAL",direction,last5.epoch].join("|");
+    if(signalKey!==lastNotifiedSignalKey){
+      lastNotifiedSignalKey=signalKey;
+      if("Notification" in window && Notification.permission === "granted")new Notification((selectedStrategy||"SETUP")+" · "+direction+" · "+selected,{body:"A completed-candle setup passed its defined checks. Review the chart and risk plan independently; no trade was placed."});
+    }
   }
 }
 
@@ -1141,8 +1271,8 @@ function initTradingChart(){
    chartApi=lib.createChart(container,{
    width:Math.max(280,Math.floor(rect.width)),
    height:Math.max(260,Math.floor(rect.height)),
-   layout:{background:{type:lib.ColorType?.Solid??'solid',color:'#081321'},textColor:'#9cb0cb',fontFamily:'system-ui,-apple-system,Segoe UI,sans-serif',fontSize:11,attributionLogo:true},
-   grid:{vertLines:{color:'#172a40'},horzLines:{color:'#172a40'}},
+   layout:{background:{type:lib.ColorType?.Solid??'solid',color:'#0a1422'},textColor:'#a4b5cb',fontFamily:'system-ui,-apple-system,Segoe UI,sans-serif',fontSize:11,attributionLogo:true},
+   grid:{vertLines:{color:'#142438'},horzLines:{color:'#142438'}},
    rightPriceScale:{borderColor:'#263952',scaleMargins:{top:0.10,bottom:0.12},autoScale:true},
    leftPriceScale:{visible:false},
    timeScale:{borderColor:'#263952',timeVisible:true,secondsVisible:false,rightOffset:7,barSpacing:8,minBarSpacing:2,lockVisibleTimeRangeOnResize:true},
@@ -1151,26 +1281,49 @@ function initTradingChart(){
    handleScale:{mouseWheel:true,pinch:true,axisPressedMouseMove:{time:true,price:true},axisDoubleClickReset:{time:true,price:true}}
  });
  candleSeries=chartApi.addSeries(lib.CandlestickSeries,{
-   upColor:'#25d3a0',downColor:'#ff637d',borderUpColor:'#25d3a0',borderDownColor:'#ff637d',wickUpColor:'#25d3a0',wickDownColor:'#ff637d',
+   upColor:'#28c7a5',downColor:'#f07883',borderUpColor:'#28c7a5',borderDownColor:'#f07883',wickUpColor:'#28c7a5',wickDownColor:'#f07883',
    borderVisible:false,priceLineVisible:false,lastValueVisible:false,priceFormat:{type:'price',precision:2,minMove:0.01}
  });
  // Touch-only right-axis drag: lets mobile users expand/contract and shift the
  // visible price scale without hijacking one-finger horizontal chart panning.
  const priceTouch=document.createElement('div');priceTouch.className='chartPriceTouch';priceTouch.setAttribute('aria-label','Drag vertically to adjust price scale');container.appendChild(priceTouch);
- let priceTouchStart=null;
+ let priceTouchStart=null,lastAxisTapAt=0;
+ const touchDistance=touches=>Math.hypot(touches[0].clientX-touches[1].clientX,touches[0].clientY-touches[1].clientY);
  priceTouch.addEventListener('touchstart',ev=>{
-   if(ev.touches.length!==1||!candleSeries)return;
+   if(!candleSeries)return;
    const range=candleSeries.priceScale().getVisibleRange();if(!range)return;
    candleSeries.priceScale().setAutoScale(false);
-   priceTouchStart={y:ev.touches[0].clientY,from:range.from,to:range.to};ev.preventDefault();
+   if(ev.touches.length===2){
+     priceTouchStart={mode:'pinch',distance:Math.max(12,touchDistance(ev.touches)),center:(range.from+range.to)/2,span:range.to-range.from};
+     ev.preventDefault();
+   }else if(ev.touches.length===1){
+     priceTouchStart={mode:'pan',y:ev.touches[0].clientY,from:range.from,to:range.to};
+     ev.preventDefault();
+   }
  },{passive:false});
  priceTouch.addEventListener('touchmove',ev=>{
-   if(!priceTouchStart||ev.touches.length!==1||!candleSeries)return;
-   const rect=container.getBoundingClientRect(),dy=ev.touches[0].clientY-priceTouchStart.y;
-   const span=priceTouchStart.to-priceTouchStart.from,shift=(dy/Math.max(180,rect.height))*span*1.4;
-   candleSeries.priceScale().setVisibleRange({from:priceTouchStart.from+shift,to:priceTouchStart.to+shift});ev.preventDefault();
+   if(!priceTouchStart||!candleSeries)return;
+   if(priceTouchStart.mode==='pinch'&&ev.touches.length===2){
+     const distance=Math.max(12,touchDistance(ev.touches));
+     const nextSpan=clamp(priceTouchStart.span*(priceTouchStart.distance/distance),priceTouchStart.span*0.18,priceTouchStart.span*5);
+     candleSeries.priceScale().setVisibleRange({from:priceTouchStart.center-nextSpan/2,to:priceTouchStart.center+nextSpan/2});
+     ev.preventDefault();
+   }else if(priceTouchStart.mode==='pan'&&ev.touches.length===1){
+     const rect=container.getBoundingClientRect(),dy=ev.touches[0].clientY-priceTouchStart.y;
+     if(Math.abs(dy)>3)priceTouchStart.moved=true;
+     const span=priceTouchStart.to-priceTouchStart.from,shift=(dy/Math.max(180,rect.height))*span*1.4;
+     candleSeries.priceScale().setVisibleRange({from:priceTouchStart.from+shift,to:priceTouchStart.to+shift});ev.preventDefault();
+   }
  },{passive:false});
- const endPriceTouch=()=>{priceTouchStart=null;};
+ priceTouch.addEventListener('dblclick',()=>autoPriceScale());
+ const endPriceTouch=()=>{
+   if(priceTouchStart?.mode==='pan'&&!priceTouchStart.moved){
+     const now=Date.now();
+     if(lastAxisTapAt&&now-lastAxisTapAt<320){autoPriceScale();lastAxisTapAt=0;}
+     else lastAxisTapAt=now;
+   }
+   priceTouchStart=null;
+ };
  priceTouch.addEventListener('touchend',endPriceTouch);priceTouch.addEventListener('touchcancel',endPriceTouch);
  chartApi.subscribeCrosshairMove(param=>{
    if(!param||!param.time||!param.seriesData)return;
@@ -1210,13 +1363,13 @@ function chartRemoveOverlayLines(){
 function chartAddLine(price,title,color,style){
  if(!candleSeries||!Number.isFinite(Number(price)))return;
  const lib=chartLibrary();
- try{chartOverlayLines.push(candleSeries.createPriceLine({price:Number(price),title,color:color,lineWidth:1,lineStyle:style??lib?.LineStyle?.Dashed??2,axisLabelVisible:true,axisLabelColor:color,axisLabelTextColor:'#081321'}));}catch(_){ }
+ try{chartOverlayLines.push(candleSeries.createPriceLine({price:Number(price),title,color:color,lineWidth:1,lineStyle:style??lib?.LineStyle?.Dashed??2,axisLabelVisible:false,axisLabelColor:color,axisLabelTextColor:'#0a1422'}));}catch(_){ }
 }
 function updateChartLivePrice(){
- if(!candleSeries||!Number.isFinite(Number(quote)))return;
+ if(!candleSeries||!hasLiveQuote())return;
  if(chartPriceLine){try{candleSeries.removePriceLine(chartPriceLine);}catch(_){}}
  const lib=chartLibrary();
- try{chartPriceLine=candleSeries.createPriceLine({price:Number(quote),title:'LIVE',color:'#edf4ff',lineWidth:1,lineStyle:lib?.LineStyle?.Dotted??1,axisLabelVisible:true,axisLabelColor:'#edf4ff',axisLabelTextColor:'#081321'});}catch(_){chartPriceLine=null;}
+ try{chartPriceLine=candleSeries.createPriceLine({price:Number(quote),title:'LIVE',color:'#edf4ff',lineWidth:1,lineStyle:lib?.LineStyle?.Dotted??1,axisLabelVisible:true,axisLabelColor:'#edf4ff',axisLabelTextColor:'#0a1422'});}catch(_){chartPriceLine=null;}
  $("chartPrice").textContent=formatPrice(quote,findSymbol(selected));
 }
 function renderChart(force){
@@ -1251,8 +1404,19 @@ function renderChart(force){
    sw.highs.slice(-6).forEach((p,i)=>overlayItems.push([p.price,'SH '+(i+1),'#ff9c67','dot']));
    sw.lows.slice(-6).forEach((p,i)=>overlayItems.push([p.price,'SL '+(i+1),'#76aaff','dot']));
  }
- const plan=a?.tradePlan&&$("ovRR").checked?a.tradePlan:null;
- if(plan){overlayItems.push([plan.entry,'ENTRY '+formatPrice(plan.entry,meta),'#edf4ff'],[plan.stop,'STOP '+formatPrice(plan.stop,meta),'#ff637d']);plan.targets.forEach((t,i)=>overlayItems.push([t.price,'TP'+(i+1)+' '+formatPrice(t.price,meta),'#25d3a0','dot']));}
+ const previewCandidate=a?.projectedPlan;
+ const plan=$("ovRR").checked?(a?.tradePlan||previewCandidate):null;
+ if(plan){
+   const preview=plan.stage==='PROJECTED';
+   const invalid=(preview&&((plan.expiresEpoch>0&&latestTickEpoch>=plan.expiresEpoch)||(hasLiveQuote()&&(plan.side==="BUY"?Number(quote)<=plan.stop:Number(quote)>=plan.stop))||(plan.volatility>0&&hasLiveQuote()&&Math.abs(Number(quote)-plan.entry)>plan.volatility*1.5)))||(!preview&&hasLiveQuote()&&(plan.side==="BUY"?Number(quote)<=plan.stop:Number(quote)>=plan.stop));
+   const entryColor=invalid?'#78616b':preview?'#d7b46a':'#edf4ff';
+   const stopColor=invalid?'#8a6670':'#f07883';
+   const targetColor=invalid?'#667d78':preview?'#83b8a8':'#28c7a5';
+   const prefix=invalid?'INVALID · ':preview?'PROPOSED · ':'';
+   if(plan.entryZone){overlayItems.push([plan.entryZone.from,prefix+'ENTRY ZONE',entryColor,'dot'],[plan.entryZone.to,prefix+'ENTRY ZONE',entryColor,'dot']);}
+   overlayItems.push([plan.entry,prefix+'ENTRY '+formatPrice(plan.entry,meta),entryColor,'dot'],[plan.stop,prefix+'STOP '+formatPrice(plan.stop,meta),stopColor,'dot']);
+   plan.targets.forEach((t,i)=>overlayItems.push([t.price,prefix+'TP'+(i+1)+' '+formatPrice(t.price,meta),targetColor,'dot']));
+ }
  const mergedOverlayItems=mergeChartOverlayLabels(overlayItems,meta);
  const overlaySignature=JSON.stringify(mergedOverlayItems);
  if(overlaySignature!==chartOverlaySignature){
@@ -1287,49 +1451,76 @@ function mergeChartOverlayLabels(items, meta) {
 
 function updateMarketNarrative(){renderMarketNarrative();}
 function renderMarketNarrative(){
- const a=latestAnalysis;if(!a)return;const meta=a.meta||findSymbol(selected),fmt=v=>formatPrice(v,meta),price=Number.isFinite(Number(quote))?Number(quote):a.price;
+ const a=latestAnalysis;if(!a)return;const meta=a.meta||findSymbol(selected),fmt=v=>formatPrice(v,meta),price=hasLiveQuote()?Number(quote):a.price;
  const pct=a.hi>a.lo?((price-a.lo)/(a.hi-a.lo))*100:null;
  const location=pct===null?"unknown":price>a.hi?"above the 1H reference range":price<a.lo?"below the 1H reference range":pct>55?"in premium":pct<45?"in discount":"near equilibrium";
  a.price=price;a.rangePercent=pct;a.location=location;
- $("narrativeState").textContent=a.direction||"WAIT";
+ $("narrativeState").textContent=a.direction!=="WAIT"?a.direction:(a.projectedPlan?"PROJECTED "+a.projectedPlan.side:"WAIT");
  $("narrativeLead").textContent=""+displayName(meta)+" is trading at "+fmt(price)+", "+(pct===null?"with no valid range percentage":(pct.toFixed(1)+"% through the previous completed 1H range, "+location))+". The range high is "+fmt(a.hi)+", low is "+fmt(a.lo)+" and equilibrium is "+fmt(a.mid)+".";
  const sweep=a.bullishSweep?"Sell-side liquidity has been swept and reclaimed on the completed 5M candle.":a.bearishSweep?"Buy-side liquidity has been swept and rejected on the completed 5M candle.":a.ambiguousSweep?"Both sides were swept in one completed 5M candle; direction is ambiguous.":"No completed 5M sweep-and-reclaim is confirmed.";
  const structure=a.structure?.trend||"Neutral / developing";
  const event=a.structure?.event||"No confirmed structure event";
+ const triggerSummary=a.selectedStrategy&&a.selectedStrategy!=="CRT REVERSAL"?(a.alternative?.reason||"The alternative strategy's completed-candle trigger checks were evaluated."):(a.displacementDirection||"not available");
  const details=[
   ["Higher-timeframe context","4H candle bias is "+(a.bias4||"unknown")+". This is directional context, not a standalone entry signal."],
   ["Market structure","15M structure reads "+structure+". Latest event: "+event+". A bullish/bearish candle alone is not treated as a structural break."],
   ["Liquidity",""+sweep+" Current mapped buy-side level: "+(a.buySideLevel==null?"unavailable":fmt(a.buySideLevel))+"; sell-side level: "+(a.sellSideLevel==null?"unavailable":fmt(a.sellSideLevel))+"."],
-  ["5M trigger","Latest completed 5M trigger: "+(a.displacementDirection||"not available")+". Confirmation is based on completed candles, not a transient wick or live tick." ]
+  ["5M trigger",triggerSummary+" Confirmation is based on completed candles, not a transient wick or live tick." ]
  ];
  const missing=(a.direction==="WATCH BUY"?a.bullComponents:a.direction==="WATCH SELL"?a.bearComponents:(a.bullScore>=a.bearScore?a.bullComponents:a.bearComponents))||[];
- if(a.direction==="WAIT")details.push(["What is missing","The model remains WAIT. Missing confirmations: "+missing.filter(c=>!c.ok).map(c=>c.label).join(", ")+". No entry, stop or targets are proposed while a required confirmation is absent."]);
+ if(a.direction==="WAIT"){
+  if(a.projectedPlan)details.push(["Projected opportunity",(a.projectedPlan.strategy||"A strategy")+" has produced a proposed "+a.projectedPlan.side+" scenario. Entry and risk levels are provisional; the system is still waiting for confirmation. "+(a.alternative?.reason||a.projectedPlan.reason||"")]);
+  const strategyChecks=a.selectedStrategy&&a.selectedStrategy!=="CRT REVERSAL"?(a.alternative?.checks||[]):[];
+  const missingChecks=strategyChecks.length?strategyChecks.filter(c=>!c.ok).map(c=>c.label):missing.filter(c=>!c.ok).map(c=>c.label);
+  details.push(["What is missing","The confirmed status remains WAIT. Missing "+(strategyChecks.length?(a.selectedStrategy+" conditions: "):("CRT confirmations: "))+missingChecks.join(", ")+". A projection is not an active or confirmed signal."]);
+ }
  else {
-  const p=a.tradePlan,now=Number.isFinite(Number(quote))?Number(quote):a.price,invalid=p&&(p.side==="BUY"?now<=p.stop:now>=p.stop);
-  details.push(["Current assessment",invalid?"The candidate passed its completed-candle checklist, but the current quote has crossed its stop/invalidation level. Treat the candidate as invalid; do not use its previous entry plan.":"A "+a.direction+" candidate has passed the defined checklist. Review the entry reference and risk/reward plan below; this remains a model-generated scenario, not an instruction to trade."]);
+  const p=a.tradePlan,now=hasLiveQuote()?Number(quote):a.price,invalid=p&&(p.side==="BUY"?now<=p.stop:now>=p.stop);
+  details.push(["Current assessment",invalid?"The candidate passed its completed-candle checklist, but the current quote has crossed its stop/invalidation level. Treat the candidate as invalid; do not use its previous entry plan.":"A "+(a.selectedStrategy||"strategy")+" "+a.direction+" candidate has passed its defined checklist. Review the entry reference and risk/reward plan below; this remains a model-generated scenario, not an instruction to trade."]);
  }
  $("narrativeDetails").innerHTML=details.map(([title,body])=>'<div class="narrativeItem"><b>'+svgEsc(title)+'</b>'+svgEsc(body)+'</div>').join("");
  $("rangeLocation").textContent=location;$("rangePosition").textContent=pct===null?"—":pct.toFixed(1)+"% from range low";
 }
 function renderTradePlan(){
- const a=latestAnalysis,plan=a?.tradePlan,meta=a?.meta||findSymbol(selected),fmt=v=>formatPrice(v,meta);
+ const a=latestAnalysis,plan=a?.tradePlan||a?.projectedPlan,confirmed=!!a?.tradePlan,meta=a?.meta||findSymbol(selected),fmt=v=>formatPrice(v,meta);
  const ids=["planEntry","planStop","planRisk","planTp1","planTp2","planTp3","planRr1","planRr2","planRr3"];
- if(!plan){$("planState").textContent="NO PLAN · WAIT";$("planDirection").textContent="WAIT";ids.forEach(id=>$(id).textContent="—");$("planIntro").textContent="No trade plan is available. The model has not confirmed every mandatory condition; it will not invent an entry, stop-loss or take-profit.";$("planWarning").textContent="The planner is analysis-only. A plan appears only after the V1.4 setup rules pass. All levels require independent review.";return;}
- const now=Number.isFinite(Number(quote))?Number(quote):plan.entry, invalid=plan.side==="BUY"?now<=plan.stop:now>=plan.stop;
- $("planState").textContent=invalid?"INVALIDATED BY CURRENT PRICE":"CANDIDATE PLAN · REVIEW";$("planDirection").textContent=plan.side;$("planEntry").textContent=fmt(plan.entry);$("planStop").textContent=fmt(plan.stop);$("planRisk").textContent=fmt(plan.risk)+" points";
- plan.targets.forEach((t,i)=>{$("planTp"+(i+1)).textContent=fmt(t.price);$("planRr"+(i+1)).textContent="Risk/reward 1:"+t.r.toFixed(1);});
- $("planIntro").textContent="Entry is the close of the completed 5M confirmation candle. Stop is placed beyond the sweep/trigger candle with a small volatility-aware buffer. Targets are a mechanical 1R / 2R / 3R ladder.";
- let warning="Review spread, slippage, nearby liquidity and current price before treating this scenario as usable.";
- if(plan.obstacleBeforeTp3)warning+=" The nearest opposing liquidity reference at "+fmt(plan.opposingLiquidity)+" lies before TP3 and may obstruct the full target ladder.";
- if(invalid)warning="The current quote has crossed the candidate stop/invalidation level. Treat this plan as invalid; no trade is placed.";
+ if(!plan){$("planState").textContent="NO PLAN · WAIT";$("planState").className="planBadge";$("planDirection").textContent="WAIT";ids.forEach(id=>$(id).textContent="—");$("planIntro").textContent="No setup has enough supporting evidence for a responsible price projection. The chart will remain clear until a meaningful setup develops.";$("planWarning").textContent="The planner is analysis-only. A projected scenario is not a confirmed signal, a probability of winning or an instruction to trade.";return;}
+ const now=hasLiveQuote()?Number(quote):plan.entry;
+ const stopHit=plan.side==="BUY"?now<=plan.stop:now>=plan.stop;
+ const expired=!confirmed&&plan.expiresEpoch>0&&latestTickEpoch>=plan.expiresEpoch;
+ const tooFar=!confirmed&&plan.volatility>0&&Math.abs(now-plan.entry)>plan.volatility*1.5;
+ const invalid=stopHit||expired||tooFar;
+ $("planState").textContent=invalid?(expired?"PROJECTION EXPIRED":tooFar?"PRICE MOVED · PROJECTION STALE":"INVALIDATED BY PRICE"):confirmed?"CONFIRMED · REVIEW":"PROJECTED · AWAITING CONFIRMATION";
+ $("planState").className="planBadge "+(invalid?"invalidated":confirmed?"confirmed":"projected");
+ $("planDirection").textContent=(invalid?"INVALIDATED ":confirmed?"CONFIRMED ":"PROPOSED ")+plan.side;
+ $("planEntry").textContent=fmt(plan.entry)+(plan.entryZone?" · zone "+fmt(plan.entryZone.from)+"–"+fmt(plan.entryZone.to):"");
+ $("planStop").textContent=fmt(plan.stop);$("planRisk").textContent=fmt(plan.risk)+" points";
+ (plan.targets||[]).forEach((t,i)=>{$("planTp"+(i+1)).textContent=fmt(t.price);$("planRr"+(i+1)).textContent="Risk/reward 1:"+t.r.toFixed(1);});
+ if(confirmed){$("planIntro").textContent=(plan.strategy||"Strategy")+" passed its defined completed-candle confirmation rules. The levels are a model-generated scenario; independently review the market before any decision.";}
+ else {$("planIntro").textContent=(plan.strategy||"Setup")+" has enough evidence to display a proposed entry zone, invalidation level and projected targets. The setup is NOT confirmed. Wait for the stated trigger conditions before treating it as validated.";}
+ let warning=confirmed?"Review spread, slippage, nearby liquidity and current price. A confirmed analytical setup is not a guaranteed outcome.":(plan.reason||"Await the missing confirmation conditions.")+" The projection expires after three completed 5M candles, or earlier if price invalidates the level or moves too far from the proposed zone.";
+ if(plan.obstacleBeforeTp3)warning+=" Nearby opposing liquidity at "+fmt(plan.opposingLiquidity)+" lies before TP3 and may obstruct the full target ladder.";
+ if(invalid)warning=expired?"This projection exceeded its three-candle validity window. It is retained for review but must not be treated as an active opportunity.":tooFar?"Price has moved too far from the proposed entry zone. Do not chase the setup; wait for a fresh structure.":"Price crossed the proposed invalidation level. This scenario is no longer valid; no trade was placed.";
  $("planWarning").textContent=warning;
 }
 function updateLiveRangeFromQuote(){
- if(!latestAnalysis||!Number.isFinite(Number(quote)))return;const a=latestAnalysis,meta=a.meta||findSymbol(selected),p=Number(quote),width=a.hi-a.lo;
+ if(!latestAnalysis||!hasLiveQuote())return;const a=latestAnalysis,meta=a.meta||findSymbol(selected),p=Number(quote),width=a.hi-a.lo;
  a.price=p;a.rangePercent=width>0?((p-a.lo)/width)*100:null;
  a.location=p>a.hi?"Above reference range":p<a.lo?"Below reference range":p>a.mid?"Premium":p<a.mid?"Discount":"Equilibrium";
  $("rangeLocation").textContent=a.location;$("rangePosition").textContent=a.rangePercent===null?"—":a.rangePercent.toFixed(1)+"% from range low";
  renderMarketNarrative();renderTradePlan();
+ if(latestAnalysis?.tradePlan){
+  const p=latestAnalysis.tradePlan,invalid=p.side==="BUY"?Number(quote)<=p.stop:Number(quote)>=p.stop;
+  setText("decision",invalid?"INVALIDATED":"CONFIRMED "+p.side);
+  $("decision").className="signal "+(invalid?"amber":p.side==="BUY"?"green":"red");
+ }else if(latestAnalysis?.projectedPlan){
+  const p=latestAnalysis.projectedPlan,stale=(p.expiresEpoch>0&&latestTickEpoch>=p.expiresEpoch)||(p.side==="BUY"?Number(quote)<=p.stop:Number(quote)>=p.stop)||(p.volatility>0&&Math.abs(Number(quote)-p.entry)>p.volatility*1.5);
+  setText("decision",stale?"PROJECTION STALE":"PROJECTED "+p.side);
+  $("decision").className="signal "+(stale?"amber":p.side==="BUY"?"green":"red");
+ }else{
+  setText("decision",latestAnalysis?.direction||"WAIT");
+  $("decision").className="signal "+(latestAnalysis?.direction?.includes("BUY")?"green":latestAnalysis?.direction?.includes("SELL")?"red":"amber");
+ }
 }
 function setChartLayout(mode){chartLayout=mode;$("chartCard").classList.toggle("chartSplit",mode==="split");$("layoutChart").classList.toggle("active",mode==="chart");$("layoutSplit").classList.toggle("active",mode==="split");setTimeout(resizeTradingChart,80);}
 function requestChartTimeframe(tf){
@@ -1432,7 +1623,7 @@ window.__lwcPromise.then(() => {
 </script>
 
 <script>
-/* V1.8.0 multi-market scanner. Uses the existing public Deriv WebSocket connection. */
+/* V1.9.0 multi-strategy market scanner. Uses the existing public Deriv WebSocket connection. */
 (function(){
 "use strict";
 const scanner = {
@@ -1443,6 +1634,13 @@ const scanner = {
 };
 const SCAN_GRANULARITIES=[300,900,3600,14400];
 const $s=id=>document.getElementById(id);
+const SCANNER_ALERT_STORAGE_KEY="tebza-crt-analyst-v19-alerts";
+function scannerLoadSavedAlerts(){
+ try{if(typeof localStorage==="undefined")return[];const value=JSON.parse(localStorage.getItem(SCANNER_ALERT_STORAGE_KEY)||"[]");return Array.isArray(value)?value.filter(x=>x&&typeof x.symbol==="string"&&typeof x.title==="string"&&typeof x.body==="string"&&Number.isFinite(Number(x.at))).slice(0,50):[];}catch(_){return[];}
+}
+function scannerSaveAlerts(){
+ try{if(typeof localStorage!=="undefined")localStorage.setItem(SCANNER_ALERT_STORAGE_KEY,JSON.stringify(scanner.alerts.slice(0,50)));}catch(error){console.warn("Alert history could not be saved locally",error);}
+}
 function scannerSetState(text){scanner.stage=text;$s("scannerState").textContent=text;}
 function scannerText(id,text){const el=$s(id);if(el)el.textContent=String(text);}
 function scannerFmt(value,meta){return Number.isFinite(Number(value))?formatPrice(Number(value),meta):"—";}
@@ -1652,19 +1850,29 @@ function scannerEvaluateRecord(rec,source){
   const long=bullReady,entry=num(last5.close),sweep=long?(bullishLevel?.price??num(last5.low)):(bearishLevel?.price??num(last5.high));
   const stopBuffer=Math.max(minTick*2,(atr5||minTick*2)*0.05),stop=long?Math.min(num(last5.low),sweep)-stopBuffer:Math.max(num(last5.high),sweep)+stopBuffer;
   const risk=Math.abs(entry-stop);
-  if(risk>minTick&&(long?stop<entry:stop>entry))plan={side:long?"BUY":"SELL",entry,stop,risk,targets:[1,2,3].map(r=>({r,price:entry+(long?1:-1)*risk*r}))};
+  if(risk>minTick&&(long?stop<entry:stop>entry))plan={side:long?"BUY":"SELL",entry,stop,risk,targets:[1,2,3].map(r=>({r,price:entry+(long?1:-1)*risk*r})),strategy:"CRT REVERSAL",stage:"CONFIRMED"};
+ }
+ const alternative=evaluateAdditionalStrategies({c5,c15,c1,c4,meta:rec.meta,price,bias4,structure,atr5,atr15,tolerance});
+ if(!plan&&alternative.confirmedPlan)plan=alternative.confirmedPlan;
+ let projectedPlan=null;
+ if(!plan){
+  if(bullishSweep&&!bearishSweep)projectedPlan=buildCrtProjection({side:"BUY",level:bullishLevel?.price,wick:num(last5.low),meta:rec.meta,last5,atr5,minTick,score:bullScore,price});
+  else if(bearishSweep&&!bullishSweep)projectedPlan=buildCrtProjection({side:"SELL",level:bearishLevel?.price,wick:num(last5.high),meta:rec.meta,last5,atr5,minTick,score:bearScore,price});
+  if(!projectedPlan)projectedPlan=alternative.projectedPlan;
  }
  const nearLevelThreshold=Math.max((atr5||0.01)*clamp(Number($s("scannerAtrMultiplier")?.value||0.35),0.1,1.5),minTick*8,Math.abs(price)*0.00001);
  const approachLevels=[...highLevels.map(x=>({...x,side:"BUY-SIDE"})),...lowLevels.map(x=>({...x,side:"SELL-SIDE"}))];
- rec.analysis={price,hi,lo,mid,width,location,bias4,structure,swings,eqh,eql,buySideLevel,sellSideLevel,last5,last15,bullishSweep,bearishSweep,ambiguousSweep,bullishLevel,bearishLevel,bullishDisplacement,bearishDisplacement,bullScore,bearScore,score,side,plan,atr5,levels:approachLevels,nearLevelThreshold};
+ const strategyScore=(plan&&plan.strategy&&plan.strategy!=="CRT REVERSAL")||(projectedPlan&&projectedPlan.strategy&&projectedPlan.strategy!=="CRT REVERSAL")?alternative.bestScore:score;
+ rec.analysis={price,hi,lo,mid,width,location,bias4,structure,swings,eqh,eql,buySideLevel,sellSideLevel,last5,last15,bullishSweep,bearishSweep,ambiguousSweep,bullishLevel,bearishLevel,bullishDisplacement,bearishDisplacement,bullScore,bearScore,score,strategyScore,side,plan,projectedPlan,alternative,atr5,levels:approachLevels,nearLevelThreshold};
  const recentCompletedEvent=(now-(Number(last5.epoch)+300))<=300&&now>=(Number(last5.epoch)+300);
  // Re-arm an invalidated candidate only after a later 5M candle has completed.
  // Keep the old invalidation in alert history; this only permits a genuinely new setup cycle.
  const canRearm=rec.invalidated&&rec.lastSignal&&last5.epoch>rec.lastSignal.epoch&&!plan;
  if(canRearm){rec.lastSignal=null;rec.invalidated=false;rec.reason="Previous candidate invalidated; a new completed 5M candle has started a fresh monitoring cycle";}
- if(plan){rec.stage="CONFIRMED";rec.reason=plan.side+" checklist passed · "+score+"/100 evidence score";rec.rank=400+score;if(isNewCompleted5&&recentCompletedEvent&&!rec.lastSignal){scannerAlertConfirmed(rec,plan,last5);rec.lastSignal={plan,epoch:last5.epoch};}}
- else if(bullishSweep||bearishSweep||structure.breakUp||structure.breakDown||bullishDisplacement||bearishDisplacement){
-  rec.stage="DEVELOPING";rec.reason=(bullishSweep?"Sell-side sweep and reclaim":bearishSweep?"Buy-side sweep and rejection":structure.breakUp?"Bullish structure break candidate":structure.breakDown?"Bearish structure break candidate":bullishDisplacement?"Bullish displacement":"Bearish displacement")+" · "+score+"/100; entry conditions incomplete";rec.rank=300+score;
+ if(plan){const activeStrategyScore=(plan.strategy&&plan.strategy!=="CRT REVERSAL")?(alternative.bestScore||100):score;rec.stage="CONFIRMED";rec.reason=(plan.strategy||"CRT REVERSAL")+" · "+plan.side+" confirmation passed · "+activeStrategyScore+"/100 strategy evidence";rec.rank=400+activeStrategyScore;if(isNewCompleted5&&recentCompletedEvent&&!rec.lastSignal){scannerAlertConfirmed(rec,plan,last5);rec.lastSignal={plan,epoch:last5.epoch};}}
+ else if(projectedPlan||bullishSweep||bearishSweep||structure.breakUp||structure.breakDown||bullishDisplacement||bearishDisplacement){
+  const activeStrategyScore=projectedPlan&&projectedPlan.strategy!=="CRT REVERSAL"?(alternative.bestScore||score):score;
+  rec.stage="DEVELOPING";rec.reason=projectedPlan?(projectedPlan.strategy+" · projected "+projectedPlan.side+" entry "+scannerFmt(projectedPlan.entry,rec.meta)+" · awaiting confirmation"):(bullishSweep?"Sell-side sweep and reclaim":bearishSweep?"Buy-side sweep and rejection":structure.breakUp?"Bullish structure break candidate":structure.breakDown?"Bearish structure break candidate":bullishDisplacement?"Bullish displacement":"Bearish displacement")+" · "+activeStrategyScore+"/100; entry conditions incomplete";rec.rank=300+Math.max(score,alternative.bestScore||0);
   if(isNewCompleted5&&recentCompletedEvent)scannerAlertDeveloping(rec,last5);
  }else{
   rec.stage="MONITOR";rec.reason=side+" context · "+score+"/100; waiting for a liquidity or structure event";rec.rank=100+score;
@@ -1709,11 +1917,12 @@ function scannerAlertDeveloping(rec,last5){
  if(a.structure.breakDown)events.push("Bearish structure break candidate");
  if(a.bullishDisplacement)events.push("Bullish 5M displacement");
  if(a.bearishDisplacement)events.push("Bearish 5M displacement");
+ if(a.projectedPlan)events.push(a.projectedPlan.strategy+" PROJECTED "+a.projectedPlan.side+" · entry "+scannerFmt(a.projectedPlan.entry,rec.meta)+" · SL "+scannerFmt(a.projectedPlan.stop,rec.meta)+" · TP1 "+scannerFmt(a.projectedPlan.targets[0].price,rec.meta));
  if(events.length)scannerEmit(rec,"developing","SETUP DEVELOPING",displayName(rec.meta)+": "+events.join(" + ")+". Evidence score "+a.score+"/100. Other confirmations are still required.","developing:"+last5.epoch+":"+events.join("|") );
 }
 function scannerAlertConfirmed(rec,plan,last5){
  if(!last5)return;
- scannerEmit(rec,"confirmed","CRT SETUP CONFIRMED",displayName(rec.meta)+" · "+plan.side+" candidate. Entry "+scannerFmt(plan.entry,rec.meta)+", invalidation "+scannerFmt(plan.stop,rec.meta)+", TP1 "+scannerFmt(plan.targets[0].price,rec.meta)+", TP2 "+scannerFmt(plan.targets[1].price,rec.meta)+", TP3 "+scannerFmt(plan.targets[2].price,rec.meta)+". Review independently; no trade was placed.","confirmed:"+last5.epoch+":"+plan.side);
+ scannerEmit(rec,"confirmed","SETUP CONFIRMED",displayName(rec.meta)+" · "+(plan.strategy||"CRT REVERSAL")+" · "+plan.side+" candidate. Entry "+scannerFmt(plan.entry,rec.meta)+", invalidation "+scannerFmt(plan.stop,rec.meta)+", TP1 "+scannerFmt(plan.targets[0].price,rec.meta)+", TP2 "+scannerFmt(plan.targets[1].price,rec.meta)+", TP3 "+scannerFmt(plan.targets[2].price,rec.meta)+". Review independently; no trade was placed.","confirmed:"+last5.epoch+":"+plan.side);
 }
 function scannerEmit(rec,stage,title,body,eventKey){
  const toggles={early:$s("scannerAlertEarly")?.checked!==false,developing:$s("scannerAlertDeveloping")?.checked!==false,confirmed:$s("scannerAlertConfirmed")?.checked!==false,invalidation:$s("scannerAlertInvalid")?.checked!==false};
@@ -1722,7 +1931,7 @@ function scannerEmit(rec,stage,title,body,eventKey){
  if(scanner.lastEvents.has(key))return;
  scanner.lastEvents.add(key);if(scanner.lastEvents.size>600)scanner.lastEvents.delete(scanner.lastEvents.values().next().value);
  const item={symbol:symbolCode(rec.meta),name:displayName(rec.meta),stage,title,body,at:Date.now()};
- scanner.alerts.unshift(item);scanner.alerts=scanner.alerts.slice(0,50);
+ scanner.alerts.unshift(item);scanner.alerts=scanner.alerts.slice(0,50);scannerSaveAlerts();
  scannerRenderAlerts();scannerRenderStats();
  if("Notification" in window&&Notification.permission==="granted"){
   try{
@@ -1761,10 +1970,10 @@ function scannerRenderOpportunities(){
   const name=document.createElement("div");name.className="scannerMarketName";name.textContent=displayName(rec.meta)+" ["+symbolCode(rec.meta)+"]";
   const cat=document.createElement("div");cat.className="scannerMarketMeta";cat.textContent=categoryOf(rec.meta).toUpperCase()+" · "+(rec.analysis?"4H / 1H / 15M / 5M":"4H / 1H discovery");
   identity.append(name,cat);
-  const badge=document.createElement("span");badge.className="scannerBadge "+(rec.stage==="CONFIRMED"?"confirmed":rec.stage==="DEVELOPING"?"developing":rec.stage==="INVALIDATED"?"invalid":"early");badge.textContent=rec.stage;
+  const badge=document.createElement("span"),projected=rec.stage!=="INVALIDATED"&&rec.stage!=="CONFIRMED"&&!!rec.analysis?.projectedPlan&&!rec.analysis?.plan;badge.className="scannerBadge "+(rec.stage==="CONFIRMED"?"confirmed":rec.stage==="DEVELOPING"?(projected?"projected":"developing"):rec.stage==="INVALIDATED"?"invalid":"early");badge.textContent=projected?"PROJECTED":rec.stage;
   head.append(identity,badge);card.appendChild(head);
   const cells=document.createElement("div");cells.className="scannerMarketGrid";
-  const values=[ ["Evidence score",rec.analysis?rec.analysis.score+"/100":rec.context.score+"/100"], ["4H bias",rec.context.direction], ["Live / last price",scannerFmt(rec.latestPrice??rec.context.price,rec.meta)] ];
+  const values=[ ["Evidence score",rec.analysis?(rec.analysis.strategyScore??rec.analysis.score)+"/100":rec.context.score+"/100"], ["4H bias",rec.context.direction], ["Live / last price",scannerFmt(rec.latestPrice??rec.context.price,rec.meta)] ];
   values.forEach(([label,value])=>{const cell=document.createElement("div"),small=document.createElement("small"),bold=document.createElement("b");small.textContent=label;bold.textContent=value;cell.append(small,bold);cells.appendChild(cell);});
   card.appendChild(cells);
   const reason=document.createElement("div");reason.className="scannerReason";reason.textContent=rec.reason;card.appendChild(reason);
@@ -1908,10 +2117,11 @@ $s("scannerPause").addEventListener("click",()=>scannerStop(true));
 $s("scannerRescan").addEventListener("click",()=>scannerStartBroadCycle(true));
 $s("scannerCategory").addEventListener("change",scannerResetFilter);
 $s("scannerEnableAlerts").addEventListener("click",scannerEnableNotifications);
-$s("scannerClearAlerts").addEventListener("click",()=>{scanner.alerts=[];scannerRenderAlerts();scannerRenderStats();});
+$s("scannerClearAlerts").addEventListener("click",()=>{scanner.alerts=[];scannerSaveAlerts();scannerRenderAlerts();scannerRenderStats();});
 $s("scannerOpportunityList").addEventListener("click",event=>{const btn=event.target.closest("button[data-open-symbol]");if(btn)scannerOpenMarket(btn.dataset.openSymbol);});
+scanner.alerts=scannerLoadSavedAlerts();
 scannerHook();scannerRenderStats();scannerRenderAlerts();
-window.TEBZA_SCANNER_V18={start:scannerStart,pause:()=>scannerStop(true),state:scanner,getSnapshot:()=>({stage:scanner.stage,universe:scanner.universe.length,checked:scanner.stats.checked,deep:scanner.monitored.size,alerts:scanner.alerts.length,requested:scanner.stats.requested,received:scanner.stats.received,failed:scanner.stats.failed})};
+window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:scanner,getSnapshot:()=>({stage:scanner.stage,universe:scanner.universe.length,checked:scanner.stats.checked,deep:scanner.monitored.size,alerts:scanner.alerts.length,requested:scanner.stats.requested,received:scanner.stats.received,failed:scanner.stats.failed})};
 })();
 </script>
 </body></html>
