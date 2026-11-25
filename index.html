@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111923"><link rel="manifest" href="manifest.webmanifest">
-<title>TEBZA CRT ANALYST V1.9.7</title>
+<title>TEBZA CRT ANALYST V1.9.8</title>
 <style>
 :root{--bg:#080f1c;--panel:#111d30;--panel2:#0b1627;--line:#263952;--txt:#edf4ff;--muted:#93a7c2;--green:#28c7a5;--red:#f07883;--amber:#e8b85d;--blue:#7daeff}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172b47 0,#080f1c 55%);color:var(--txt);font:14px system-ui,-apple-system,Segoe UI,sans-serif;padding-bottom:30px}
@@ -107,7 +107,7 @@ body.chartNoScroll{overflow:hidden!important}
 .scannerMarketName{font-size:12px;font-weight:800;min-width:0;overflow-wrap:anywhere}
 .scannerMarketMeta{font-size:10px;color:var(--muted);margin-top:2px}
 .scannerBadge{display:inline-block;padding:4px 7px;border-radius:20px;background:#1d304a;color:#c8d8ef;font-size:9px;font-weight:800;white-space:nowrap}
-.scannerBadge.early{background:#203958;color:#9cc7ff}.scannerBadge.developing{background:#483b1e;color:#f6d27c}.scannerBadge.confirmed{background:#164b3d;color:#80edc9}.scannerBadge.invalid{background:#4b2430;color:#ff9bad}.scannerMarketGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.scannerBadge.early{background:#203958;color:#9cc7ff}.scannerBadge.developing{background:#483b1e;color:#f6d27c}.scannerBadge.confirmed{background:#164b3d;color:#80edc9}.scannerBadge.invalid{background:#4b2430;color:#ff9bad}.scannerBadge.ambiguous{background:#4a3c23;color:#f3d28b}.scannerMarketGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .scannerMarketGrid div{background:#101e32;border-radius:7px;padding:7px;min-width:0}
 .scannerMarketGrid small{display:block;color:var(--muted);font-size:9px;text-transform:uppercase}
 .scannerMarketGrid b{display:block;font-size:11px;margin-top:3px;overflow-wrap:anywhere}
@@ -213,7 +213,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 
 .selectedMarketRef{font-weight:700;color:#d7c18e;overflow-wrap:anywhere}
 
-/* V1.9.7: visible selected-market context and signal replay workspace */
+/* V1.9.8: visible selected-market context and signal replay workspace */
 .chartSelectedBadge,.analysisSelectedBadge{display:block;margin-top:7px;padding:7px 10px;border:1px solid rgba(198,166,107,.32);border-radius:9px;background:rgba(198,166,107,.08);font-size:11px;line-height:1.4}
 .signalReplayPanel{margin-top:10px;padding:10px;border:1px solid #34495c;border-radius:10px;background:#101c29}
 .signalReplayPanel[hidden]{display:none!important}
@@ -233,7 +233,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 <header class="appTopbar">
  <div class="topBrand"><button class="menuToggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny brandSub">INSTITUTIONAL MARKET INTELLIGENCE · ANALYSIS ONLY</div></div></div>
  <div class="topContext"><b id="pageTitle">Analyst workspace</b><span class="muted tiny" id="pageSubtitle">Your live market overview</span></div>
- <div class="topActions"><span class="pill" id="connBadge">CONNECTING</span><span class="topVersion">V1.9.7</span></div>
+ <div class="topActions"><span class="pill" id="connBadge">CONNECTING</span><span class="topVersion">V1.9.8</span></div>
 </header>
 <div class="appShell">
  <aside class="appSidebar" id="appSidebar" aria-label="Main navigation">
@@ -250,17 +250,22 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
   <div class="navSpacer"></div>
   <div class="sidebarStatus"><span class="statusDot"></span><div><b>Analysis-only mode</b><small>No orders are placed</small></div></div>
   <button class="navItem" type="button" data-view="settings"><span class="navIcon">⚙</span><span>Settings & connection</span></button>
-  <div class="sidebarFoot">TEBZA CRT ANALYST<br>INSTITUTIONAL EDITION · V1.9.7</div>
+  <div class="sidebarFoot">TEBZA CRT ANALYST<br>INSTITUTIONAL EDITION · V1.9.8</div>
  </aside>
  <div class="navScrim" id="navScrim"></div>
  <main id="appMain">
 <section class="pageView active" id="workspaceView" data-page="workspace">
-<div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for live ticks and native OHLC candles. V1.9.7 preserves confirmed setup records and replay history. Current-market confirmation is paused if the live tick feed is stale for more than 120 seconds. No Deriv password or account token is required. Analysis only; no trades are placed.</div>
+<div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for live ticks and native OHLC candles. V1.9.8 connects scanner discovery with independent manual market verification, uses available opposing structure for targets and improves signal outcome tracking. Current-market confirmation pauses when the live tick feed is stale for more than 120 seconds. No account token is required. Analysis only; no trades are placed.</div>
 <section class="card">
  <div class="row between"><div><h2 style="margin:0">Market selector</h2><div class="muted tiny" id="marketCount">Loading Deriv instruments…</div></div><button id="refresh" class="primary">Refresh</button></div>
  <div class="row" style="margin-top:12px"><select id="category"><option value="all">All markets</option><option value="synthetic">Synthetic / Derived</option><option value="forex">Forex</option><option value="commodities">Commodities / Metals</option><option value="indices">Stock indices</option><option value="crypto">Cryptocurrencies</option><option value="shares">Shares / ETFs</option></select><select id="symbol"><option>Loading…</option></select></div>
+ <div class="row" style="margin-top:10px;align-items:stretch;flex-wrap:wrap">
+  <select id="manualIdeaDirection" aria-label="External idea direction" style="flex:1;min-width:125px"><option value="ANY">Verify without bias</option><option value="BUY">Check a BUY idea</option><option value="SELL">Check a SELL idea</option></select>
+  <button id="analyseSelectedMarket" class="primary" type="button" style="flex:1;min-width:155px">Analyse selected market</button>
+ </div>
+ <div id="manualAnalysisResult" class="tiny muted" role="status" aria-live="polite" style="margin-top:8px">Select any instrument to inspect it independently of scanner rankings.</div>
  <div class="row between" style="margin-top:16px"><div><div class="muted tiny">LIVE QUOTE</div><div class="big" id="quote">—</div></div><div style="text-align:right"><div class="muted tiny">SETUP STATUS</div><div class="signal amber" id="decision">WAIT</div></div></div>
- <div class="muted tiny" id="symbolName">Waiting for active symbols…</div><div class="tiny" id="marketFreshness" style="margin-top:5px;color:var(--amber)">WAITING FOR LIVE TICK · signals unavailable</div><div id="status">Connecting to Deriv public market data…</div><div id="apiDiagnostic" class="tiny muted" style="margin-top:6px;overflow-wrap:anywhere">API diagnostic: waiting for first response</div>
+ <div class="muted tiny" id="symbolName">Waiting for active symbols…</div><div class="tiny" id="marketFreshness" style="margin-top:5px;color:var(--amber)">WAITING FOR LIVE TICK · signals unavailable</div><div class="tiny muted" id="timeframeHealth" style="margin-top:4px">Timeframe feeds: waiting for 5M · 15M · 1H · 4H updates</div><div id="status">Connecting to Deriv public market data…</div><div id="apiDiagnostic" class="tiny muted" style="margin-top:6px;overflow-wrap:anywhere">API diagnostic: waiting for first response</div>
 </section>
 <section class="workspaceHero">
  <div><div class="eyebrow">MARKET INTELLIGENCE DESK</div><h1>Think clearly. Read the market.</h1><p>One place to understand current conditions, review developing setups and ask the analyst to explain the engine's findings.</p></div>
@@ -271,6 +276,11 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
  <div class="homeMetric"><small>DEEP MONITORING</small><b id="homeMonitored">—</b><span>Shortlisted markets</span></div>
  <div class="homeMetric"><small>RANKED OPPORTUNITIES</small><b id="homeSetups">—</b><span>Current scanner shortlist</span></div>
  <div class="homeMetric"><small>ALERT EVENTS</small><b id="homeAlerts">—</b><span>Saved in this browser</span></div>
+</section>
+<section class="workspacePanel" style="margin:12px 0">
+ <div class="panelHead"><div><div class="eyebrow">AUTOMATIC MARKET SCANNER</div><h2 style="margin:4px 0 0">Live opportunity discovery</h2></div><button type="button" class="pageAction" data-go="markets">Full scanner</button></div>
+ <div class="sectionNote" style="margin-bottom:9px">The scanner ranks markets independently. Select an opportunity to open its chart and full analysis.</div>
+ <div id="homeScannerPreview" class="scannerList"><div class="scannerEmpty">Waiting for scanner results.</div></div>
 </section>
 <div class="homeWorkGrid">
  <section class="workspacePanel analystPanel" id="analystChatPanel">
@@ -439,11 +449,11 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
   <div class="planTile"><small>Risk distance</small><b id="planRisk">—</b></div>
  </div>
  <div class="planTargets">
-  <div class="planTile"><small>Take profit 1 · 1R</small><b id="planTp1">—</b><small id="planRr1">—</small></div>
-  <div class="planTile"><small>Take profit 2 · 2R</small><b id="planTp2">—</b><small id="planRr2">—</small></div>
-  <div class="planTile"><small>Take profit 3 · 3R</small><b id="planTp3">—</b><small id="planRr3">—</small></div>
+  <div class="planTile"><small id="planLabel1">Take profit 1</small><b id="planTp1">—</b><small id="planRr1">—</small></div>
+  <div class="planTile"><small id="planLabel2">Take profit 2</small><b id="planTp2">—</b><small id="planRr2">—</small></div>
+  <div class="planTile"><small id="planLabel3">Take profit 3</small><b id="planTp3">—</b><small id="planRr3">—</small></div>
  </div>
- <p class="sectionNote" id="planWarning">The planner is analysis-only. Targets are calculated from the technical entry reference and stop distance; nearby liquidity, spread, slippage and execution conditions must still be reviewed.</p>
+ <p class="sectionNote" id="planWarning">The planner is analysis-only. Targets use available opposing structure where detected, with clearly labelled R-based fallbacks when structural levels are unavailable. Spread, slippage and execution conditions must still be reviewed.</p>
 </section>
 <details class="advancedDetails"><summary>Advanced analysis · CRT, market structure, liquidity and strategy scoring</summary>
 <section class="card"><h2>Multi-timeframe analysis</h2><div class="grid">
@@ -497,7 +507,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
  <section class="pageIntro"><div><div class="eyebrow">PLATFORM PREFERENCES</div><h1>Settings & connection</h1><p>Review the visual system, data connection and notification permissions.</p></div></section>
  <section class="card appearanceCard"><div class="eyebrow">APPEARANCE</div><h2>Premium institutional · Balanced density</h2><p class="sectionNote">A consistent interface palette is applied across the dashboard, scanner, chart, alerts and analysis.</p><div class="themeSwatches"><span style="background:#111923"></span><span style="background:#1B2735"></span><span style="background:#C6A66B"></span><span style="background:#42B88B"></span><span style="background:#D7777E"></span><span style="background:#8298B2"></span></div><div class="appearanceTags"><span>Charcoal navy surfaces</span><span>Emerald positive states</span><span>Champagne reference levels</span><span>Soft coral risk states</span></div></section>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.9.7 · Institutional analyst workspace · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+<div class="foot">TEBZA CRT ANALYST V1.9.8 · Institutional analyst workspace · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
 </section>
 </main>
 </div>
@@ -556,6 +566,7 @@ let lastMessageAt = 0;
 let messageCount = 0;
 let latestAnalysis = null;
 let lastNotifiedSignalKey = "";
+let manualVerification = {pending:false,symbol:"",direction:"ANY",requestedAt:0};
 let chartLayout = "chart";
 let chartApi = null;
 let candleSeries = null;
@@ -628,6 +639,18 @@ function refreshMarketFeedHealth() {
     if (nextState === "stale") setDiagnostic("Live tick feed has been quiet for more than 120 seconds. The market may be inactive or the feed interrupted; current setup confirmation is paused.");
   }
 }
+function refreshTimeframeHealth(){
+ const host=$('timeframeHealth');if(!host)return;
+ const now=Date.now(),labels=[300,900,3600,14400].map(tf=>{
+  const updated=Number(candleUpdateAt[tf]||0),age=updated?Math.floor((now-updated)/1000):null;
+  const maxAge=Math.max(120,tf*2);
+  const state=age===null?'waiting':age<=maxAge?'live':'stale';
+  return granularityLabel(tf)+' '+(state==='live'?'live':state==='stale'?'stale '+age+'s':'waiting');
+ });
+ host.textContent='Candle feeds · '+labels.join(' · ');
+ const anyStale=[300,900,3600,14400].some(tf=>candleUpdateAt[tf]&&now-candleUpdateAt[tf]>Math.max(120000,tf*2000));
+ host.style.color=anyStale?'var(--amber)':'var(--muted)';
+}
 function connect() {
   window.TEBZA_SIGNAL_JOURNAL?.resetWatchers?.();
   clearTimers();
@@ -667,7 +690,7 @@ function connect() {
     setDiagnostic("Browser could not create the connection");
     return;
   }
-  if (!marketFeedWatchdog) marketFeedWatchdog = setInterval(refreshMarketFeedHealth, 5000);
+  if (!marketFeedWatchdog) marketFeedWatchdog = setInterval(()=>{refreshMarketFeedHealth();refreshTimeframeHealth();}, 5000);
   ws.onopen = () => {
     if (generation !== socketGeneration) return;
     $("connBadge").textContent = "CONNECTED";
@@ -825,6 +848,7 @@ function handleMessage(data) {
       const last = normalized[normalized.length - 1];
       liveCandleState[granularity] = {openTime:last?.epoch || 0,lastUpdateEpoch:0};
       candleUpdateAt[granularity] = Date.now();
+      refreshTimeframeHealth();
       updateCandleIntegrity();
       setDiagnostic("Received " + normalized.length + " valid historical candles for " + granularityLabel(granularity) + " · " + selected + "; rejected " + historicalCandleStats.rejected);
       if (granularity === Number($("chartTf")?.value || 300)) renderChart(true);
@@ -841,7 +865,7 @@ function handleMessage(data) {
     const granularity = Number(data.ohlc.granularity || data.echo_req?.granularity || info?.granularity);
     const requestSymbol = data.ohlc.symbol || data.echo_req?.ticks_history || info?.symbol;
     if(info?.kind==="signal_journal_ohlc"&&requestSymbol&&granularity===300){
-      window.TEBZA_SIGNAL_JOURNAL?.updateBar(requestSymbol,300,{epoch:Number(data.ohlc.open_time),open:Number(data.ohlc.open),high:Number(data.ohlc.high),low:Number(data.ohlc.low),close:Number(data.ohlc.close)});
+      window.TEBZA_SIGNAL_JOURNAL?.updateBar(requestSymbol,300,{epoch:Number(data.ohlc.open_time),open:Number(data.ohlc.open),high:Number(data.ohlc.high),low:Number(data.ohlc.low),close:Number(data.ohlc.close)},Number(data.ohlc.epoch));
       return;
     }
     ohlcStreamStats.received++;
@@ -867,7 +891,8 @@ function handleMessage(data) {
     ohlcStreamStats.lastUpdateEpoch = result.updateEpoch || 0;
     ohlcStreamStats.lastGranularity = granularity;
     candleUpdateAt[granularity] = Date.now();
-    window.TEBZA_SIGNAL_JOURNAL?.updateBar(selected,granularity,{epoch:Number(data.ohlc.open_time),open:Number(data.ohlc.open),high:Number(data.ohlc.high),low:Number(data.ohlc.low),close:Number(data.ohlc.close)});
+    refreshTimeframeHealth();
+    window.TEBZA_SIGNAL_JOURNAL?.updateBar(selected,granularity,{epoch:Number(data.ohlc.open_time),open:Number(data.ohlc.open),high:Number(data.ohlc.high),low:Number(data.ohlc.low),close:Number(data.ohlc.close)},Number(data.ohlc.epoch));
     updateCandleIntegrity();
     if (granularity === Number($("chartTf")?.value || 300)) renderChart(false);
     analyse();
@@ -1227,16 +1252,51 @@ function timeframeTrendDirection(list,tolerance=0){
  if(close<e21-pad&&e21<e50-pad&&e21<past21-pad)return "Bearish";
  return "Neutral";
 }
-function makeScenarioPlan(side,entry,stop,meta,strategy,stage,zoneHalfWidth,sourceEpoch,volatility){
+function scenarioTargets(side,entry,risk,minTick,candidates=[]){
+ const sign=side==='BUY'?1:-1,epsilon=Math.max(minTick*1.01,risk*0.0001),dedupe=Math.max(minTick*2,risk*0.12);
+ const structural=(Array.isArray(candidates)?candidates:[]).map(Number)
+  .filter(v=>Number.isFinite(v)&&(sign>0?v>entry+epsilon:v<entry-epsilon)&&Math.abs(v-entry)<=risk*5)
+  .sort((a,b)=>sign>0?a-b:b-a);
+ const combined=structural.map(price=>({price,source:'STRUCTURE'}));
+ // Keep nearer R-based safety milestones available when the next structural pool is distant.
+ for(let r=1;r<=5;r++){
+  const price=entry+sign*risk*r;
+  if(!combined.some(t=>Math.abs(t.price-price)<=dedupe))combined.push({price,source:'R_FALLBACK'});
+ }
+ combined.sort((a,b)=>sign>0?a.price-b.price:b.price-a.price);
+ const distinct=[];
+ for(const target of combined){
+  if(distinct.some(t=>Math.abs(t.price-target.price)<=dedupe))continue;
+  distinct.push(target);if(distinct.length===3)break;
+ }
+ return distinct.map(t=>({price:t.price,r:Number((Math.abs(t.price-entry)/risk).toFixed(2)),source:t.source}));
+}
+function makeScenarioPlan(side,entry,stop,meta,strategy,stage,zoneHalfWidth,sourceEpoch,volatility,targetCandidates=[]){
  entry=Number(entry);stop=Number(stop);if(!Number.isFinite(entry)||!Number.isFinite(stop))return null;
  const risk=Math.abs(entry-stop),decimals=decimalPlacesFromPip(meta?.pip_size,entry,symbolCode(meta)),minTick=Math.pow(10,-decimals);
  if(risk<minTick*2||(side==='BUY'?stop>=entry:stop<=entry))return null;
- const sign=side==='BUY'?1:-1,targets=[1,2,3].map(r=>({r,price:entry+sign*risk*r}));
+ const targets=scenarioTargets(side,entry,risk,minTick,targetCandidates);
  const half=Math.max(minTick*2,Number(zoneHalfWidth)||minTick*2);
  return {side,entry,entryZone:{from:entry-half,to:entry+half},stop,risk,targets,strategy,stage,sourceEpoch:Number(sourceEpoch)||0,expiresEpoch:stage==='PROJECTED'?(Number(sourceEpoch)||0)+1200:0,volatility:Number(volatility)||0};
 }
+function buildCrtConfirmedPlan(args){
+ const {side,last5,sweepLevel,meta,atr5,minTick,bias4,price,targetCandidates=[]}=args;
+ const entry=num(last5?.close),wick=side==='BUY'?num(last5?.low):num(last5?.high);
+ if(!Number.isFinite(entry)||!Number.isFinite(wick)||!Number.isFinite(Number(sweepLevel)))return null;
+ const buffer=Math.max(minTick*2,(atr5||minTick*2)*0.05);
+ const stop=side==='BUY'?Math.min(wick,Number(sweepLevel))-buffer:Math.max(wick,Number(sweepLevel))+buffer;
+ const plan=makeScenarioPlan(side,entry,stop,meta,'CRT REVERSAL','CONFIRMED',(atr5||minTick*8)*0.12,last5.epoch,atr5,targetCandidates);
+ if(!plan)return null;
+ const maxEntryDistance=Math.max((atr5||minTick*8)*1.25,minTick*12);
+ if(Number.isFinite(Number(price))&&Math.abs(Number(price)-entry)>maxEntryDistance)return null;
+ const opposing=targetCandidates.map(Number).filter(v=>Number.isFinite(v)&&(side==='BUY'?v>entry:v<entry)).sort((a,b)=>side==='BUY'?a-b:b-a)[0];
+ plan.counterTrend=bias4!==(side==='BUY'?'Bullish':'Bearish');
+ plan.opposingLiquidity=Number.isFinite(opposing)?opposing:null;
+ plan.obstacleBeforeTp3=Number.isFinite(opposing)&&Math.abs(opposing-entry)<Math.abs(plan.targets[2].price-entry);
+ return plan;
+}
 function evaluateAdditionalStrategies(args){
- const {c5,c15,c1,c4,meta,price,bias4,structure,atr5,atr15,tolerance}=args;
+ const {c5,c15,c1,c4,meta,price,bias4,structure,atr5,atr15,tolerance,referenceHigh,referenceLow,swingHighs=[],swingLows=[]}=args;
  const candidates=[];
  if(!c5?.length||!c15?.length||!c1?.length||!c4?.length)return {confirmedPlan:null,projectedPlan:null,bestScore:0,bestStrategy:null,checks:[],reason:null};
  const last5=c5[c5.length-1],prev5=c5[c5.length-2],last15=c15[c15.length-1];
@@ -1261,7 +1321,7 @@ function evaluateAdditionalStrategies(args){
     const entry=ema21,anchor=bullish?Math.min(last15.low,structure.lastLow?.price??last15.low):Math.max(last15.high,structure.lastHigh?.price??last15.high);
     const stop=bullish?anchor-buffer:anchor+buffer;
     const risk=Math.abs(entry-stop),riskIsReasonable=risk<=a15*2.0;
-    const plan=makeScenarioPlan(side,entry,stop,meta,'TREND CONTINUATION',score>=100&&riskIsReasonable?'CONFIRMED':'PROJECTED',a15*0.12,last5.epoch,a5);
+    const plan=makeScenarioPlan(side,entry,stop,meta,'TREND CONTINUATION',score>=100&&riskIsReasonable?'CONFIRMED':'PROJECTED',a15*0.12,last5.epoch,a5,bullish?[referenceHigh,...swingHighs]:[referenceLow,...swingLows]);
     const distance=Math.abs(Number(price)-entry);
     if(plan&&riskIsReasonable&&distance<=a15*1.1&&(bullish?Number(price)>stop:Number(price)<stop)){
      const confirmed=score>=100&&impulse&&triggerAfter15mClose;
@@ -1283,18 +1343,19 @@ function evaluateAdditionalStrategies(args){
   if(!spec.ok||!Number.isFinite(Number(spec.level)))return;
   const bullish=spec.side==='BUY',level=Number(spec.level),touchTol=Math.max(tolerance,a5*0.18);
   const afterBreak=Number(last5.epoch)>=Number(last15.epoch)+900;
-  const touched=bullish?(spec.retouched<=level+touchTol&&spec.held>level+tolerance):(spec.retouched>=level-touchTol&&spec.held<level-tolerance);
-  const retest=afterBreak&&touched;
-  const score=retest?100:(touched?75:65),entry=level,stop=bullish?Math.min(last5.low,level-a5*0.55)-buffer:Math.max(last5.high,level+a5*0.55)+buffer;
-  const plan=makeScenarioPlan(spec.side,entry,stop,meta,'BREAKOUT / RETEST',retest?'CONFIRMED':'PROJECTED',a5*0.12,last5.epoch,a5);
+  const touched=bullish?spec.retouched<=level+touchTol:spec.retouched>=level-touchTol;
+  const held=bullish?Number(last5.close)>level+tolerance:Number(last5.close)<level-tolerance;
+  const retest=afterBreak&&touched&&held;
+  const score=retest?100:(afterBreak&&touched?75:afterBreak?65:55),entry=level,stop=bullish?Math.min(last5.low,level-a5*0.55)-buffer:Math.max(last5.high,level+a5*0.55)+buffer;
+  const plan=makeScenarioPlan(spec.side,entry,stop,meta,'BREAKOUT / RETEST',retest?'CONFIRMED':'PROJECTED',a5*0.12,last5.epoch,a5,bullish?[referenceHigh,...swingHighs]:[referenceLow,...swingLows]);
   const distance=Math.abs(Number(price)-entry);
   if(plan&&distance<=a5*1.25&&(bullish?Number(price)>stop:Number(price)<stop))candidates.push({plan,score,confirmed:retest,checks:[
    {label:'Completed 15M structure break',ok:true},
    {label:'5M retest touched the broken level',ok:touched},
    {label:'Retest occurred after the 15M close',ok:afterBreak},
-   {label:'5M candle closed beyond the level',ok:touched},
+   {label:'Completed 5M candle held beyond the level',ok:held},
    {label:'Price remains near proposed entry',ok:distance<=a5*1.25}
-  ],reason:(bullish?'Bullish':'Bearish')+' 15M break '+(retest?'followed by a later completed 5M retest and hold':'detected · waiting for a later 5M retest and hold')});
+  ],reason:(bullish?'Bullish':'Bearish')+' 15M break '+(retest?'followed by a later completed 5M retest and hold':!afterBreak?'detected · waiting for the 15M close':'detected · waiting for the 5M retest and completed close to hold')});
  });
  candidates.sort((a,b)=>(Number(b.confirmed)-Number(a.confirmed))||b.score-a.score);
  const chosen=candidates[0]||null;
@@ -1340,6 +1401,7 @@ function analyse() {
   if (!hasFreshLiveTick()) {
     const age = lastLiveTickReceivedAt ? Math.floor((Date.now() - lastLiveTickReceivedAt) / 1000) : null;
     latestAnalysis = null;
+    if(manualVerification.pending&&manualVerification.symbol===selected){const out=$('manualAnalysisResult');if(out)out.textContent='Manual verification paused: the live Deriv quote is stale or disconnected. It will resume when fresh data returns.';}
     setText("decision", "WAIT · DATA NOT LIVE");
     $("decision").className = "signal amber";
     setText("direction", "WAIT");
@@ -1374,6 +1436,7 @@ function analyse() {
     $("narrativeState").textContent="WAIT";$("narrativeLead").textContent="The platform is connected but does not yet have enough completed candles to explain the setup reliably.";
     $("narrativeDetails").innerHTML="<div class=\"narrativeItem\"><b>Data readiness</b>"+ready.join(" · ")+"</div>";
     latestAnalysis=null;renderTradePlan();
+    if(manualVerification.pending&&manualVerification.symbol===selected){const out=$('manualAnalysisResult');if(out)out.textContent='Manual verification is waiting for sufficient completed candles: '+ready.join(' · ')+'. No direction has been forced.';}
     renderConfirmationChecks([
       {label:"1H reference range",ok:c1.length>0},
       {label:"4H context",ok:c4.length>0},
@@ -1473,25 +1536,21 @@ function analyse() {
     const risk = Math.abs(entry - stop);
     const longSide = direction === "WATCH BUY";
     if (risk > minTick && (longSide ? stop < entry : stop > entry)) {
-      const sign = longSide ? 1 : -1;
-      const targets = [1, 2, 3].map(r => ({r, price: entry + sign * risk * r}));
-      const opposingLiquidity = longSide ? [hi, buySideLevel].filter(v => Number.isFinite(v) && v > entry).sort((a,b)=>a-b)[0]
-        : [lo, sellSideLevel].filter(v => Number.isFinite(v) && v < entry).sort((a,b)=>b-a)[0];
-      const obstacleBeforeTp3 = Number.isFinite(opposingLiquidity) && (longSide ? opposingLiquidity < targets[2].price : opposingLiquidity > targets[2].price);
-      const basePlan=makeScenarioPlan(longSide?"BUY":"SELL",entry,stop,meta,"CRT REVERSAL","CONFIRMED",(atr5||minTick*8)*0.12,last5.epoch,atr5);
-      tradePlan = basePlan ? {...basePlan,counterTrend:bias4!==(longSide?"Bullish":"Bearish"),opposingLiquidity:Number.isFinite(opposingLiquidity)?opposingLiquidity:null,obstacleBeforeTp3} : null;
+      const targetCandidates=longSide?[hi,buySideLevel]:[lo,sellSideLevel];
+      tradePlan=buildCrtConfirmedPlan({side:longSide?"BUY":"SELL",last5,sweepLevel:longSide?(bullishLevel?.price??last5.low):(bearishLevel?.price??last5.high),meta,atr5,minTick,bias4,price,targetCandidates});
       if(!tradePlan){direction="WAIT";entry=stop=target=null;}
     } else { direction = "WAIT"; entry = stop = target = null; }
   }
 
+  if(tradePlan?.targets?.length)target=tradePlan.targets[0].price;
   // Additional independent strategies supplement (but do not replace) CRT reversal.
-  const alternative = evaluateAdditionalStrategies({c5,c15,c1,c4,meta,price,bias4,structure,atr5,atr15,tolerance});
+  const alternative = evaluateAdditionalStrategies({c5,c15,c1,c4,meta,price,bias4,structure,atr5,atr15,tolerance,referenceHigh:hi,referenceLow:lo,swingHighs:swings.highs.map(x=>x.price),swingLows:swings.lows.map(x=>x.price)});
   let projectedPlan = null, selectedStrategy = tradePlan ? "CRT REVERSAL" : null;
   if (!tradePlan && alternative.confirmedPlan) {
     tradePlan = alternative.confirmedPlan;
     direction = tradePlan.side === "BUY" ? "WATCH BUY" : "WATCH SELL";
     entry = tradePlan.entry; stop = tradePlan.stop;
-    target = tradePlan.targets?.[2]?.price ?? null;
+    target = tradePlan.targets?.[0]?.price ?? null;
     selectedStrategy = tradePlan.strategy;
   }
   if (!tradePlan) {
@@ -1511,6 +1570,16 @@ function analyse() {
   const structureCandle = num(last15.close) > num(last15.open) ? "15M bullish candle" : num(last15.close) < num(last15.open) ? "15M bearish candle" : "15M neutral candle";
 
   latestAnalysis = {meta, price, hi, lo, mid, location, rangePercent, structure, buySideLevel, sellSideLevel, eqh, eql, bullishSweep, bearishSweep, bullishLevel, bearishLevel, direction, entry, stop, target, tradePlan, projectedPlan, selectedStrategy, alternative, bias4, bias1, displacementDirection, liquidity, last5, last15, bullComponents, bearComponents, bullScore, bearScore, ambiguousSweep};
+  if(manualVerification.pending&&manualVerification.symbol===selected){
+   const p=tradePlan||projectedPlan,idea=manualVerification.direction,actual=p?.side||null;
+   let message='';
+   if(!p)message='No valid setup currently. The engine found no qualifying confirmed or developing scenario; the external idea is not supported by the available rules.';
+   else if(idea!=='ANY'&&actual!==idea)message='Conflicting evidence: your '+idea+' idea is not supported. The engine currently identifies a '+(p.stage==='CONFIRMED'?'confirmed ':'developing ')+actual+' scenario instead.';
+   else if(tradePlan)message='Supported by the engine rules: '+actual+' '+(tradePlan.strategy||'setup')+' passed its required completed-candle checks. This is analytical confirmation, not a promise of outcome.';
+   else message='Developing, not confirmed: the engine sees a '+actual+' '+(p.strategy||'setup')+' scenario, but required confirmation is still missing. '+(p.reason||alternative.reason||'');
+   const box=$('manualAnalysisResult');if(box){box.textContent='Manual verification · '+displayName(meta)+' ['+selected+'] — '+message;box.style.color=tradePlan?'var(--green)':p?'var(--amber)':'var(--muted)';}
+   manualVerification.pending=false;
+  }
   renderChart();
   setText("hi", formatPrice(hi, meta));
   setText("lo", formatPrice(lo, meta));
@@ -1551,7 +1620,7 @@ function analyse() {
   updateMarketNarrative();
   renderTradePlan();
   renderChart(false);
-  setStatus("V1.9.7 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  setStatus("V1.9.8 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
   if (direction !== "WAIT") {
     const signalKey=[selected,selectedStrategy||"CRT REVERSAL",direction,last5.epoch].join("|");
     if(signalKey!==lastNotifiedSignalKey){
@@ -2003,7 +2072,7 @@ function renderTradePlan(){
  const a=latestAnalysis,plan=a?.tradePlan||a?.projectedPlan,confirmed=!!a?.tradePlan,meta=a?.meta||findSymbol(selected),fmt=v=>formatPrice(v,meta);
  if(confirmed)window.TEBZA_SIGNAL_JOURNAL?.capture(a,"selected-market");
  const ids=["planEntry","planStop","planRisk","planTp1","planTp2","planTp3","planRr1","planRr2","planRr3"];
- if(!plan){$("planState").textContent="NO PLAN · WAIT";$("planState").className="planBadge";$("planDirection").textContent="WAIT";ids.forEach(id=>$(id).textContent="—");$("planIntro").textContent="No setup has enough supporting evidence for a responsible price projection. The chart will remain clear until a meaningful setup develops.";$("planWarning").textContent="The planner is analysis-only. A projected scenario is not a confirmed signal, a probability of winning or an instruction to trade.";return;}
+ if(!plan){$("planState").textContent="NO PLAN · WAIT";$("planState").className="planBadge";$("planDirection").textContent="WAIT";ids.forEach(id=>$(id).textContent="—");[1,2,3].forEach(i=>{$('planLabel'+i).textContent='Take profit '+i;$('planLabel'+i).style.opacity='';});$("planIntro").textContent="No setup has enough supporting evidence for a responsible price projection. The chart will remain clear until a meaningful setup develops.";$("planWarning").textContent="The planner is analysis-only. A projected scenario is not a confirmed signal, a probability of winning or an instruction to trade.";return;}
  const now=hasLiveQuote()?Number(quote):plan.entry;
  const stopHit=plan.side==="BUY"?now<=plan.stop:now>=plan.stop;
  const expired=!confirmed&&plan.expiresEpoch>0&&latestTickEpoch>=plan.expiresEpoch;
@@ -2014,7 +2083,7 @@ function renderTradePlan(){
  $("planDirection").textContent=(invalid?"INVALIDATED ":confirmed?"CONFIRMED ":"PROPOSED ")+plan.side;
  $("planEntry").textContent=fmt(plan.entry)+(plan.entryZone?" · zone "+fmt(plan.entryZone.from)+"–"+fmt(plan.entryZone.to):"");
  $("planStop").textContent=fmt(plan.stop);$("planRisk").textContent=fmt(plan.risk)+" points";
- (plan.targets||[]).forEach((t,i)=>{$("planTp"+(i+1)).textContent=fmt(t.price);$("planRr"+(i+1)).textContent="Risk/reward 1:"+t.r.toFixed(1);});
+ (plan.targets||[]).forEach((t,i)=>{const n=i+1;$('planTp'+n).textContent=fmt(t.price);$('planRr'+n).textContent='Reward / risk 1:'+Number(t.r).toFixed(2)+' · '+(t.source==='STRUCTURE'?'structure':'R fallback');$('planLabel'+n).textContent='Take profit '+n+(t.source==='STRUCTURE'?' · structure':' · fallback');});
  if(confirmed){$("planIntro").textContent=(plan.strategy||"Strategy")+" passed its defined completed-candle confirmation rules. The levels are a model-generated scenario; independently review the market before any decision."+(plan.counterTrend?" This is countertrend relative to the 4H direction and should be treated as a higher-caution reversal scenario.":"");}
  else {$("planIntro").textContent=(plan.strategy||"Setup")+" has enough evidence to display a proposed entry zone, invalidation level and projected targets. The setup is NOT confirmed. Wait for the stated trigger conditions before treating it as validated.";}
  let warning=confirmed?"Review spread, slippage, nearby liquidity and current price. A confirmed analytical setup is not a guaranteed outcome.":(plan.reason||"Await the missing confirmation conditions.")+" The projection expires after three completed 5M candles, or earlier if price invalidates the level or moves too far from the proposed zone.";
@@ -2092,7 +2161,15 @@ $("priceAuto").addEventListener("click",autoPriceScale);$("chartFit").addEventLi
 $("chartFullscreen").addEventListener("click",()=>setChartFullscreen(!$("chartCard").classList.contains("chartFullscreen")));
 
 $("clearCandleSelection").addEventListener("click",clearCandleInspector);
-$("symbol").addEventListener("change", () => {clearCandleInspector();loadMarket($("symbol").value);});
+$("symbol").addEventListener("change", () => {clearCandleInspector();manualVerification.pending=false;const out=$("manualAnalysisResult");if(out)out.textContent='Selected '+$("symbol").selectedOptions[0]?.textContent+'. Press Analyse selected market to refresh and verify an external idea.';loadMarket($("symbol").value);});
+$("analyseSelectedMarket")?.addEventListener("click",()=>{
+ const code=$("symbol")?.value||selected;if(!code){setStatus('Select an instrument before requesting manual analysis.');return;}
+ const idea=$("manualIdeaDirection")?.value||'ANY',meta=findSymbol(code),name=meta?displayName(meta):code;
+ manualVerification={pending:true,symbol:code,direction:idea,requestedAt:Date.now()};
+ const out=$("manualAnalysisResult");if(out){out.textContent='Refreshing Deriv market data and evaluating '+name+' ['+code+'] independently of scanner rank…';out.style.color='var(--amber)';}
+ if(!socketOpen()){setStatus('Reconnecting to Deriv before manual verification…');connect();return;}
+ loadMarket(code);setStatus('Manual verification requested for '+name+' ['+code+'] · collecting completed 4H / 1H / 15M / 5M candles.');
+});
 $("category").addEventListener("change", () => {
   const before = selected;
   renderSymbols();
@@ -2143,11 +2220,11 @@ window.__lwcPromise.then(() => {
 </script>
 
 <script>
-/* V1.9.0 multi-strategy market scanner. Uses the existing public Deriv WebSocket connection. */
+/* V1.9.8 multi-strategy market scanner. Uses the existing public Deriv WebSocket connection. */
 (function(){
 "use strict";
 const scanner = {
- running:false, stage:"STOPPED", universe:[], records:new Map(), queue:[], queueTimer:null, cycleTimer:null, healthTimer:null,
+ running:false, stage:"STOPPED", autoStartDone:false, userPaused:false, universe:[], records:new Map(), queue:[], queueTimer:null, cycleTimer:null, healthTimer:null,
  batch:null, requestMeta:new Map(), requestTimers:new Map(), subscriptionMeta:new Map(), subscriptionIds:new Set(), monitored:new Set(),
  stats:{requested:0,received:0,failed:0,checked:0,deep:0}, alerts:[], lastUpdated:0, cycleNumber:0, refreshEveryMs:15*60*1000,
  alertLatches:new Map(), lastEvents:new Set(), progressMessage:"Stopped"
@@ -2285,7 +2362,7 @@ function scannerUpsertLive(rec,tf,ohlc){
  if(updateEpoch>rec.latestTickEpoch)rec.latestTickEpoch=updateEpoch;
  if(tf===300)rec.latestPrice=close;
  rec.lastLiveAt=Date.now();
- window.TEBZA_SIGNAL_JOURNAL?.updateBar(symbolCode(rec.meta),tf,bar);
+ window.TEBZA_SIGNAL_JOURNAL?.updateBar(symbolCode(rec.meta),tf,bar,updateEpoch);
  return true;
 }
 function scannerHandleOhlc(data,meta){
@@ -2382,12 +2459,10 @@ function scannerEvaluateRecord(rec,source){
  const bearReady=bearishSweep&&!ambiguousSweep&&bearishDisplacement&&structure.direction==="Bearish"&&bearScore>=80;
  let plan=null;
  if(bullReady||bearReady){
-  const long=bullReady,entry=num(last5.close),sweep=long?(bullishLevel?.price??num(last5.low)):(bearishLevel?.price??num(last5.high));
-  const stopBuffer=Math.max(minTick*2,(atr5||minTick*2)*0.05),stop=long?Math.min(num(last5.low),sweep)-stopBuffer:Math.max(num(last5.high),sweep)+stopBuffer;
-  const risk=Math.abs(entry-stop);
-  if(risk>minTick&&(long?stop<entry:stop>entry))plan={side:long?"BUY":"SELL",entry,stop,risk,targets:[1,2,3].map(r=>({r,price:entry+(long?1:-1)*risk*r})),strategy:"CRT REVERSAL",stage:"CONFIRMED",counterTrend:bias4!==(long?"Bullish":"Bearish")};
+  const long=bullReady;
+  plan=buildCrtConfirmedPlan({side:long?"BUY":"SELL",last5,sweepLevel:long?(bullishLevel?.price??num(last5.low)):(bearishLevel?.price??num(last5.high)),meta:rec.meta,atr5,minTick,bias4,price,targetCandidates:long?[hi,buySideLevel]:[lo,sellSideLevel]});
  }
- const alternative=evaluateAdditionalStrategies({c5,c15,c1,c4,meta:rec.meta,price,bias4,structure,atr5,atr15,tolerance});
+ const alternative=evaluateAdditionalStrategies({c5,c15,c1,c4,meta:rec.meta,price,bias4,structure,atr5,atr15,tolerance,referenceHigh:hi,referenceLow:lo,swingHighs:swings.highs.map(x=>x.price),swingLows:swings.lows.map(x=>x.price)});
  if(!plan&&alternative.confirmedPlan)plan=alternative.confirmedPlan;
  let projectedPlan=null;
  if(!plan){
@@ -2517,7 +2592,27 @@ function scannerOpenMarket(code){
   let attempts=0;const retry=setInterval(()=>{attempts++;if(openSelected()||attempts>=12)clearInterval(retry);},500);
  }
 }
+function scannerRenderHomePreview(){
+ const host=$s('homeScannerPreview');if(!host)return;host.innerHTML='';
+ const rankOrder={INVALIDATED:5,CONFIRMED:4,DEVELOPING:3,EARLY:2,MONITOR:1,WAIT:0};
+ const allowed=new Set(scanner.universe.map(symbolCode));
+ const items=[...scanner.records.values()].filter(r=>allowed.has(symbolCode(r.meta))&&r.context?.ready&&!['WAIT','MONITOR','INVALIDATED'].includes(r.stage)).sort((a,b)=>(rankOrder[b.stage]||0)-(rankOrder[a.stage]||0)||b.rank-a.rank).slice(0,3);
+ if(!items.length){const msg=scanner.running?'No ranked setup has emerged yet. The scanner is monitoring the available instruments; manual analysis remains available for any selected market.':'Automatic scanning is paused. Open the full scanner to start it; manual analysis works independently of scanner status.';host.innerHTML='<div class="scannerEmpty">'+msg+'</div>';return;}
+ items.forEach(rec=>{
+  const card=document.createElement('div');card.className='scannerMarket';
+  const head=document.createElement('div');head.className='scannerMarketHead';
+  const identity=document.createElement('div');identity.style.minWidth='0';
+  const title=document.createElement('div');title.className='scannerMarketName';title.textContent=displayName(rec.meta)+' ['+symbolCode(rec.meta)+']';
+  const meta=document.createElement('div');meta.className='scannerMarketMeta';meta.textContent=(rec.analysis?.plan?.strategy||rec.analysis?.projectedPlan?.strategy||'Market context')+' · '+(rec.analysis?.plan?.side||rec.analysis?.projectedPlan?.side||rec.analysis?.side||'WAIT');
+  identity.append(title,meta);
+  const badge=document.createElement('span');badge.className='scannerBadge '+(rec.stage==='CONFIRMED'?'confirmed':rec.stage==='DEVELOPING'?'developing':'early');badge.textContent=rec.stage;
+  head.append(identity,badge);card.append(head);
+  const reason=document.createElement('div');reason.className='scannerReason';reason.textContent=rec.reason||'Scanner is monitoring this instrument.';card.append(reason);
+  const open=document.createElement('button');open.type='button';open.textContent='Open chart & analysis';open.dataset.openSymbol=symbolCode(rec.meta);card.append(open);host.append(card);
+ });
+}
 function scannerRenderOpportunities(){
+ scannerRenderHomePreview();
  const host=$s("scannerOpportunityList");if(!host)return;host.innerHTML="";
  const rankOrder={INVALIDATED:5,CONFIRMED:4,DEVELOPING:3,EARLY:2,MONITOR:1,WAIT:0};
  const allowed=new Set(scanner.universe.map(symbolCode));
@@ -2607,7 +2702,8 @@ function scannerStartBroadCycle(isRefresh){
 function scannerStart(){
  if(!socketOpen()||!symbols.length){scannerSetState("WAITING");scannerSetProgress("Wait for the Deriv active instrument list and connected public feed before starting.");return;}
  scannerStop(true);
- scanner.running=true;scanner.stats={requested:0,received:0,failed:0,checked:0,deep:0};scanner.records=new Map();scanner.alertLatches.clear();
+ scanner.running=true;scanner.autoStartDone=true;scanner.stats={requested:0,received:0,failed:0,checked:0,deep:0};scanner.records=new Map();scanner.alertLatches.clear();
+ scannerRenderHomePreview();
  scannerText("scannerStart","Scanning…");$s("scannerStart").disabled=true;$s("scannerPause").disabled=false;$s("scannerRescan").disabled=false;
  scannerStartBroadCycle(false);
  if(scanner.cycleTimer)clearInterval(scanner.cycleTimer);
@@ -2681,34 +2777,42 @@ function scannerHook(){
   if(subMeta&&subMeta.kind==="scanner_history"&&data.msg_type==="ohlc"){scannerHandleOhlc(data,subMeta);return;}
   if(subMeta&&subMeta.kind==="scanner_tick"&&data.msg_type==="tick"){scannerHandleTick(data,Object.assign({},subMeta,{countsBatch:false}));return;}
   const result=base.call(this,data);
-  if(data?.msg_type==="active_symbols"&&scanner.running){
-   if(scanner.queueTimer){clearInterval(scanner.queueTimer);scanner.queueTimer=null;}
-   scanner.queue=[];scanner.batch=null;scanner.requestTimers.forEach(timer=>clearTimeout(timer));scanner.requestTimers.clear();scanner.requestMeta.clear();scanner.subscriptionMeta.clear();scanner.subscriptionIds.clear();scanner.monitored.clear();scanner.records.clear();
-   setTimeout(()=>{if(scanner.running&&symbols.length)scannerStartBroadCycle(true);},1000);
+  if(data?.msg_type==="active_symbols"&&symbols.length){
+   if(scanner.running){
+    if(scanner.queueTimer){clearInterval(scanner.queueTimer);scanner.queueTimer=null;}
+    scanner.queue=[];scanner.batch=null;scanner.requestTimers.forEach(timer=>clearTimeout(timer));scanner.requestTimers.clear();scanner.requestMeta.clear();scanner.subscriptionMeta.clear();scanner.subscriptionIds.clear();scanner.monitored.clear();scanner.records.clear();
+    setTimeout(()=>{if(scanner.running&&symbols.length)scannerStartBroadCycle(true);},1000);
+   }else if(!scanner.autoStartDone&&!scanner.userPaused){
+    scanner.autoStartDone=true;
+    scannerSetProgress('Deriv instrument catalogue received. Starting automatic market discovery…');
+    setTimeout(()=>{if(!scanner.running&&!scanner.userPaused&&symbols.length&&socketOpen())scannerStart();else if(!scanner.running&&!scanner.userPaused)scanner.autoStartDone=false;},1200);
+   }
   }
   return result;
  };
 }
-$s("scannerStart").addEventListener("click",scannerResume);
-$s("scannerPause").addEventListener("click",()=>scannerStop(true));
+$s("scannerStart").addEventListener("click",()=>{scanner.userPaused=false;scannerResume();});
+$s("scannerPause").addEventListener("click",()=>{scanner.userPaused=true;scannerStop(true);scannerRenderHomePreview();});
 $s("scannerRescan").addEventListener("click",()=>scannerStartBroadCycle(true));
 $s("scannerCategory").addEventListener("change",scannerResetFilter);
 $s("scannerEnableAlerts").addEventListener("click",scannerEnableNotifications);
 $s("scannerClearAlerts").addEventListener("click",()=>{scanner.alerts=[];scannerSaveAlerts();scannerRenderAlerts();scannerRenderStats();});
 $s("scannerOpportunityList").addEventListener("click",event=>{const btn=event.target.closest("button[data-open-symbol]");if(btn)scannerOpenMarket(btn.dataset.openSymbol);});
+$s("homeScannerPreview")?.addEventListener("click",event=>{const btn=event.target.closest("button[data-open-symbol]");if(btn)scannerOpenMarket(btn.dataset.openSymbol);});
 scanner.alerts=scannerLoadSavedAlerts();
-scannerHook();scannerRenderStats();scannerRenderAlerts();
+scannerHook();scannerRenderStats();scannerRenderAlerts();scannerRenderHomePreview();
 window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:scanner,getSnapshot:()=>({stage:scanner.stage,universe:scanner.universe.length,checked:scanner.stats.checked,deep:scanner.monitored.size,alerts:scanner.alerts.length,requested:scanner.stats.requested,received:scanner.stats.received,failed:scanner.stats.failed})};
 })();
 </script>
 
 <script>
-/* V1.9.7 persistent signal lifecycle + candle replay. Backward-compatible local storage. */
+/* V1.9.8 persistent signal lifecycle + candle replay. Backward-compatible local storage. */
 (function(){
  'use strict';
  const KEY='tebza-crt-analyst-v195-confirmed-signals';
  let records=load();
  const TF_LIMITS={'300':180,'900':100,'3600':60,'14400':32};
+ const isFinalStatus=status=>['COMPLETED','INVALIDATED','AMBIGUOUS · REVIEW'].includes(String(status||''));
  function load(){try{const x=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(x)?x.filter(v=>v&&v.id&&v.symbol&&Number.isFinite(Number(v.entry))&&Number.isFinite(Number(v.stop))&&Array.isArray(v.targets)).slice(0,100).map(v=>({...v,events:Array.isArray(v.events)?v.events:[],entryReached:(v.entryReached??(/TP|ACTIVE|COMPLETED/.test(String(v.status||'')))),replay:v.replay||{bars:{}}})):[];}catch(_){return[];}}
  function save(){try{localStorage.setItem(KEY,JSON.stringify(records.slice(0,100)));}catch(e){console.warn('Signal journal storage unavailable; older replay records may need removal',e);}}
  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -2744,12 +2848,20 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
   return (prev<r.entry&&px>r.entry)||(prev>r.entry&&px<r.entry);
  }
  function capture(a,source='selected-market'){
-  const p=a?.tradePlan;if(!p||!a?.meta)return;
+  const p=a?.tradePlan;if(!p||p.stage!=='CONFIRMED'||!a?.meta)return;
+  const entry=Number(p.entry),stop=Number(p.stop),risk=Number(p.risk),current=Number(a.price),firstTarget=Number(p.targets?.[0]?.price);
+  if(!['BUY','SELL'].includes(p.side)||![entry,stop,risk,firstTarget].every(Number.isFinite)||risk<=0||p.targets?.length<1)return;
+  if(p.side==='BUY'?(stop>=entry||firstTarget<=entry):(stop<=entry||firstTarget>=entry))return;
+  const distanceLimit=Math.max((Number(p.volatility)||0)*1.5,risk*1.5);
+  if(Number.isFinite(current)){
+   const invalid=p.side==='BUY'?current<=stop||current>=firstTarget:current>=stop||current<=firstTarget;
+   if(invalid||distanceLimit>0&&Math.abs(current-entry)>distanceLimit)return;
+  }
   const sym=a.meta.underlying_symbol||a.meta.symbol||a.meta.display_name||'';
   const epoch=Number(a.last5?.epoch||a.last15?.epoch||Math.floor(Date.now()/1000));
   const id=[sym,p.strategy||'strategy',p.side,epoch].join('|');
   if(records.some(r=>r.id===id))return;
-  const targets=(p.targets||[]).map(t=>({r:Number(t.r),price:Number(t.price),hit:false,hitAt:null}));
+  const targets=(p.targets||[]).map(t=>({r:Number(t.r),price:Number(t.price),source:t.source||'LEGACY',hit:false,hitAt:null}));
   if(!sym||!Number.isFinite(Number(p.entry))||!Number.isFinite(Number(p.stop))||targets.length<1)return;
   const now=Number(a.price),rec={id,symbol:sym,name:a.meta.underlying_symbol_name||a.meta.display_name||sym,side:p.side,strategy:p.strategy||'CRT',source,createdAt:Date.now(),candleEpoch:epoch,entry:Number(p.entry),entryZone:p.entryZone||null,stop:Number(p.stop),risk:Number(p.risk),targets,hi:Number(a.hi),lo:Number(a.lo),mid:Number(a.mid),bias4:a.bias4||'',bias1:a.bias1||'',structure:a.structure?.trend||a.structure?.direction||'',status:'ENTRY PENDING',entryReached:false,lastPrice:Number.isFinite(now)?now:null,updatedAt:Date.now(),completedAt:null,invalidReason:'',counterTrend:!!p.counterTrend,events:[],plan:{side:p.side,entry:Number(p.entry),stop:Number(p.stop),risk:Number(p.risk),targets},replay:snapshotFor(a,sym),bestFavourableR:0,worstAdverseR:0};
   event(rec,'CONFIRMED',now,'All programmed confirmation conditions passed; setup snapshot saved.',rec.createdAt);
@@ -2759,14 +2871,22 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
  function update(symbol,price,epoch){
   const px=Number(price);if(!symbol||!Number.isFinite(px))return;let changed=false;
   records.forEach(r=>{
-   if(r.symbol!==symbol||['COMPLETED','INVALIDATED'].includes(r.status))return;
-   const prev=Number(r.lastPrice),at=Number(epoch)>0?Number(epoch)*1000:Date.now();
+   if(r.symbol!==symbol||isFinalStatus(r.status))return;
+   const prev=Number(r.lastPrice),hasPrev=Number.isFinite(prev),at=Number(epoch)>0?Number(epoch)*1000:Date.now();
    r.lastPrice=px;r.updatedAt=Date.now();
-   if(!r.entryReached&&entryTouched(r,Number.isFinite(prev)?prev:px,px)){
+   // A quote gap that crosses both the protective stop and TP1 has unknown intragap order.
+   // Do not award the target or declare the stop first when the feed has not shown the path.
+   const tp1=r.targets?.[0]?.price;
+   const crossesStopAndTarget=hasPrev&&Number.isFinite(Number(tp1))&&(
+    r.side==='BUY'?(Math.min(prev,px)<=r.stop&&Math.max(prev,px)>=tp1):(Math.max(prev,px)>=r.stop&&Math.min(prev,px)<=tp1)
+   );
+   if(crossesStopAndTarget){
+    r.status='AMBIGUOUS · REVIEW';r.outcomeUncertain=true;r.ambiguousReason='A single recorded quote gap spans both the stop and TP1. The order of events cannot be established from available ticks.';r.completedAt=at;
+    event(r,'OUTCOME AMBIGUOUS',px,r.ambiguousReason,at);changed=true;return;
+   }
+   if(!r.entryReached&&entryTouched(r,hasPrev?prev:px,px)){
     r.entryReached=true;r.entryAt=at;r.status='ACTIVE · ENTRY REACHED';event(r,'ENTRY REACHED',px,'Market price reached the planned entry reference.',at);changed=true;
    }
-   // Stop/invalidation is checked before target progression. If a single quote gap crosses
-   // both stop and targets, the conservative outcome is invalidation.
    const stopHit=r.side==='BUY'?px<=r.stop:px>=r.stop;
    if(stopHit){r.status='INVALIDATED';r.invalidReason=r.entryReached?'Stop / structural invalidation reached after entry.':'Scenario invalidated before entry was reached.';r.completedAt=at;event(r,'INVALIDATED',px,r.invalidReason,at);changed=true;return;}
    if(r.entryReached){
@@ -2778,20 +2898,34 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
     else {const n=r.targets.filter(t=>t.hit).length;r.status=n?'TP'+n+' HIT · ACTIVE':'ACTIVE · ENTRY REACHED';}
    }else r.status='ENTRY PENDING';
   });
-  if(changed||records.some(r=>r.symbol===symbol&&!['COMPLETED','INVALIDATED'].includes(r.status))){save();render();}
+  if(changed||records.some(r=>r.symbol===symbol&&!isFinalStatus(r.status))){save();render();}
  }
- function updateBar(symbol,tf,bar){
+ function updateBar(symbol,tf,bar,observedEpoch){
   const key=String(Number(tf));if(!TF_LIMITS[key]||!bar)return;
   const e=Number(bar.epoch??bar.open_time),o=Number(bar.open),h=Number(bar.high),l=Number(bar.low),c=Number(bar.close);
   if(!Number.isFinite(e)||![o,h,l,c].every(Number.isFinite)||h<Math.max(o,c)||l>Math.min(o,c)||h<l)return;
   let changed=false;
   records.forEach(r=>{
-   if(r.symbol!==symbol||!r.replay)return;
+   if(r.symbol!==symbol)return;
+   const observed=Number(observedEpoch)||Math.floor(Date.now()/1000),barComplete=observed>=e+Number(tf);
+   // A completed 5M candle spanning both stop and a target has unknowable intrabar order.
+   if(Number(tf)===300&&barComplete&&e*1000<=Date.now()&&e*1000+300000>r.createdAt){
+    const stopInside=r.side==='BUY'?l<=r.stop:h>=r.stop;
+    const targetInside=(r.targets||[]).some(t=>r.side==='BUY'?h>=t.price:l<=t.price);
+    if(stopInside&&targetInside&&!isFinalStatus(r.status) || stopInside&&targetInside&&['COMPLETED','INVALIDATED'].includes(r.status)){
+     r.status='AMBIGUOUS · REVIEW';r.outcomeUncertain=true;r.ambiguousBar={epoch:e,open:o,high:h,low:l,close:c};
+     r.ambiguousReason='A completed 5M candle contains both the stop and at least one target. OHLC does not reveal which was reached first.';
+     r.targets.forEach(t=>{if((r.side==='BUY'?h>=t.price:l<=t.price)){t.hit=false;t.hitAt=null;}});
+     r.events=(r.events||[]).filter(ev=>!(Number(ev.at)>=e*1000&&Number(ev.at)<(e+300)*1000&&(/^TP[123] HIT$|^COMPLETED$|^INVALIDATED$/).test(ev.type)));
+     event(r,'OUTCOME AMBIGUOUS',c,r.ambiguousReason,e*1000+300000);changed=true;
+    }
+   }
+   if(!r.replay)return;
    const list=r.replay.bars[key]||(r.replay.bars[key]=[]),row=[Math.floor(e),o,h,l,c],idx=list.findIndex(x=>Number(x[0])===row[0]);
    if(idx>=0)list[idx]=row;else if(row[0]*1000>=r.createdAt-30*86400000)list.push(row);
    list.sort((a,b)=>a[0]-b[0]);if(list.length>TF_LIMITS[key])list.splice(0,list.length-TF_LIMITS[key]);changed=true;
   });
-  if(changed)save();
+  if(changed){save();render();}
  }
  function replaySvg(r){
   const raw=(r.replay?.bars?.['300']||[]).filter(x=>Array.isArray(x)&&x.length===5);
@@ -2810,15 +2944,15 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
  }
  function render(){
   const host=document.getElementById('confirmedSignalsList');if(!host)return;
-  const open=records.filter(r=>!['COMPLETED','INVALIDATED'].includes(r.status)).length,done=records.filter(r=>r.status==='COMPLETED').length,invalid=records.filter(r=>r.status==='INVALIDATED').length;
+  const open=records.filter(r=>!isFinalStatus(r.status)).length,done=records.filter(r=>r.status==='COMPLETED').length,invalid=records.filter(r=>r.status==='INVALIDATED').length;
   const put=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   put('signalOpenCount',open);put('signalCompletedCount',done);put('signalInvalidCount',invalid);put('signalTotalCount',records.length);put('navSignalCount',open);
   if(!records.length){host.innerHTML='<div class="scannerEmpty">No confirmed signals have been recorded yet. A signal is saved only when the engine produces a confirmed trade plan.</div>';return;}
   host.innerHTML=records.map((r,i)=>{
-   const targets=r.targets.map((t,j)=>'<span class="tag">TP'+(j+1)+' '+fmt(t.price)+(t.hit?' · HIT':'')+'</span>').join(' '),state=r.status==='INVALIDATED'?'invalid':r.status==='COMPLETED'?'confirmed':'developing';
-   const targetText=r.targets.filter(t=>t.hit).length+'/'+r.targets.length+' targets reached';
+   const targets=r.targets.map((t,j)=>'<span class="tag">TP'+(j+1)+' '+fmt(t.price)+(t.source==='STRUCTURE'?' · STRUCTURE':t.source==='R_FALLBACK'?' · R FALLBACK':'')+(t.hit?' · HIT':'')+'</span>').join(' '),state=r.status==='INVALIDATED'?'invalid':r.status==='COMPLETED'?'confirmed':r.status==='AMBIGUOUS · REVIEW'?'ambiguous':'developing';
+   const targetText=r.outcomeUncertain?'Outcome sequence uncertain':r.targets.filter(t=>t.hit).length+'/'+r.targets.length+' targets reached';
    const entryText=r.entryReached?'Entry reached':'Entry pending';
-   return '<article class="scannerAlert signalRecord"><div class="row between"><b>'+esc(r.name)+' ['+esc(r.symbol)+'] · '+esc(r.side)+'</b><span class="scannerBadge '+state+'">'+esc(r.status)+'</span></div><div class="muted tiny">'+esc(r.strategy)+' · Confirmed '+new Date(r.createdAt).toLocaleString()+' · '+esc(r.source)+'</div><div class="scannerMarketGrid"><div><small>ENTRY</small><b>'+fmt(r.entry)+'</b></div><div><small>STOP / INVALIDATION</small><b>'+fmt(r.stop)+'</b></div><div><small>LAST RECORDED PRICE</small><b>'+fmt(r.lastPrice)+'</b></div><div><small>ENTRY STATE</small><b>'+entryText+'</b></div><div><small>4H CONTEXT</small><b>'+esc(r.bias4||'—')+'</b></div><div><small>TARGET PROGRESS</small><b>'+targetText+'</b></div></div><div>'+targets+'</div><div class="scannerReason">'+(r.status==='INVALIDATED'?esc(r.invalidReason):r.status==='COMPLETED'?'All recorded targets reached.':'Signal remains under lifecycle tracking. Updates are captured while this browser remains open and connected.')+'</div><div class="muted tiny">CRT range snapshot: '+fmt(r.hi)+' / '+fmt(r.mid)+' / '+fmt(r.lo)+' · Best favourable movement: '+Number(r.bestFavourableR||0).toFixed(2)+'R · Worst adverse movement: '+Number(r.worstAdverseR||0).toFixed(2)+'R'+(r.counterTrend?' · Countertrend setup':'')+'</div><div class="signalCardActions"><button type="button" data-replay-index="'+i+'">'+(r.replayOpen?'Hide replay':'Replay signal history')+'</button></div><div class="signalReplayPanel" data-replay-panel="'+i+'" '+(r.replayOpen?'':'hidden')+'><div class="signalReplayTitle">Historical 5M replay · confirmation and outcome</div>'+replaySvg(r)+'<div class="signalReplayLegend"><span>Green: bullish candle</span><span>Coral: bearish candle</span><span>Dashed: original entry / SL / TP levels</span></div>'+replayEvents(r)+'</div></article>';
+   return '<article class="scannerAlert signalRecord"><div class="row between"><b>'+esc(r.name)+' ['+esc(r.symbol)+'] · '+esc(r.side)+'</b><span class="scannerBadge '+state+'">'+esc(r.status)+'</span></div><div class="muted tiny">'+esc(r.strategy)+' · Confirmed '+new Date(r.createdAt).toLocaleString()+' · '+esc(r.source)+'</div><div class="scannerMarketGrid"><div><small>ENTRY</small><b>'+fmt(r.entry)+'</b></div><div><small>STOP / INVALIDATION</small><b>'+fmt(r.stop)+'</b></div><div><small>LAST RECORDED PRICE</small><b>'+fmt(r.lastPrice)+'</b></div><div><small>ENTRY STATE</small><b>'+entryText+'</b></div><div><small>4H CONTEXT</small><b>'+esc(r.bias4||'—')+'</b></div><div><small>TARGET PROGRESS</small><b>'+targetText+'</b></div></div><div>'+targets+'</div><div class="scannerReason">'+(r.status==='INVALIDATED'?esc(r.invalidReason):r.status==='COMPLETED'?'All recorded targets reached.':r.status==='AMBIGUOUS · REVIEW'?esc(r.ambiguousReason||'Outcome sequence is uncertain.'):'Signal remains under lifecycle tracking. Updates are captured while this browser remains open and connected.')+'</div><div class="muted tiny">CRT range snapshot: '+fmt(r.hi)+' / '+fmt(r.mid)+' / '+fmt(r.lo)+' · Best favourable movement: '+Number(r.bestFavourableR||0).toFixed(2)+'R · Worst adverse movement: '+Number(r.worstAdverseR||0).toFixed(2)+'R'+(r.counterTrend?' · Countertrend setup':'')+'</div><div class="signalCardActions"><button type="button" data-replay-index="'+i+'">'+(r.replayOpen?'Hide replay':'Replay signal history')+'</button></div><div class="signalReplayPanel" data-replay-panel="'+i+'" '+(r.replayOpen?'':'hidden')+'><div class="signalReplayTitle">Historical 5M replay · confirmation and outcome</div>'+replaySvg(r)+'<div class="signalReplayLegend"><span>Green: bullish candle</span><span>Coral: bearish candle</span><span>Dashed: original entry / SL / TP levels</span></div>'+replayEvents(r)+'</div></article>';
   }).join('');
  }
  const host=document.getElementById('confirmedSignalsList');
@@ -2828,7 +2962,7 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
  function syncWatchers(){
   if(typeof socketOpen!=='function'||!socketOpen())return;
   if(watcherSocket!==ws){watcherSocket=ws;watched.clear();}
-  const active=records.filter(r=>!['COMPLETED','INVALIDATED'].includes(r.status)).slice(0,20);
+  const active=records.filter(r=>!isFinalStatus(r.status)).slice(0,20);
   active.forEach(r=>{
    if(r.symbol===selected||watched.has(r.symbol))return;
    const tickReq=send({ticks:r.symbol,subscribe:1},{kind:'signal_journal_tick',symbol:r.symbol});
@@ -2843,7 +2977,7 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
 </script>
 
 <script>
-/* V1.9.7 workspace navigation, market identity and engine-grounded analyst companion. */
+/* V1.9.8 workspace navigation, market identity and engine-grounded analyst companion. */
 (function(){
  'use strict';
  const byId=id=>document.getElementById(id);
