@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111923"><link rel="manifest" href="manifest.webmanifest">
-<title>TEBZA CRT ANALYST V1.9.8</title>
+<title>TEBZA CRT ANALYST V1.9.9</title>
 <style>
 :root{--bg:#080f1c;--panel:#111d30;--panel2:#0b1627;--line:#263952;--txt:#edf4ff;--muted:#93a7c2;--green:#28c7a5;--red:#f07883;--amber:#e8b85d;--blue:#7daeff}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172b47 0,#080f1c 55%);color:var(--txt);font:14px system-ui,-apple-system,Segoe UI,sans-serif;padding-bottom:30px}
@@ -213,7 +213,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 
 .selectedMarketRef{font-weight:700;color:#d7c18e;overflow-wrap:anywhere}
 
-/* V1.9.8: visible selected-market context and signal replay workspace */
+/* V1.9.9: visible selected-market context and signal replay workspace */
 .chartSelectedBadge,.analysisSelectedBadge{display:block;margin-top:7px;padding:7px 10px;border:1px solid rgba(198,166,107,.32);border-radius:9px;background:rgba(198,166,107,.08);font-size:11px;line-height:1.4}
 .signalReplayPanel{margin-top:10px;padding:10px;border:1px solid #34495c;border-radius:10px;background:#101c29}
 .signalReplayPanel[hidden]{display:none!important}
@@ -229,11 +229,64 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 .signalCardActions button{font-size:10px;padding:7px 10px}
 @media(max-width:540px){.signalReplayEvent{grid-template-columns:1fr auto}.signalReplayEvent time{grid-column:1/-1;grid-row:2}}
 
+
+/* V1.9.9 responsive chart layout and unified annotation system */
+.chartDisplayControls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 5px;color:#9aa8b7;font-size:10px}
+.chartDisplayControls label{font-weight:800;letter-spacing:.45px;text-transform:uppercase}
+.chartDisplayControls select{flex:0 0 auto;min-width:118px;max-width:150px;padding:7px 9px;font-size:10px}
+.chartDisplayHint{margin-left:auto;color:#8493a2;font-size:9px}
+.chartSetupSummary{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0;padding:9px 11px;border:1px solid rgba(130,152,178,.20);background:rgba(11,22,34,.72);border-radius:10px;min-width:0}
+.chartSetupSummary b{font-size:10px;letter-spacing:.35px;color:#e6c98e}
+.chartSetupSummary span{font-size:10px;color:#b7c4d1;line-height:1.45}
+.chartSetupSummary .summaryConfirmed{color:#7ed0aa}.chartSetupSummary .summaryInvalid{color:#e49aa1}.chartSetupSummary .summaryWait{color:#e3bf78}
+.chartPlanDock{margin:8px 0 10px;border:1px solid rgba(130,152,178,.19);border-radius:10px;background:#121e2a;overflow:hidden}
+.chartPlanDock>summary{cursor:pointer;list-style:none;padding:10px 12px;font-size:10px;font-weight:850;letter-spacing:.45px;color:#d9c18f}
+.chartPlanDock>summary::-webkit-details-marker{display:none}
+.chartPlanDock>summary:after{content:'＋';float:right;color:#c6a66b}.chartPlanDock[open]>summary:after{content:'−'}
+.chartPlanDockGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:0 9px 9px}
+.chartPlanDockValue{min-width:0;border:1px solid rgba(130,152,178,.14);background:#182635;border-radius:8px;padding:7px}
+.chartPlanDockValue small{display:block;color:#8f9eae;font-size:8px;letter-spacing:.45px;text-transform:uppercase}
+.chartPlanDockValue b{display:block;margin-top:4px;color:#e8edf2;font-size:11px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.chartPlanDockValue.stop b{color:#e39aa1}.chartPlanDockValue.target b{color:#80d4b0}.chartPlanDockValue.entry b{color:#e7ce97}
+.chartPlanDockMeta{grid-column:1/-1;color:#a6b3c0;font-size:9px;line-height:1.45;padding:2px 2px 0}
+.chartPlanDockEmpty{grid-column:1/-1;color:#92a0ae;font-size:10px;padding:0 2px 3px}
+.chartProOverlay .levelLabel{font-size:8px;font-weight:850;letter-spacing:0}
+.chartProOverlay .planLabel{font-size:8px;font-weight:900;letter-spacing:0}
+.chartFullscreen .chartSetupSummary{margin:5px 0;padding:6px 9px}
+.chartFullscreen .chartPlanDock{margin:5px 0}
+.chartFullscreen .chartPlanDock>summary{padding:7px 10px}
+.chartFullscreen .chartPlanDockGrid{padding-bottom:7px}
+@media(max-width:700px){
+ .chartSetupSummary{gap:5px;padding:8px}.chartSetupSummary b{font-size:9px}.chartSetupSummary span{font-size:9px}
+ .chartPlanDockGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .chartPlanDockValue b{font-size:10px}
+ .chartDisplayHint{width:100%;margin-left:0}
+}
+@media(max-width:430px) and (orientation:portrait){
+ .chartWrap{height:clamp(360px,58vh,500px)!important;min-height:360px!important}
+ .chartFullscreen .chartWrap{height:calc(100dvh - 190px)!important;min-height:260px!important;max-height:calc(100dvh - 190px)!important}
+ .chartProOverlay .levelLabel,.chartProOverlay .planLabel{font-size:7px}
+}
+@media(max-width:900px) and (orientation:landscape){
+ .chartWrap{height:calc(100dvh - 250px)!important;min-height:260px!important}
+ .chartFullscreen{padding:7px!important}
+ .chartFullscreen .chartWrap{height:calc(100dvh - 150px)!important;min-height:220px!important;max-height:calc(100dvh - 150px)!important}
+ .chartFullscreen .chartSetupSummary{display:none!important}
+ .chartFullscreen .chartPlanDock{display:none!important}
+ .chartFullscreen .overlayControls{gap:8px;margin:3px 0;padding:2px 0}
+ .chartFullscreen .chartDisplayControls{display:none!important}
+ .chartFullscreen .chartToolbar{margin:2px 0;padding:2px 0}
+}
+@media(min-width:1000px){
+ .chartWrap{height:min(68vh,760px)!important;min-height:430px!important}
+ .chartFullscreen .chartWrap{height:calc(100dvh - 160px)!important;min-height:350px!important;max-height:calc(100dvh - 160px)!important}
+}
+
 </style></head><body>
 <header class="appTopbar">
  <div class="topBrand"><button class="menuToggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny brandSub">INSTITUTIONAL MARKET INTELLIGENCE · ANALYSIS ONLY</div></div></div>
  <div class="topContext"><b id="pageTitle">Analyst workspace</b><span class="muted tiny" id="pageSubtitle">Your live market overview</span></div>
- <div class="topActions"><span class="pill" id="connBadge">CONNECTING</span><span class="topVersion">V1.9.8</span></div>
+ <div class="topActions"><span class="pill" id="connBadge">CONNECTING</span><span class="topVersion">V1.9.9</span></div>
 </header>
 <div class="appShell">
  <aside class="appSidebar" id="appSidebar" aria-label="Main navigation">
@@ -250,12 +303,12 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
   <div class="navSpacer"></div>
   <div class="sidebarStatus"><span class="statusDot"></span><div><b>Analysis-only mode</b><small>No orders are placed</small></div></div>
   <button class="navItem" type="button" data-view="settings"><span class="navIcon">⚙</span><span>Settings & connection</span></button>
-  <div class="sidebarFoot">TEBZA CRT ANALYST<br>INSTITUTIONAL EDITION · V1.9.8</div>
+  <div class="sidebarFoot">TEBZA CRT ANALYST<br>INSTITUTIONAL EDITION · V1.9.9</div>
  </aside>
  <div class="navScrim" id="navScrim"></div>
  <main id="appMain">
 <section class="pageView active" id="workspaceView" data-page="workspace">
-<div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for live ticks and native OHLC candles. V1.9.8 connects scanner discovery with independent manual market verification, uses available opposing structure for targets and improves signal outcome tracking. Current-market confirmation pauses when the live tick feed is stale for more than 120 seconds. No account token is required. Analysis only; no trades are placed.</div>
+<div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for live ticks and native OHLC candles. V1.9.9 connects scanner discovery with independent manual market verification, uses available opposing structure for targets and improves signal outcome tracking. Current-market confirmation pauses when the live tick feed is stale for more than 120 seconds. No account token is required. Analysis only; no trades are placed.</div>
 <section class="card">
  <div class="row between"><div><h2 style="margin:0">Market selector</h2><div class="muted tiny" id="marketCount">Loading Deriv instruments…</div></div><button id="refresh" class="primary">Refresh</button></div>
  <div class="row" style="margin-top:12px"><select id="category"><option value="all">All markets</option><option value="synthetic">Synthetic / Derived</option><option value="forex">Forex</option><option value="commodities">Commodities / Metals</option><option value="indices">Stock indices</option><option value="crypto">Cryptocurrencies</option><option value="shares">Shares / ETFs</option></select><select id="symbol"><option>Loading…</option></select></div>
@@ -382,6 +435,13 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
   <button id="priceAuto" type="button" hidden>Auto price</button><button id="chartFit" type="button" hidden>Fit all</button>
   <button id="chartReset" type="button" title="Reset price scale and return to latest candles">Auto scale · Go live</button><button id="chartFullscreen" class="primary" type="button">Full screen</button>
  </div>
+ <div class="chartDisplayControls">
+  <label for="chartAnnotationMode">Chart detail</label>
+  <select id="chartAnnotationMode" aria-label="Chart annotation detail">
+   <option value="essential">Essential</option><option value="balanced" selected>Balanced</option><option value="detailed">Detailed</option><option value="custom">Custom</option>
+  </select>
+  <span class="chartDisplayHint" id="chartAnnotationHelp">Balanced shows the main CRT range, liquidity and trade plan.</span>
+ </div>
  <div class="overlayControls">
   <label><input type="checkbox" id="ovRange" checked> CRT range</label>
   <label><input type="checkbox" id="ovLiquidity" checked> Liquidity levels</label>
@@ -389,9 +449,14 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
   <label><input type="checkbox" id="ovFvg" checked> 15M imbalance zones</label>
   <label><input type="checkbox" id="ovRR" checked> Risk / Reward</label>
  </div>
+ <div class="chartSetupSummary" id="chartSetupSummary" aria-live="polite"><b>WAIT · ANALYSIS NOT READY</b><span>Waiting for completed Deriv candles.</span></div>
  <div class="chartGrid" id="chartGrid">
   <div>
    <div class="chartWrap" id="chartWrap"><div id="liveChart" class="chartCanvas" role="img" aria-label="Live Deriv candlestick chart with CRT overlays"><div class="chartLoading">Preparing live chart…</div></div></div>
+   <details class="chartPlanDock" id="chartPlanDock">
+    <summary id="chartPlanDockSummary">Trade plan details · waiting for a valid plan</summary>
+    <div class="chartPlanDockGrid" id="chartPlanDockGrid"><div class="chartPlanDockEmpty">A trade plan will appear here when the analysis engine has a valid projected or confirmed setup.</div></div>
+   </details>
    <div id="chartReadout" class="chartReadout">Touch or move the crosshair to preview OHLC · Tap a candle to inspect it</div>
    <section class="candleInspector" id="candleInspector" aria-live="polite">
     <div class="candleInspectorHead"><div class="candleInspectorTitle">Candle inspector · select a candle</div><button id="clearCandleSelection" type="button">Clear selection</button></div>
@@ -507,7 +572,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
  <section class="pageIntro"><div><div class="eyebrow">PLATFORM PREFERENCES</div><h1>Settings & connection</h1><p>Review the visual system, data connection and notification permissions.</p></div></section>
  <section class="card appearanceCard"><div class="eyebrow">APPEARANCE</div><h2>Premium institutional · Balanced density</h2><p class="sectionNote">A consistent interface palette is applied across the dashboard, scanner, chart, alerts and analysis.</p><div class="themeSwatches"><span style="background:#111923"></span><span style="background:#1B2735"></span><span style="background:#C6A66B"></span><span style="background:#42B88B"></span><span style="background:#D7777E"></span><span style="background:#8298B2"></span></div><div class="appearanceTags"><span>Charcoal navy surfaces</span><span>Emerald positive states</span><span>Champagne reference levels</span><span>Soft coral risk states</span></div></section>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.9.8 · Institutional analyst workspace · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+<div class="foot">TEBZA CRT ANALYST V1.9.9 · Institutional analyst workspace · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
 </section>
 </main>
 </div>
@@ -1620,7 +1685,7 @@ function analyse() {
   updateMarketNarrative();
   renderTradePlan();
   renderChart(false);
-  setStatus("V1.9.8 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  setStatus("V1.9.9 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
   if (direction !== "WAIT") {
     const signalKey=[selected,selectedStrategy||"CRT REVERSAL",direction,last5.epoch].join("|");
     if(signalKey!==lastNotifiedSignalKey){
@@ -1824,12 +1889,12 @@ function renderChart(force){
  const priceAge=latestTickEpoch?Math.max(0,Math.round(Date.now()/1000-latestTickEpoch)):null;
  const candleAge=candleUpdateAt[tf]?Math.max(0,Math.round((Date.now()-candleUpdateAt[tf])/1000)):null;
  $("chartLiveState").textContent='DERIV · '+granularityLabel(tf)+' · '+all.length+' candles'+(priceAge===null?'':' · tick '+(priceAge<=10?'fresh':priceAge+'s'))+(candleAge===null?'':' · OHLC '+candleAge+'s');
- $("chartExplanation").textContent='Chart key: gold = previous 1H CRT range; blue = mapped liquidity; purple = unfilled 15M imbalance; red = stop / risk; green = reward targets; dashed amber = provisional setup. HH / HL / LH / LL mark confirmed 15M swings. Every timeframe displays the same selected-market setup status; switching chart timeframe does not create a separate signal. Order-block zones remain hidden until their rules are validated.';
+ $("chartExplanation").textContent='Chart key: gold = 1H CRT range; blue = liquidity; purple = unfilled 15M imbalance; red = stop / risk; green = targets. Setup status and full trade-plan values are shown outside the candle area to reduce obstruction.';
  if(!chartHoverReadoutActive())$("chartReadout").textContent='Drag to pan · Pinch to zoom · Tap a candle to inspect OHLC · Go live returns to latest candles';
 }
 function chartHoverReadoutActive(){return false;}
 
-// Professional chart layer: every annotation is drawn as a labelled zone or marker.
+// Professional chart layer: annotations are routed through a common, collision-aware label queue.
 function chartSvgElement(tag,attrs={}){
  const node=document.createElementNS('http://www.w3.org/2000/svg',tag);
  Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,String(v)));
@@ -1867,14 +1932,32 @@ function chartFlushPriceLabels(svg){
  const height=Number(svg.getAttribute('height'))||340,width=Number(svg.getAttribute('width'))||300;
  ['left','right'].forEach(side=>{
   const items=chartOverlayPendingLabels.filter(item=>(item.opts.align||'right')===side).sort((a,b)=>a.y-b.y);
-  const gap=22,placed=[];
-  items.forEach((item,i)=>{placed[i]=Math.max(item.y,i?placed[i-1]+gap:9);});
-  if(placed.length&&placed[placed.length-1]>height-10){const shift=placed[placed.length-1]-(height-10);for(let i=0;i<placed.length;i++)placed[i]-=shift;}
-  if(placed.length&&placed[0]<9){const shift=9-placed[0];for(let i=0;i<placed.length;i++)placed[i]+=shift;}
+  if(!items.length)return;
+  const pad=12,boxHeight=16,gap=19,usable=Math.max(40,height-pad*2);
+  const step=Math.min(gap,Math.max(boxHeight+1,(usable-boxHeight)/Math.max(1,items.length-1)));
+  const ys=items.map(item=>clamp(item.y,pad,height-pad));
+  const placed=[];
+  placed[0]=Math.max(pad,ys[0]);
+  for(let i=1;i<ys.length;i++)placed[i]=Math.max(ys[i],placed[i-1]+step);
+  const bottom=height-pad;
+  if(placed[placed.length-1]>bottom){
+   const shift=placed[placed.length-1]-bottom;
+   for(let i=0;i<placed.length;i++)placed[i]-=shift;
+   for(let i=placed.length-2;i>=0;i--)placed[i]=Math.min(placed[i],placed[i+1]-step);
+  }
+  if(placed[0]<pad){
+   const shift=pad-placed[0];
+   for(let i=0;i<placed.length;i++)placed[i]+=shift;
+  }
   items.forEach((item,i)=>{
-   const y=placed[i],opts=item.opts;
-   if(Math.abs(y-item.y)>7){const anchorX=side==='right'?Math.max(10,width-142):8;svg.appendChild(chartSvgElement('line',{x1:anchorX,y1:item.y,x2:anchorX,y2:y,stroke:item.color,'stroke-width':1,'stroke-opacity':.75}));}
-   chartOverlayText(svg,opts.x??(side==='right'?width-7:8),y,item.label,{align:side,size:opts.size||9,fill:opts.fill||'#0c192b',stroke:item.color,color:opts.textColor||'#f0f5fc',className:opts.className||'levelLabel'});
+   const y=clamp(placed[i],pad,bottom),opts=item.opts;
+   if(Math.abs(y-item.y)>4){
+    const edgeX=side==='right'?Math.max(8,width-154):Math.min(width-8,154);
+    const labelX=side==='right'?width-7:8;
+    const path=side==='right'?`M ${edgeX} ${item.y} L ${edgeX} ${y} L ${Math.max(edgeX+5,labelX-4)} ${y}`:`M ${edgeX} ${item.y} L ${edgeX} ${y} L ${Math.min(edgeX-5,labelX+4)} ${y}`;
+    svg.appendChild(chartSvgElement('path',{d:path,fill:'none',stroke:item.color,'stroke-width':1,'stroke-opacity':.72}));
+   }
+   chartOverlayText(svg,opts.x??(side==='right'?width-7:8),y,item.label,{align:side,size:opts.size||8,fill:opts.fill||'#0c192b',stroke:item.color,color:opts.textColor||'#f0f5fc',className:opts.className||'levelLabel',minWidth:opts.minWidth||0});
   });
  });
  chartOverlayPendingLabels=[];
@@ -1898,21 +1981,7 @@ function chartTriggerText(a){
  }
  return a?.bullishDisplacement?'BULLISH DISPLACEMENT':a?.bearishDisplacement?'BEARISH DISPLACEMENT':'DISPLACEMENT WAITING';
 }
-function chartDrawStatusPanel(svg,a,meta,plan){
- const width=Number(svg.getAttribute('width'))||300;
- const panelW=Math.min(224,Math.max(170,width*.55)),x=8,y=8,panelH=plan?94:70;
- svg.appendChild(chartSvgElement('rect',{x,y,width:panelW,height:panelH,rx:8,fill:'#081525',stroke:'#405674','stroke-width':1,'fill-opacity':.96}));
- const side=plan?plan.side:(a?.bias4==='Bullish'?'BULLISH BIAS':a?.bias4==='Bearish'?'BEARISH BIAS':'NEUTRAL');
- const state=plan?chartOverlayPlanState(plan,a):null;
- const status=state?.label||'WAIT · NO VALID PLAN';
- const accent=state?.stale?'#f07883':state?.preview?'#e8b85d':plan?'#28c7a5':'#9db1ca';
- const add=(text,yy,color)=>{const t=chartSvgElement('text',{x:x+9,y:yy,fill:color,class:'smallLabel'});t.textContent=text;svg.appendChild(t);};
- add(status+(plan?' · '+side:''),y+16,accent);
- add('4H '+(a?.bias4||'—')+'  ·  1H '+(a?.bias1||'—'),y+34,'#edf4ff');
- add('15M STRUCTURE '+(a?.structure?.direction||'—'),y+51,'#b7c9df');
- add('5M '+chartTriggerText(a),y+68,'#b7c9df');
- if(plan)add((plan.strategy||'SETUP')+(state?.preview?' · PROVISIONAL':state?.stale?' · INVALIDATED':' · RULES PASSED')+(plan.counterTrend?' · COUNTERTREND':''),y+85,state?.preview?'#e8b85d':'#a6e6d5');
-}
+
 function chartDrawStructure(svg,tf){
  if(!document.getElementById('ovStructure')?.checked||!(tf===300||tf===900))return;
  const source=completedCandles(candles[900],900),sw=confirmedSwings(source,2,2);
@@ -1946,7 +2015,7 @@ function chartDrawFvgs(svg,tf){
   if(!Number.isFinite(x0)||!Number.isFinite(y1)||!Number.isFinite(y2))return;
   const color='#9c8be8',top=Math.min(y1,y2),height=Math.max(3,Math.abs(y2-y1));
   svg.appendChild(chartSvgElement('rect',{x:Math.max(0,x0),y:top,width:Math.max(0,w-Math.max(0,x0)),height,rx:2,fill:color,'fill-opacity':.11,stroke:color,'stroke-opacity':.72,'stroke-width':1,'stroke-dasharray':'4 3'}));
-  if(height>12)chartOverlayText(svg,Math.max(8,x0+5),top+Math.min(height/2,12),'15M '+zone.side+' IMBALANCE',{size:8,fill:'#0c192b',stroke:color,color:'#f6f8fc'});
+  if(height>18&&$('chartAnnotationMode')?.value==='detailed')chartOverlayText(svg,Math.max(8,x0+5),top+Math.min(height/2,12),'15M '+zone.side+' FVG',{size:8,fill:'#0c192b',stroke:color,color:'#f6f8fc'});
  });
 }
 function chartDrawPlan(svg,plan,a,meta){
@@ -1954,35 +2023,55 @@ function chartDrawPlan(svg,plan,a,meta){
  const state=chartOverlayPlanState(plan,a),w=Number(svg.getAttribute('width'))||0,h=Number(svg.getAttribute('height'))||340;
  const yEntry=candleSeries.priceToCoordinate(Number(plan.entry)),yStop=candleSeries.priceToCoordinate(Number(plan.stop)),yTp3=candleSeries.priceToCoordinate(Number(plan.targets?.[2]?.price));
  if(!Number.isFinite(yEntry)||!Number.isFinite(yStop))return;
+ const preview=state.preview,invalid=state.stale,green=invalid?'#778b86':'#28c7a5',red=invalid?'#91747c':'#f07883',gold='#e8b85d';
  const xLast=chartApi.timeScale().timeToCoordinate(Number((currentChartCandles(Number($('chartTf').value)||300).slice(-1)[0]||{}).epoch));
  const x=Math.max(8,Math.min(w-170,Number.isFinite(xLast)?xLast+4:w*.58)),boxW=Math.max(40,w-x-6);
- const preview=state.preview,invalid=state.stale,green=invalid?'#778b86':'#28c7a5',red=invalid?'#91747c':'#f07883',gold='#e8b85d';
- const clampRect=(top,bottom,fill,opacity,stroke,dash)=>{const y=Math.max(0,Math.min(top,bottom)),end=Math.min(h,Math.max(top,bottom));if(end-y>=2)svg.appendChild(chartSvgElement('rect',{x,y,width:boxW,height:end-y,rx:3,fill,'fill-opacity':opacity,stroke,'stroke-opacity':.9,'stroke-width':1,'stroke-dasharray':dash}));};
- if(Number.isFinite(yTp3))clampRect(yEntry,yTp3,green,preview?0.10:0.16,green,preview?'5 4':'none');
- clampRect(yEntry,yStop,red,preview?0.12:0.18,red,preview?'5 4':'none');
- // Highlight the proposed entry zone separately from the entry reference line.
- if(plan.entryZone){const ya=candleSeries.priceToCoordinate(Number(plan.entryZone.from)),yb=candleSeries.priceToCoordinate(Number(plan.entryZone.to));if(Number.isFinite(ya)&&Number.isFinite(yb))clampRect(ya,yb,gold,preview?0.18:0.10,gold,preview?'4 3':'2 2');}
+ const clampRect=(top,bottom,fill,opacity,stroke,dash)=>{const y=Math.max(0,Math.min(top,bottom)),end=Math.min(h,Math.max(top,bottom));if(end-y>=2)svg.appendChild(chartSvgElement('rect',{x,y,width:boxW,height:end-y,rx:3,fill,'fill-opacity':opacity,stroke,'stroke-opacity':.78,'stroke-width':1,'stroke-dasharray':dash}));};
+ if(Number.isFinite(yTp3))clampRect(yEntry,yTp3,green,preview?0.08:0.12,green,preview?'5 4':'none');
+ clampRect(yEntry,yStop,red,preview?0.10:0.13,red,preview?'5 4':'none');
+ if(plan.entryZone){const ya=candleSeries.priceToCoordinate(Number(plan.entryZone.from)),yb=candleSeries.priceToCoordinate(Number(plan.entryZone.to));if(Number.isFinite(ya)&&Number.isFinite(yb))clampRect(ya,yb,gold,preview?0.16:0.08,gold,preview?'4 3':'2 2');}
  const prefix=invalid?'INVALIDATED':preview?'PROJECTED':'CONFIRMED';
- chartOverlayLine(svg,yEntry,preview?gold:'#f1f5fb',preview?'5 3':'2 2',1.0,1.6);
- chartOverlayText(svg,x+5,yEntry-12,prefix+' '+plan.side+' · ENTRY '+formatPrice(plan.entry,meta),{size:9,fill:'#122033',stroke:preview?gold:'#e5edf7',color:'#fff',className:'planLabel'});
- chartOverlayPriceLabel(svg,plan.stop,'SL '+formatPrice(plan.stop,meta),red,{size:9,fill:'#321923',textColor:'#ffdce1',dash:preview?'5 3':'2 2'});
- (plan.targets||[]).forEach((t,i)=>chartOverlayPriceLabel(svg,t.price,'TP'+(i+1)+' '+formatPrice(t.price,meta),green,{size:9,fill:'#10332e',textColor:'#c7f8e9',dash:preview?'5 3':'2 2'}));
- const rText='R:R 1:'+((plan.targets?.[0]?.r)||1)+' / 1:'+((plan.targets?.[1]?.r)||2)+' / 1:'+((plan.targets?.[2]?.r)||3);
- chartOverlayText(svg,x+5,Math.min(h-15,Math.max(18,yEntry+20)),rText,{size:8,fill:'#102033',stroke:preview?gold:'#607c93',color:'#f1f6fb'});
- const offscreen=(plan.targets||[]).filter(t=>{const y=candleSeries.priceToCoordinate(Number(t.price));return !Number.isFinite(y)||y<10||y>h-10;}).map(t=>'TP'+t.r);
- if(offscreen.length)chartOverlayText(svg,x+5,Math.min(h-34,Math.max(34,yEntry+42)),offscreen.join(' / ')+' BELOW VIEW · ZOOM OUT',{size:8,fill:'#102033',stroke:gold,color:'#f5dfad'});
+ chartOverlayPriceLabel(svg,plan.entry,prefix+' ENTRY '+formatPrice(plan.entry,meta),preview?gold:'#e5edf7',{size:8,fill:'#122033',textColor:'#fff',dash:preview?'5 3':'2 2',className:'planLabel'});
+ chartOverlayPriceLabel(svg,plan.stop,'STOP '+formatPrice(plan.stop,meta),red,{size:8,fill:'#321923',textColor:'#ffdce1',dash:preview?'5 3':'2 2',className:'planLabel'});
+ (plan.targets||[]).forEach((t,i)=>chartOverlayPriceLabel(svg,t.price,'TP'+(i+1)+' '+formatPrice(t.price,meta),green,{size:8,fill:'#10332e',textColor:'#c7f8e9',dash:preview?'5 3':'2 2',className:'planLabel'}));
+ const offscreen=(plan.targets||[]).filter(t=>{const y=candleSeries.priceToCoordinate(Number(t.price));return !Number.isFinite(y)||y<10||y>h-10;}).map((t,i)=>'TP'+(i+1));
+ if(offscreen.length)chartOverlayText(svg,Math.max(8,w*.42),h-22,offscreen.join(' / ')+' OUT OF VIEW · ZOOM / FIT',{size:8,fill:'#102033',stroke:gold,color:'#f5dfad'});
 }
 function chartFitPlanRange(plan,tf){
  if(!plan||!candleSeries)return;
  const targets=(plan.targets||[]).map(t=>Number(t.price)).filter(Number.isFinite);
  const levels=[Number(plan.entry),Number(plan.stop),Number(targets[0])].filter(Number.isFinite);
  if(levels.length<3)return;
- const key=[selected,tf,plan.stage,plan.side,...levels.map(x=>x.toPrecision(12))].join('|');
+ const key=[selected,tf,plan.stage,plan.side,...levels.map(x=>x.toPrecision(12)),...(plan.targets||[]).map(t=>Number(t.price)).filter(Number.isFinite).map(x=>x.toPrecision(12)),Number(plan.entryZone?.from)||0,Number(plan.entryZone?.to)||0].join('|');
  if(key===chartPlanScaleKey)return;
- const bars=currentChartCandles(tf).slice(-55),focusLevels=[Number(plan.entry),Number(plan.stop),Number(plan.targets?.[0]?.price),Number(quote)].filter(Number.isFinite),values=focusLevels.concat(bars.flatMap(b=>[Number(b.high),Number(b.low)]).filter(Number.isFinite));
+ const bars=currentChartCandles(tf).slice(-55),focusLevels=[Number(plan.entry),Number(plan.stop),...(plan.targets||[]).map(t=>Number(t.price)),Number(plan.entryZone?.from),Number(plan.entryZone?.to),Number(quote)].filter(Number.isFinite),values=focusLevels.concat(bars.flatMap(b=>[Number(b.high),Number(b.low)]).filter(Number.isFinite));
  if(values.length<3)return;
  const lo=Math.min(...values),hi=Math.max(...values),pad=Math.max((hi-lo)*0.075,Math.pow(10,-decimalPlacesFromPip(findSymbol(selected)?.pip_size,hi,selected))*5);
  try{chartPlanScaleKey=key;candleSeries.priceScale().setAutoScale(false);candleSeries.priceScale().setVisibleRange({from:lo-pad,to:hi+pad});}catch(error){chartPlanScaleKey='';console.warn('Could not frame projected risk/reward levels',error);}
+}
+
+function renderChartSetupSummary(a,plan){
+ const host=$('chartSetupSummary');if(!host)return;
+ host.replaceChildren();
+ const state=plan?chartOverlayPlanState(plan,a):null;
+ const headline=state?.stale?'INVALIDATED':state?.preview?'PROJECTED':plan?'CONFIRMED':'WAIT · NO VALID PLAN';
+ const side=plan?plan.side:(a?.bias4==='Bullish'?'BULLISH BIAS':a?.bias4==='Bearish'?'BEARISH BIAS':'NEUTRAL');
+ const title=document.createElement('b');title.textContent=headline+(plan?' · '+side:'');title.className=state?.stale?'summaryInvalid':state?.preview?'summaryWait':plan?'summaryConfirmed':'summaryWait';host.appendChild(title);
+ const trigger=chartTriggerText(a||{});
+ const detail=document.createElement('span');detail.textContent='4H '+(a?.bias4||'—')+' · 1H '+(a?.bias1||'—')+' · 15M '+(a?.structure?.direction||'—')+' · '+trigger+(plan?.counterTrend?' · COUNTERTREND':'');host.appendChild(detail);
+}
+function renderChartPlanDock(plan,a,meta){
+ const dock=$('chartPlanDock'),summary=$('chartPlanDockSummary'),grid=$('chartPlanDockGrid');if(!dock||!summary||!grid)return;
+ grid.replaceChildren();
+ if(!plan){summary.textContent='Trade plan details · no valid plan';const empty=document.createElement('div');empty.className='chartPlanDockEmpty';empty.textContent='No entry, stop or target levels are being proposed. The engine is waiting for valid setup conditions.';grid.appendChild(empty);return;}
+ const state=chartOverlayPlanState(plan,a),status=state.stale?'INVALIDATED':state.preview?'PROJECTED':'CONFIRMED';
+ summary.textContent=status+' '+plan.side+' · view entry, stop, targets and risk';
+ const add=(label,value,kind)=>{const tile=document.createElement('div');tile.className='chartPlanDockValue '+(kind||'');const small=document.createElement('small');small.textContent=label;const bold=document.createElement('b');bold.textContent=value;tile.append(small,bold);grid.appendChild(tile);};
+ add('Entry',formatPrice(plan.entry,meta),'entry');add('Stop loss',formatPrice(plan.stop,meta),'stop');
+ (plan.targets||[]).slice(0,3).forEach((t,i)=>add('Target '+(i+1),formatPrice(t.price,meta)+' · '+Number(t.r||0).toFixed(2)+'R','target'));
+ const metaLine=document.createElement('div');metaLine.className='chartPlanDockMeta';
+ metaLine.textContent=(plan.strategy||'Strategy')+' · '+status+(plan.counterTrend?' · Countertrend':'')+' · '+(plan.stage==='PROJECTED'?'Provisional levels; wait for confirmation.':'Confirmation rules passed; review risk before acting.')+' R values are measured from the displayed entry and stop.';
+ grid.appendChild(metaLine);
 }
 
 function renderChartOverlays(){
@@ -1993,7 +2082,9 @@ function renderChartOverlays(){
  if(!svg){svg=chartSvgElement('svg',{id:'chartProOverlay','aria-hidden':'true'});svg.classList.add('chartProOverlay');host.appendChild(svg);}
  svg.setAttribute('width',width);svg.setAttribute('height',height);svg.setAttribute('viewBox','0 0 '+width+' '+height);svg.replaceChildren();chartOverlayPendingLabels=[];
  const tf=Number($('chartTf')?.value||300),a=latestAnalysis,meta=findSymbol(selected),price=hasLiveQuote()?Number(quote):Number(a?.price);
- if(a)chartFitPlanRange(a.tradePlan||a.projectedPlan,tf);
+ const plan=a?(a.tradePlan||a.projectedPlan):null;
+ renderChartSetupSummary(a,plan);renderChartPlanDock(plan,a,meta);
+ if(a)chartFitPlanRange(plan,tf);
  if(!a){chartOverlayText(svg,10,20,'WAIT · ANALYSIS NOT READY',{size:10,fill:'#14253a',stroke:'#526b86'});return;}
  const rangeOn=$('ovRange')?.checked!==false,liqOn=$('ovLiquidity')?.checked!==false;
  if(rangeOn&&Number.isFinite(a.hi)&&Number.isFinite(a.lo)&&a.hi>a.lo){
@@ -2005,15 +2096,14 @@ function renderChartOverlays(){
   chartOverlayPriceLabel(svg,a.mid,'50% EQ '+formatPrice(a.mid,meta),'#b9a16c',{size:9,fill:'#2a261d',textColor:'#f7e7bd',dash:'2 4',align:'left'});
   chartOverlayPriceLabel(svg,a.lo,'CRT LOW '+formatPrice(a.lo,meta),'#e8b85d',{size:9,fill:'#342a16',textColor:'#f8e4b4',dash:'7 4',align:'left'});
   const zoneText=(label,upper,lower,color)=>{const y1=candleSeries.priceToCoordinate(upper),y2=candleSeries.priceToCoordinate(lower);if(Number.isFinite(y1)&&Number.isFinite(y2)&&Math.abs(y2-y1)>38){const t=chartSvgElement('text',{x:Math.max(12,(Number(svg.getAttribute('width'))||300)*.44),y:(y1+y2)/2,fill:color,class:'zoneLabel','text-anchor':'middle'});t.textContent=label;svg.appendChild(t);}};
-  zoneText('PREMIUM',a.hi,mid+half,'#e7c77b');zoneText('EQUILIBRIUM',mid+half,mid-half,'#c4d2e2');zoneText('DISCOUNT',mid-half,a.lo,'#8fe3cc');
+  if($('chartAnnotationMode')?.value!=='essential'){zoneText('PREMIUM',a.hi,mid+half,'#e7c77b');zoneText('EQUILIBRIUM',mid+half,mid-half,'#c4d2e2');zoneText('DISCOUNT',mid-half,a.lo,'#8fe3cc');}
  }
  if(liqOn){
   if(Number.isFinite(a.buySideLevel))chartOverlayPriceLabel(svg,a.buySideLevel,'BUY-SIDE LIQ. '+formatPrice(a.buySideLevel,meta),'#79aaff',{size:9,fill:'#142a45',textColor:'#d8e8ff',dash:'3 4'});
   if(Number.isFinite(a.sellSideLevel))chartOverlayPriceLabel(svg,a.sellSideLevel,'SELL-SIDE LIQ. '+formatPrice(a.sellSideLevel,meta),'#79aaff',{size:9,fill:'#142a45',textColor:'#d8e8ff',dash:'3 4'});
  }
  chartDrawStructure(svg,tf);chartDrawFvgs(svg,tf);
- const plan=a.tradePlan||a.projectedPlan;chartDrawPlan(svg,plan,a,meta);
- chartDrawStatusPanel(svg,a,meta,plan);
+ chartDrawPlan(svg,plan,a,meta);
  chartFlushPriceLabels(svg);
 }
 
@@ -2151,8 +2241,29 @@ function setChartFullscreen(on){
 document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement&&$("chartCard").classList.contains("chartFullscreen")){ $("chartCard").classList.remove("chartFullscreen");document.body.classList.remove("chartNoScroll");$("chartFullscreen").textContent="Full screen";setTimeout(resizeTradingChart,100);}});
 window.addEventListener("resize",()=>setTimeout(resizeTradingChart,80));
 window.addEventListener("orientationchange",()=>setTimeout(resizeTradingChart,180));
+function setChartAnnotationMode(mode,persist=true){
+ const presets={
+  essential:{ovRange:true,ovLiquidity:false,ovStructure:false,ovFvg:false,ovRR:true},
+  balanced:{ovRange:true,ovLiquidity:true,ovStructure:false,ovFvg:false,ovRR:true},
+  detailed:{ovRange:true,ovLiquidity:true,ovStructure:true,ovFvg:true,ovRR:true}
+ };
+ const preset=presets[mode];if(preset)Object.entries(preset).forEach(([id,value])=>{const el=$(id);if(el)el.checked=value;});
+ const selector=$('chartAnnotationMode');if(selector)selector.value=mode;
+ const help=$('chartAnnotationHelp');if(help)help.textContent=mode==='essential'?'Essential keeps the main CRT range and trade plan visible.':mode==='balanced'?'Balanced adds liquidity while keeping secondary labels quiet.':mode==='detailed'?'Detailed shows structure labels and 15M imbalance zones.':'Custom uses your individual overlay selections.';
+ if(persist){try{localStorage.setItem('TEBZA_CHART_VIEW_V199',JSON.stringify({mode,checks:Object.fromEntries(['ovRange','ovLiquidity','ovStructure','ovFvg','ovRR'].map(id=>[id,!!$(id)?.checked]))}));}catch(_){}}
+ renderChartOverlays();
+}
+function initChartAnnotationMode(){
+ let saved=null;try{saved=JSON.parse(localStorage.getItem('TEBZA_CHART_VIEW_V199')||'null');}catch(_){}
+ if(saved?.mode==='custom'&&saved.checks){Object.entries(saved.checks).forEach(([id,value])=>{if($(id))$(id).checked=!!value;});$('chartAnnotationMode').value='custom';const help=$('chartAnnotationHelp');if(help)help.textContent='Custom uses your individual overlay selections.';}
+ else if(['essential','balanced','detailed'].includes(saved?.mode))setChartAnnotationMode(saved.mode,false);
+ else setChartAnnotationMode((window.matchMedia&&window.matchMedia('(max-width: 700px) and (orientation: portrait)').matches)?'essential':'balanced',false);
+}
+$('chartAnnotationMode')?.addEventListener('change',ev=>setChartAnnotationMode(ev.target.value));
+window.addEventListener('orientationchange',()=>{let saved=null;try{saved=localStorage.getItem('TEBZA_CHART_VIEW_V199');}catch(_){}if(!saved)setTimeout(()=>setChartAnnotationMode((window.matchMedia&&window.matchMedia('(max-width: 700px) and (orientation: portrait)').matches)?'essential':'balanced',false),180);});
 $("chartTf").addEventListener("change",()=>{clearCandleInspector();const tf=Number($("chartTf").value);requestChartTimeframe(tf);renderChart(true);});
-["ovRange","ovLiquidity","ovStructure","ovFvg","ovRR"].forEach(id=>$(id).addEventListener("change",()=>renderChartOverlays()));
+["ovRange","ovLiquidity","ovStructure","ovFvg","ovRR"].forEach(id=>$(id).addEventListener("change",()=>{const mode=$('chartAnnotationMode');if(mode){mode.value='custom';const help=$('chartAnnotationHelp');if(help)help.textContent='Custom uses your individual overlay selections.';try{localStorage.setItem('TEBZA_CHART_VIEW_V199',JSON.stringify({mode:'custom',checks:Object.fromEntries(['ovRange','ovLiquidity','ovStructure','ovFvg','ovRR'].map(k=>[k,!!$(k)?.checked]))}));}catch(_){}}renderChartOverlays();}));
+initChartAnnotationMode();
 $("layoutChart").addEventListener("click",()=>setChartLayout("chart"));$("layoutSplit").addEventListener("click",()=>setChartLayout("split"));
 $("chartZoomIn").addEventListener("click",()=>zoomChart(.8));$("chartZoomOut").addEventListener("click",()=>zoomChart(1.25));
 $("timeZoomIn").addEventListener("click",()=>scaleTime(1.25));$("timeZoomOut").addEventListener("click",()=>scaleTime(.8));
@@ -2220,7 +2331,7 @@ window.__lwcPromise.then(() => {
 </script>
 
 <script>
-/* V1.9.8 multi-strategy market scanner. Uses the existing public Deriv WebSocket connection. */
+/* V1.9.9 multi-strategy market scanner. Uses the existing public Deriv WebSocket connection. */
 (function(){
 "use strict";
 const scanner = {
@@ -2806,7 +2917,7 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
 </script>
 
 <script>
-/* V1.9.8 persistent signal lifecycle + candle replay. Backward-compatible local storage. */
+/* V1.9.9 persistent signal lifecycle + candle replay. Backward-compatible local storage. */
 (function(){
  'use strict';
  const KEY='tebza-crt-analyst-v195-confirmed-signals';
@@ -2977,7 +3088,7 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
 </script>
 
 <script>
-/* V1.9.8 workspace navigation, market identity and engine-grounded analyst companion. */
+/* V1.9.9 workspace navigation, market identity and engine-grounded analyst companion. */
 (function(){
  'use strict';
  const byId=id=>document.getElementById(id);
