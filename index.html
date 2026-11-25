@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111923"><link rel="manifest" href="manifest.webmanifest">
-<title>TEBZA CRT ANALYST V1.9.11</title>
+<title>TEBZA CRT ANALYST V1.10.0</title>
 <style>
 :root{--bg:#080f1c;--panel:#111d30;--panel2:#0b1627;--line:#263952;--txt:#edf4ff;--muted:#93a7c2;--green:#28c7a5;--red:#f07883;--amber:#e8b85d;--blue:#7daeff}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172b47 0,#080f1c 55%);color:var(--txt);font:14px system-ui,-apple-system,Segoe UI,sans-serif;padding-bottom:30px}
@@ -213,7 +213,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 
 .selectedMarketRef{font-weight:700;color:#d7c18e;overflow-wrap:anywhere}
 
-/* V1.9.11: visible selected-market context and signal replay workspace */
+/* V1.10.0: visible selected-market context and signal replay workspace */
 .chartSelectedBadge,.analysisSelectedBadge{display:block;margin-top:7px;padding:7px 10px;border:1px solid rgba(198,166,107,.32);border-radius:9px;background:rgba(198,166,107,.08);font-size:11px;line-height:1.4}
 .signalReplayPanel{margin-top:10px;padding:10px;border:1px solid #34495c;border-radius:10px;background:#101c29}
 .signalReplayPanel[hidden]{display:none!important}
@@ -230,7 +230,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 @media(max-width:540px){.signalReplayEvent{grid-template-columns:1fr auto}.signalReplayEvent time{grid-column:1/-1;grid-row:2}}
 
 
-/* V1.9.11 responsive chart layout and unified annotation system */
+/* V1.10.0 responsive chart layout and unified annotation system */
 .chartDisplayControls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 5px;color:#9aa8b7;font-size:10px}
 .chartDisplayControls label{font-weight:800;letter-spacing:.45px;text-transform:uppercase}
 .chartDisplayControls select{flex:0 0 auto;min-width:118px;max-width:150px;padding:7px 9px;font-size:10px}
@@ -286,7 +286,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 <header class="appTopbar">
  <div class="topBrand"><button class="menuToggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny brandSub">INSTITUTIONAL MARKET INTELLIGENCE · ANALYSIS ONLY</div></div></div>
  <div class="topContext"><b id="pageTitle">Analyst workspace</b><span class="muted tiny" id="pageSubtitle">Your live market overview</span></div>
- <div class="topActions"><span class="pill" id="connBadge">CONNECTING</span><span class="topVersion">V1.9.11</span></div>
+ <div class="topActions"><span class="pill" id="connBadge">CONNECTING</span><span class="topVersion">V1.10.0</span></div>
 </header>
 <div class="appShell">
  <aside class="appSidebar" id="appSidebar" aria-label="Main navigation">
@@ -303,12 +303,12 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
   <div class="navSpacer"></div>
   <div class="sidebarStatus"><span class="statusDot"></span><div><b>Analysis-only mode</b><small>No orders are placed</small></div></div>
   <button class="navItem" type="button" data-view="settings"><span class="navIcon">⚙</span><span>Settings & connection</span></button>
-  <div class="sidebarFoot">TEBZA CRT ANALYST<br>INSTITUTIONAL EDITION · V1.9.11</div>
+  <div class="sidebarFoot">TEBZA CRT ANALYST<br>INSTITUTIONAL EDITION · V1.10.0</div>
  </aside>
  <div class="navScrim" id="navScrim"></div>
  <main id="appMain">
 <section class="pageView active" id="workspaceView" data-page="workspace">
-<div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for live ticks and native OHLC candles. V1.9.11 connects scanner discovery with independent manual market verification, preserves confirmed signal plans on their live charts, uses available opposing structure for targets and improves signal outcome tracking. Current-market confirmation pauses when the live tick feed is stale for more than 120 seconds. No account token is required. Analysis only; no trades are placed.</div>
+<div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for live ticks and native OHLC candles. V1.10.0 connects scanner discovery with independent manual market verification, preserves confirmed signal plans on their live charts, uses available opposing structure for targets and improves signal outcome tracking. Current-market confirmation pauses when the live tick feed is stale for more than 120 seconds. No account token is required. Analysis only; no trades are placed.</div>
 <section class="card">
  <div class="row between"><div><h2 style="margin:0">Market selector</h2><div class="muted tiny" id="marketCount">Loading Deriv instruments…</div></div><button id="refresh" class="primary">Refresh</button></div>
  <div class="row" style="margin-top:12px"><select id="category"><option value="all">All markets</option><option value="synthetic">Synthetic / Derived</option><option value="forex">Forex</option><option value="commodities">Commodities / Metals</option><option value="indices">Stock indices</option><option value="crypto">Cryptocurrencies</option><option value="shares">Shares / ETFs</option></select><select id="symbol"><option>Loading…</option></select></div>
@@ -572,7 +572,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
  <section class="pageIntro"><div><div class="eyebrow">PLATFORM PREFERENCES</div><h1>Settings & connection</h1><p>Review the visual system, data connection and notification permissions.</p></div></section>
  <section class="card appearanceCard"><div class="eyebrow">APPEARANCE</div><h2>Premium institutional · Balanced density</h2><p class="sectionNote">A consistent interface palette is applied across the dashboard, scanner, chart, alerts and analysis.</p><div class="themeSwatches"><span style="background:#111923"></span><span style="background:#1B2735"></span><span style="background:#C6A66B"></span><span style="background:#42B88B"></span><span style="background:#D7777E"></span><span style="background:#8298B2"></span></div><div class="appearanceTags"><span>Charcoal navy surfaces</span><span>Emerald positive states</span><span>Champagne reference levels</span><span>Soft coral risk states</span></div></section>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.9.11 · Institutional analyst workspace · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+<div class="foot">TEBZA CRT ANALYST V1.10.0 · Institutional analyst workspace · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
 </section>
 </main>
 </div>
@@ -1456,6 +1456,89 @@ function renderConfirmationChecks(items) {
     host.appendChild(row);
   });
 }
+
+/* V1.10.0 — canonical analysis contract.
+   This adapter is deliberately additive: existing V1.10.0 consumers continue
+   receiving latestAnalysis while new consumers receive one normalized result. */
+const TEBZA_ENGINE_VERSION = "1.10.0";
+let latestMarketAnalysisResult = null;
+
+function createMarketAnalysisResult(a, context = {}) {
+  const now = Date.now();
+  const tfState = (bars, minimum) => ({
+    available: Array.isArray(bars) && bars.length >= minimum,
+    completedCandles: Array.isArray(bars) ? bars.length : 0
+  });
+  const checks = [];
+  const addChecks = (items, strategy) => {
+    (Array.isArray(items) ? items : []).forEach(item => checks.push({
+      strategy,
+      label: String(item.label || "Unnamed condition"),
+      passed: !!item.ok,
+      required: true,
+      state: item.ok ? "PASSED" : "PENDING"
+    }));
+  };
+  addChecks(a?.bullComponents, "CRT_REVERSAL_BUY");
+  addChecks(a?.bearComponents, "CRT_REVERSAL_SELL");
+  const plan = a?.tradePlan || null;
+  const projected = a?.projectedPlan || null;
+  const decisionPlan = plan || projected;
+  const status = plan ? "CONFIRMED" : projected ? "DEVELOPING" : "WAIT";
+  const decision = {
+    status,
+    strategy: decisionPlan?.strategy || a?.selectedStrategy || null,
+    direction: decisionPlan?.side || null,
+    mandatoryChecks: checks,
+    passedChecks: checks.filter(x => x.passed),
+    pendingChecks: checks.filter(x => !x.passed),
+    failedChecks: [],
+    explanation: plan
+      ? "The selected-market engine produced a confirmed trade plan."
+      : projected
+        ? (projected.reason || "A developing scenario exists; mandatory confirmation is incomplete.")
+        : "No confirmed or developing trade plan is currently available."
+  };
+  return {
+    identity: {
+      symbol: a?.meta?.symbol || context.symbol || selected || null,
+      name: a?.meta?.display_name || a?.meta?.name || null,
+      analysisId: [a?.meta?.symbol || context.symbol || selected || "UNKNOWN", now, TEBZA_ENGINE_VERSION].join(":"),
+      engineVersion: TEBZA_ENGINE_VERSION,
+      analysedAt: now
+    },
+    dataHealth: {
+      connected: !!(typeof hasFreshLiveTick === "function" && hasFreshLiveTick()),
+      tickFresh: !!(typeof hasFreshLiveTick === "function" && hasFreshLiveTick()),
+      candlesComplete: !!(a?.last5 && a?.last15),
+      timeframes: {
+        "4H": tfState(context.c4, 1),
+        "1H": tfState(context.c1, 1),
+        "15M": tfState(context.c15, 8),
+        "5M": tfState(context.c5, 15)
+      },
+      limitations: []
+    },
+    marketContext: {
+      regime: a?.structure?.trend || "UNKNOWN",
+      bias4H: a?.bias4 || "NEUTRAL",
+      bias1H: a?.bias1 || "NEUTRAL",
+      structure15M: a?.structure || null,
+      liquidity: [a?.bullishLevel, a?.bearishLevel].filter(Boolean),
+      imbalances: [],
+      dealingRanges: a ? [{ timeframe: "1H", high: a.hi, low: a.lo, equilibrium: a.mid }] : []
+    },
+    strategies: {
+      crtReversal: { selected: a?.selectedStrategy === "CRT REVERSAL", scoreBuy: a?.bullScore ?? null, scoreSell: a?.bearScore ?? null },
+      trendContinuation: a?.alternative?.trendContinuation || null,
+      breakoutRetest: a?.alternative?.breakoutRetest || null
+    },
+    decision,
+    tradePlan: decisionPlan || null,
+    legacy: a || null
+  };
+}
+
 function analyse() {
   const meta = findSymbol(selected);
   const c5 = completedCandles(candles[300], 300);
@@ -1467,6 +1550,7 @@ function analyse() {
   if (!hasFreshLiveTick()) {
     const age = lastLiveTickReceivedAt ? Math.floor((Date.now() - lastLiveTickReceivedAt) / 1000) : null;
     latestAnalysis = null;
+    latestMarketAnalysisResult = null;
     if(manualVerification.pending&&manualVerification.symbol===selected){const out=$('manualAnalysisResult');if(out)out.textContent='Manual verification paused: the live Deriv quote is stale or disconnected. It will resume when fresh data returns.';}
     setText("decision", "WAIT · DATA NOT LIVE");
     $("decision").className = "signal amber";
@@ -1501,7 +1585,7 @@ function analyse() {
     setText("equalLows", "Not enough history");
     $("narrativeState").textContent="WAIT";$("narrativeLead").textContent="The platform is connected but does not yet have enough completed candles to explain the setup reliably.";
     $("narrativeDetails").innerHTML="<div class=\"narrativeItem\"><b>Data readiness</b>"+ready.join(" · ")+"</div>";
-    latestAnalysis=null;renderTradePlan();
+    latestAnalysis=null;latestMarketAnalysisResult=null;renderTradePlan();
     if(manualVerification.pending&&manualVerification.symbol===selected){const out=$('manualAnalysisResult');if(out)out.textContent='Manual verification is waiting for sufficient completed candles: '+ready.join(' · ')+'. No direction has been forced.';}
     renderConfirmationChecks([
       {label:"1H reference range",ok:c1.length>0},
@@ -1636,6 +1720,13 @@ function analyse() {
   const structureCandle = num(last15.close) > num(last15.open) ? "15M bullish candle" : num(last15.close) < num(last15.open) ? "15M bearish candle" : "15M neutral candle";
 
   latestAnalysis = {meta, price, hi, lo, mid, location, rangePercent, structure, buySideLevel, sellSideLevel, eqh, eql, bullishSweep, bearishSweep, bullishLevel, bearishLevel, direction, entry, stop, target, tradePlan, projectedPlan, selectedStrategy, alternative, bias4, bias1, displacementDirection, liquidity, last5, last15, bullComponents, bearComponents, bullScore, bearScore, ambiguousSweep};
+  latestMarketAnalysisResult = createMarketAnalysisResult(latestAnalysis, {c4,c1,c15,c5});
+  window.TEBZA_ANALYSIS_ENGINE = window.TEBZA_ANALYSIS_ENGINE || {};
+  window.TEBZA_ANALYSIS_ENGINE.version = TEBZA_ENGINE_VERSION;
+  window.TEBZA_ANALYSIS_ENGINE.getLatest = () => latestMarketAnalysisResult;
+  window.TEBZA_ANALYSIS_ENGINE.getForSymbol = symbol =>
+    latestMarketAnalysisResult?.identity?.symbol === symbol ? latestMarketAnalysisResult : null;
+
   if(manualVerification.pending&&manualVerification.symbol===selected){
    const p=tradePlan||projectedPlan,idea=manualVerification.direction,actual=p?.side||null;
    let message='';
@@ -1686,7 +1777,7 @@ function analyse() {
   updateMarketNarrative();
   renderTradePlan();
   renderChart(false);
-  setStatus("V1.9.11 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  setStatus("V1.10.0 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
   if (direction !== "WAIT") {
     const signalKey=[selected,selectedStrategy||"CRT REVERSAL",direction,last5.epoch].join("|");
     if(signalKey!==lastNotifiedSignalKey){
@@ -2342,7 +2433,7 @@ window.__lwcPromise.then(() => {
 </script>
 
 <script>
-/* V1.9.11 multi-strategy market scanner. Uses the existing public Deriv WebSocket connection. */
+/* V1.10.0 multi-strategy market scanner. Uses the existing public Deriv WebSocket connection. */
 (function(){
 "use strict";
 const scanner = {
@@ -2928,7 +3019,7 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
 </script>
 
 <script>
-/* V1.9.11 persistent signal lifecycle + candle replay. Backward-compatible local storage. */
+/* V1.10.0 persistent signal lifecycle + candle replay. Backward-compatible local storage. */
 (function(){
  'use strict';
  const KEY='tebza-crt-analyst-v195-confirmed-signals';
@@ -3116,7 +3207,7 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
 </script>
 
 <script>
-/* V1.9.11 workspace navigation, market identity and engine-grounded analyst companion. */
+/* V1.10.0 workspace navigation, market identity and engine-grounded analyst companion. */
 (function(){
  'use strict';
  const byId=id=>document.getElementById(id);
