@@ -1726,6 +1726,10 @@ function analyse() {
   window.TEBZA_ANALYSIS_ENGINE.getLatest = () => latestMarketAnalysisResult;
   window.TEBZA_ANALYSIS_ENGINE.getForSymbol = symbol =>
     latestMarketAnalysisResult?.identity?.symbol === symbol ? latestMarketAnalysisResult : null;
+  window.TEBZA_ANALYSIS_ENGINE.getScannerResult = symbol => {
+    const rec = scanner?.records?.get(symbol);
+    return rec?.analysisResult || null;
+  };
 
   if(manualVerification.pending&&manualVerification.symbol===selected){
    const p=tradePlan||projectedPlan,idea=manualVerification.direction,actual=p?.side||null;
@@ -2607,7 +2611,7 @@ function scannerBuildContext(rec){
  const location=classifyRangePosition(price,refHigh,refLow).label;
  return {ready:true,score,direction:bias,oneHourDirection,price,atr1,reference:{high:refHigh,low:refLow,mid:refMid,epoch:prev1.epoch},nearest,location,reason:bias+" 4H context · "+(oneHourDirection===bias?"1H aligned":"1H mixed")+" · nearest 1H reference "+nearest.side.toLowerCase()+" "+scannerFmt(nearest.price,rec.meta)+" ("+nearest.distanceAtr.toFixed(2)+" ATR)"};
 }
-function scannerEvaluateRecord(rec,source){
+function scannerEvaluateRecordLegacy(rec,source){
  if(!rec)return;
  rec.context=rec.context?.ready?rec.context:scannerBuildContext(rec);
  const ctx=rec.context;
@@ -2709,6 +2713,70 @@ function scannerEvaluateRecord(rec,source){
  if(isNewCompleted5)rec.lastEval5Epoch=last5.epoch;
  if(rec.stage!=="INVALIDATED"&&!plan&&rec.invalidated&&rec.lastSignal)rec.reason="Previous candidate invalidated; waiting for a new completed setup";
 }
+
+/* V1.10.0-B — scanner adapter.
+   Keeps scanner discovery/ranking logic intact while publishing its result
+   through the same canonical contract used by selected-market analysis. */
+function scannerEvaluateRecord(rec, source) {
+  scannerEvaluateRecordLegacy(rec, source);
+  if (!rec) return;
+  const a = rec.analysis || {};
+  const normalizedInput = {
+    meta: rec.meta,
+    price: Number.isFinite(rec.latestPrice) ? rec.latestPrice : a.price,
+    hi: a.hi, lo: a.lo, mid: a.mid,
+    bias4: a.bias4 || rec.context?.direction || "NEUTRAL",
+    bias1: a.bias1 || a.oneHourDirection || "NEUTRAL",
+    structure: a.structure || null,
+    buySideLevel: a.buySideLevel,
+    sellSideLevel: a.sellSideLevel,
+    bullishLevel: a.bullishLevel,
+    bearishLevel: a.bearishLevel,
+    selectedStrategy: (a.plan || a.projectedPlan)?.strategy || null,
+    tradePlan: a.plan || null,
+    projectedPlan: a.projectedPlan || null,
+    alternative: a.alternative || null,
+    bullScore: a.bullScore ?? null,
+    bearScore: a.bearScore ?? null,
+    bullComponents: a.bullComponents || [],
+    bearComponents: a.bearComponents || [],
+    last5: a.last5 || null,
+    last15: a.last15 || null
+  };
+  const result = createMarketAnalysisResult(normalizedInput, {
+    symbol: symbolCode(rec.meta),
+    c4: rec.history?.[14400] || [],
+    c1: rec.history?.[3600] || [],
+    c15: rec.history?.[900] || [],
+    c5: rec.history?.[300] || []
+  });
+  const stageMap = {
+    CONFIRMED: "CONFIRMED",
+    DEVELOPING: "DEVELOPING",
+    MONITOR: "WAIT",
+    WAIT: "WAIT",
+    INVALIDATED: "INVALIDATED"
+  };
+  result.identity.analysisId = [
+    symbolCode(rec.meta) || "UNKNOWN",
+    Number(a.last5?.epoch || rec.lastEval5Epoch || 0),
+    TEBZA_ENGINE_VERSION,
+    "SCANNER"
+  ].join(":");
+  result.identity.source = "SCANNER";
+  result.identity.sourceEvent = source || "scan";
+  result.dataHealth.connected = !!(rec.lastLiveAt && Date.now()-rec.lastLiveAt<=LIVE_DATA_MAX_AGE_MS);
+  result.dataHealth.tickFresh = result.dataHealth.connected;
+  result.dataHealth.candlesComplete = !!(a.last5 && a.last15);
+  result.decision.status = stageMap[rec.stage] || "WAIT";
+  result.decision.strategy = (a.plan || a.projectedPlan)?.strategy || result.decision.strategy;
+  result.decision.direction = (a.plan || a.projectedPlan)?.side || null;
+  result.decision.explanation = rec.reason || result.decision.explanation;
+  result.tradePlan = a.plan || a.projectedPlan || null;
+  rec.analysisResult = result;
+  return result;
+}
+
 function scannerCheckApproach(rec,price,analysis){
  if(!Number.isFinite(price)||!rec.lastLiveAt||(Date.now()-rec.lastLiveAt)>LIVE_DATA_MAX_AGE_MS)return;
  const ctx=rec.context;if(!ctx?.ready)return;
