@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111923"><link rel="manifest" href="manifest.webmanifest">
-<title>TEBZA CRT ANALYST V1.9.9</title>
+<title>TEBZA CRT ANALYST V1.9.11</title>
 <style>
 :root{--bg:#080f1c;--panel:#111d30;--panel2:#0b1627;--line:#263952;--txt:#edf4ff;--muted:#93a7c2;--green:#28c7a5;--red:#f07883;--amber:#e8b85d;--blue:#7daeff}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172b47 0,#080f1c 55%);color:var(--txt);font:14px system-ui,-apple-system,Segoe UI,sans-serif;padding-bottom:30px}
@@ -213,7 +213,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 
 .selectedMarketRef{font-weight:700;color:#d7c18e;overflow-wrap:anywhere}
 
-/* V1.9.9: visible selected-market context and signal replay workspace */
+/* V1.9.11: visible selected-market context and signal replay workspace */
 .chartSelectedBadge,.analysisSelectedBadge{display:block;margin-top:7px;padding:7px 10px;border:1px solid rgba(198,166,107,.32);border-radius:9px;background:rgba(198,166,107,.08);font-size:11px;line-height:1.4}
 .signalReplayPanel{margin-top:10px;padding:10px;border:1px solid #34495c;border-radius:10px;background:#101c29}
 .signalReplayPanel[hidden]{display:none!important}
@@ -230,7 +230,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 @media(max-width:540px){.signalReplayEvent{grid-template-columns:1fr auto}.signalReplayEvent time{grid-column:1/-1;grid-row:2}}
 
 
-/* V1.9.9 responsive chart layout and unified annotation system */
+/* V1.9.11 responsive chart layout and unified annotation system */
 .chartDisplayControls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 5px;color:#9aa8b7;font-size:10px}
 .chartDisplayControls label{font-weight:800;letter-spacing:.45px;text-transform:uppercase}
 .chartDisplayControls select{flex:0 0 auto;min-width:118px;max-width:150px;padding:7px 9px;font-size:10px}
@@ -286,7 +286,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
 <header class="appTopbar">
  <div class="topBrand"><button class="menuToggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div><div class="brand">TEBZA <em>CRT ANALYST</em></div><div class="muted tiny brandSub">INSTITUTIONAL MARKET INTELLIGENCE · ANALYSIS ONLY</div></div></div>
  <div class="topContext"><b id="pageTitle">Analyst workspace</b><span class="muted tiny" id="pageSubtitle">Your live market overview</span></div>
- <div class="topActions"><span class="pill" id="connBadge">CONNECTING</span><span class="topVersion">V1.9.9</span></div>
+ <div class="topActions"><span class="pill" id="connBadge">CONNECTING</span><span class="topVersion">V1.9.11</span></div>
 </header>
 <div class="appShell">
  <aside class="appSidebar" id="appSidebar" aria-label="Main navigation">
@@ -303,12 +303,12 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
   <div class="navSpacer"></div>
   <div class="sidebarStatus"><span class="statusDot"></span><div><b>Analysis-only mode</b><small>No orders are placed</small></div></div>
   <button class="navItem" type="button" data-view="settings"><span class="navIcon">⚙</span><span>Settings & connection</span></button>
-  <div class="sidebarFoot">TEBZA CRT ANALYST<br>INSTITUTIONAL EDITION · V1.9.9</div>
+  <div class="sidebarFoot">TEBZA CRT ANALYST<br>INSTITUTIONAL EDITION · V1.9.11</div>
  </aside>
  <div class="navScrim" id="navScrim"></div>
  <main id="appMain">
 <section class="pageView active" id="workspaceView" data-page="workspace">
-<div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for live ticks and native OHLC candles. V1.9.9 connects scanner discovery with independent manual market verification, uses available opposing structure for targets and improves signal outcome tracking. Current-market confirmation pauses when the live tick feed is stale for more than 120 seconds. No account token is required. Analysis only; no trades are placed.</div>
+<div class="notice"><b>Data status:</b> Uses Deriv's public market-data WebSocket for live ticks and native OHLC candles. V1.9.11 connects scanner discovery with independent manual market verification, preserves confirmed signal plans on their live charts, uses available opposing structure for targets and improves signal outcome tracking. Current-market confirmation pauses when the live tick feed is stale for more than 120 seconds. No account token is required. Analysis only; no trades are placed.</div>
 <section class="card">
  <div class="row between"><div><h2 style="margin:0">Market selector</h2><div class="muted tiny" id="marketCount">Loading Deriv instruments…</div></div><button id="refresh" class="primary">Refresh</button></div>
  <div class="row" style="margin-top:12px"><select id="category"><option value="all">All markets</option><option value="synthetic">Synthetic / Derived</option><option value="forex">Forex</option><option value="commodities">Commodities / Metals</option><option value="indices">Stock indices</option><option value="crypto">Cryptocurrencies</option><option value="shares">Shares / ETFs</option></select><select id="symbol"><option>Loading…</option></select></div>
@@ -572,7 +572,7 @@ select,button,.scannerInline input[type=number]{background:#1b2937;color:#e7edf2
  <section class="pageIntro"><div><div class="eyebrow">PLATFORM PREFERENCES</div><h1>Settings & connection</h1><p>Review the visual system, data connection and notification permissions.</p></div></section>
  <section class="card appearanceCard"><div class="eyebrow">APPEARANCE</div><h2>Premium institutional · Balanced density</h2><p class="sectionNote">A consistent interface palette is applied across the dashboard, scanner, chart, alerts and analysis.</p><div class="themeSwatches"><span style="background:#111923"></span><span style="background:#1B2735"></span><span style="background:#C6A66B"></span><span style="background:#42B88B"></span><span style="background:#D7777E"></span><span style="background:#8298B2"></span></div><div class="appearanceTags"><span>Charcoal navy surfaces</span><span>Emerald positive states</span><span>Champagne reference levels</span><span>Soft coral risk states</span></div></section>
 <section class="card"><h2>Connection & safety</h2><div class="muted tiny">Market data uses Deriv's public endpoint. No account login, trading permission or password is requested. Keep the app open for live updates; background push notifications will be added after deployment of the notification service.</div><div class="actions" style="margin-top:10px"><button id="notify" class="primary">Enable phone notifications</button><button id="reconnect">Reconnect data</button></div><div id="notifyStatus" class="muted tiny" style="margin-top:8px">Notifications not enabled</div></section>
-<div class="foot">TEBZA CRT ANALYST V1.9.9 · Institutional analyst workspace · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
+<div class="foot">TEBZA CRT ANALYST V1.9.11 · Institutional analyst workspace · Live Deriv public data · Analysis only<br>TradingView Lightweight Charts™ / Copyright (с) 2025 TradingView, Inc. <a href="https://www.tradingview.com/" target="_blank" rel="noopener">https://www.tradingview.com/</a><br>Trade-plan levels are model scenarios, not orders or guaranteed outcomes</div>
 </section>
 </main>
 </div>
@@ -617,6 +617,7 @@ const GRANULARITIES = [300, 900, 3600, 14400];
 let ws = null;
 let symbols = [];
 let candles = {300: [], 900: [], 3600: [], 14400: []};
+let pinnedConfirmedSignal = null;
 let selected = "";
 let preferredSymbol = "";
 let quote = null;
@@ -1685,7 +1686,7 @@ function analyse() {
   updateMarketNarrative();
   renderTradePlan();
   renderChart(false);
-  setStatus("V1.9.9 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
+  setStatus("V1.9.11 completed-candle analysis updated for " + selected + " · " + new Date().toLocaleTimeString());
   if (direction !== "WAIT") {
     const signalKey=[selected,selectedStrategy||"CRT REVERSAL",direction,last5.epoch].join("|");
     if(signalKey!==lastNotifiedSignalKey){
@@ -2054,23 +2055,23 @@ function renderChartSetupSummary(a,plan){
  const host=$('chartSetupSummary');if(!host)return;
  host.replaceChildren();
  const state=plan?chartOverlayPlanState(plan,a):null;
- const headline=state?.stale?'INVALIDATED':state?.preview?'PROJECTED':plan?'CONFIRMED':'WAIT · NO VALID PLAN';
+ const headline=a?._pinnedSignal?('SAVED '+String(a._pinnedStatus||'CONFIRMED')):state?.stale?'INVALIDATED':state?.preview?'PROJECTED':plan?'CONFIRMED':'WAIT · NO VALID PLAN';
  const side=plan?plan.side:(a?.bias4==='Bullish'?'BULLISH BIAS':a?.bias4==='Bearish'?'BEARISH BIAS':'NEUTRAL');
  const title=document.createElement('b');title.textContent=headline+(plan?' · '+side:'');title.className=state?.stale?'summaryInvalid':state?.preview?'summaryWait':plan?'summaryConfirmed':'summaryWait';host.appendChild(title);
  const trigger=chartTriggerText(a||{});
- const detail=document.createElement('span');detail.textContent='4H '+(a?.bias4||'—')+' · 1H '+(a?.bias1||'—')+' · 15M '+(a?.structure?.direction||'—')+' · '+trigger+(plan?.counterTrend?' · COUNTERTREND':'');host.appendChild(detail);
+ const detail=document.createElement('span');detail.textContent=a?._pinnedSignal?'HISTORICAL CONFIRMATION · ORIGINAL ENTRY / STOP / TARGETS LOCKED · LIVE PRICE UPDATES':('4H '+(a?.bias4||'—')+' · 1H '+(a?.bias1||'—')+' · 15M '+(a?.structure?.direction||'—')+' · '+trigger+(plan?.counterTrend?' · COUNTERTREND':''));host.appendChild(detail);
 }
 function renderChartPlanDock(plan,a,meta){
  const dock=$('chartPlanDock'),summary=$('chartPlanDockSummary'),grid=$('chartPlanDockGrid');if(!dock||!summary||!grid)return;
  grid.replaceChildren();
  if(!plan){summary.textContent='Trade plan details · no valid plan';const empty=document.createElement('div');empty.className='chartPlanDockEmpty';empty.textContent='No entry, stop or target levels are being proposed. The engine is waiting for valid setup conditions.';grid.appendChild(empty);return;}
  const state=chartOverlayPlanState(plan,a),status=state.stale?'INVALIDATED':state.preview?'PROJECTED':'CONFIRMED';
- summary.textContent=status+' '+plan.side+' · view entry, stop, targets and risk';
+ summary.textContent=(a?._pinnedSignal?'SAVED CONFIRMED PLAN · ':'')+status+' '+plan.side+' · view entry, stop, targets and risk';
  const add=(label,value,kind)=>{const tile=document.createElement('div');tile.className='chartPlanDockValue '+(kind||'');const small=document.createElement('small');small.textContent=label;const bold=document.createElement('b');bold.textContent=value;tile.append(small,bold);grid.appendChild(tile);};
  add('Entry',formatPrice(plan.entry,meta),'entry');add('Stop loss',formatPrice(plan.stop,meta),'stop');
  (plan.targets||[]).slice(0,3).forEach((t,i)=>add('Target '+(i+1),formatPrice(t.price,meta)+' · '+Number(t.r||0).toFixed(2)+'R','target'));
  const metaLine=document.createElement('div');metaLine.className='chartPlanDockMeta';
- metaLine.textContent=(plan.strategy||'Strategy')+' · '+status+(plan.counterTrend?' · Countertrend':'')+' · '+(plan.stage==='PROJECTED'?'Provisional levels; wait for confirmation.':'Confirmation rules passed; review risk before acting.')+' R values are measured from the displayed entry and stop.';
+ metaLine.textContent=(a?._pinnedSignal?'Original confirmation snapshot · current candles and quote remain live. ': '')+(plan.strategy||'Strategy')+' · '+status+(plan.counterTrend?' · Countertrend':'')+' · '+(plan.stage==='PROJECTED'?'Provisional levels; wait for confirmation.':'Confirmation rules passed; review risk before acting.')+' R values are measured from the saved entry and stop.';
  grid.appendChild(metaLine);
 }
 
@@ -2081,8 +2082,18 @@ function renderChartOverlays(){
  const width=Math.max(1,Math.floor(chartApi.timeScale().width()||host.clientWidth)),height=Math.max(1,Math.floor(host.clientHeight||340));
  if(!svg){svg=chartSvgElement('svg',{id:'chartProOverlay','aria-hidden':'true'});svg.classList.add('chartProOverlay');host.appendChild(svg);}
  svg.setAttribute('width',width);svg.setAttribute('height',height);svg.setAttribute('viewBox','0 0 '+width+' '+height);svg.replaceChildren();chartOverlayPendingLabels=[];
- const tf=Number($('chartTf')?.value||300),a=latestAnalysis,meta=findSymbol(selected),price=hasLiveQuote()?Number(quote):Number(a?.price);
- const plan=a?(a.tradePlan||a.projectedPlan):null;
+ const tf=Number($('chartTf')?.value||300),liveAnalysis=latestAnalysis,meta=findSymbol(selected);
+ const pinned=pinnedConfirmedSignal&&pinnedConfirmedSignal.symbol===selected?pinnedConfirmedSignal:null;
+ const a=pinned?{
+  meta,price:hasLiveQuote()?Number(quote):Number(pinned.lastPrice),
+  hi:Number(pinned.hi),lo:Number(pinned.lo),mid:Number(pinned.mid),
+  bias4:pinned.bias4||'—',bias1:pinned.bias1||'—',
+  structure:{direction:pinned.structure||'Saved confirmation structure'},
+  selectedStrategy:pinned.strategy,
+  buySideLevel:Number(pinned.buySideLevel),sellSideLevel:Number(pinned.sellSideLevel),
+  _pinnedSignal:true,_pinnedStatus:pinned.status
+ }:liveAnalysis;
+ const plan=pinned?{...(pinned.plan||{}),stage:'CONFIRMED',side:pinned.side,entry:pinned.entry,entryZone:pinned.entryZone,stop:pinned.stop,risk:pinned.risk,targets:pinned.targets||[],strategy:pinned.strategy,counterTrend:!!pinned.counterTrend}:(a?(a.tradePlan||a.projectedPlan):null);
  renderChartSetupSummary(a,plan);renderChartPlanDock(plan,a,meta);
  if(a)chartFitPlanRange(plan,tf);
  if(!a){chartOverlayText(svg,10,20,'WAIT · ANALYSIS NOT READY',{size:10,fill:'#14253a',stroke:'#526b86'});return;}
@@ -2102,7 +2113,7 @@ function renderChartOverlays(){
   if(Number.isFinite(a.buySideLevel))chartOverlayPriceLabel(svg,a.buySideLevel,'BUY-SIDE LIQ. '+formatPrice(a.buySideLevel,meta),'#79aaff',{size:9,fill:'#142a45',textColor:'#d8e8ff',dash:'3 4'});
   if(Number.isFinite(a.sellSideLevel))chartOverlayPriceLabel(svg,a.sellSideLevel,'SELL-SIDE LIQ. '+formatPrice(a.sellSideLevel,meta),'#79aaff',{size:9,fill:'#142a45',textColor:'#d8e8ff',dash:'3 4'});
  }
- chartDrawStructure(svg,tf);chartDrawFvgs(svg,tf);
+ if(!pinned){chartDrawStructure(svg,tf);chartDrawFvgs(svg,tf);}
  chartDrawPlan(svg,plan,a,meta);
  chartFlushPriceLabels(svg);
 }
@@ -2272,7 +2283,7 @@ $("priceAuto").addEventListener("click",autoPriceScale);$("chartFit").addEventLi
 $("chartFullscreen").addEventListener("click",()=>setChartFullscreen(!$("chartCard").classList.contains("chartFullscreen")));
 
 $("clearCandleSelection").addEventListener("click",clearCandleInspector);
-$("symbol").addEventListener("change", () => {clearCandleInspector();manualVerification.pending=false;const out=$("manualAnalysisResult");if(out)out.textContent='Selected '+$("symbol").selectedOptions[0]?.textContent+'. Press Analyse selected market to refresh and verify an external idea.';loadMarket($("symbol").value);});
+$("symbol").addEventListener("change", () => {pinnedConfirmedSignal=null;try{localStorage.removeItem('tebza-crt-analyst-pinned-chart-id');}catch(_){}clearCandleInspector();manualVerification.pending=false;const out=$("manualAnalysisResult");if(out)out.textContent='Selected '+$("symbol").selectedOptions[0]?.textContent+'. Press Analyse selected market to refresh and verify an external idea.';loadMarket($("symbol").value);});
 $("analyseSelectedMarket")?.addEventListener("click",()=>{
  const code=$("symbol")?.value||selected;if(!code){setStatus('Select an instrument before requesting manual analysis.');return;}
  const idea=$("manualIdeaDirection")?.value||'ANY',meta=findSymbol(code),name=meta?displayName(meta):code;
@@ -2331,7 +2342,7 @@ window.__lwcPromise.then(() => {
 </script>
 
 <script>
-/* V1.9.9 multi-strategy market scanner. Uses the existing public Deriv WebSocket connection. */
+/* V1.9.11 multi-strategy market scanner. Uses the existing public Deriv WebSocket connection. */
 (function(){
 "use strict";
 const scanner = {
@@ -2917,7 +2928,7 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
 </script>
 
 <script>
-/* V1.9.9 persistent signal lifecycle + candle replay. Backward-compatible local storage. */
+/* V1.9.11 persistent signal lifecycle + candle replay. Backward-compatible local storage. */
 (function(){
  'use strict';
  const KEY='tebza-crt-analyst-v195-confirmed-signals';
@@ -2974,7 +2985,7 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
   if(records.some(r=>r.id===id))return;
   const targets=(p.targets||[]).map(t=>({r:Number(t.r),price:Number(t.price),source:t.source||'LEGACY',hit:false,hitAt:null}));
   if(!sym||!Number.isFinite(Number(p.entry))||!Number.isFinite(Number(p.stop))||targets.length<1)return;
-  const now=Number(a.price),rec={id,symbol:sym,name:a.meta.underlying_symbol_name||a.meta.display_name||sym,side:p.side,strategy:p.strategy||'CRT',source,createdAt:Date.now(),candleEpoch:epoch,entry:Number(p.entry),entryZone:p.entryZone||null,stop:Number(p.stop),risk:Number(p.risk),targets,hi:Number(a.hi),lo:Number(a.lo),mid:Number(a.mid),bias4:a.bias4||'',bias1:a.bias1||'',structure:a.structure?.trend||a.structure?.direction||'',status:'ENTRY PENDING',entryReached:false,lastPrice:Number.isFinite(now)?now:null,updatedAt:Date.now(),completedAt:null,invalidReason:'',counterTrend:!!p.counterTrend,events:[],plan:{side:p.side,entry:Number(p.entry),stop:Number(p.stop),risk:Number(p.risk),targets},replay:snapshotFor(a,sym),bestFavourableR:0,worstAdverseR:0};
+  const now=Number(a.price),rec={id,symbol:sym,name:a.meta.underlying_symbol_name||a.meta.display_name||sym,side:p.side,strategy:p.strategy||'CRT',source,createdAt:Date.now(),candleEpoch:epoch,entry:Number(p.entry),entryZone:p.entryZone||null,stop:Number(p.stop),risk:Number(p.risk),targets,hi:Number(a.hi),lo:Number(a.lo),mid:Number(a.mid),bias4:a.bias4||'',bias1:a.bias1||'',structure:a.structure?.trend||a.structure?.direction||'',buySideLevel:Number.isFinite(Number(a.buySideLevel))?Number(a.buySideLevel):null,sellSideLevel:Number.isFinite(Number(a.sellSideLevel))?Number(a.sellSideLevel):null,selectedStrategy:a.selectedStrategy||p.strategy||'CRT REVERSAL',status:'ENTRY PENDING',entryReached:false,lastPrice:Number.isFinite(now)?now:null,updatedAt:Date.now(),completedAt:null,invalidReason:'',counterTrend:!!p.counterTrend,events:[],plan:{side:p.side,entry:Number(p.entry),stop:Number(p.stop),risk:Number(p.risk),targets},replay:snapshotFor(a,sym),bestFavourableR:0,worstAdverseR:0};
   event(rec,'CONFIRMED',now,'All programmed confirmation conditions passed; setup snapshot saved.',rec.createdAt);
   if(Number.isFinite(now)&&Math.abs(now-rec.entry)<=Math.max(Math.abs(rec.entry)*1e-8,1e-10)){rec.entryReached=true;rec.status='ACTIVE · ENTRY REACHED';event(rec,'ENTRY REACHED',now,'Price was at the entry reference when the signal was saved.',rec.createdAt);}
   records.unshift(rec);records=records.slice(0,100);save();render();
@@ -3063,11 +3074,28 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
    const targets=r.targets.map((t,j)=>'<span class="tag">TP'+(j+1)+' '+fmt(t.price)+(t.source==='STRUCTURE'?' · STRUCTURE':t.source==='R_FALLBACK'?' · R FALLBACK':'')+(t.hit?' · HIT':'')+'</span>').join(' '),state=r.status==='INVALIDATED'?'invalid':r.status==='COMPLETED'?'confirmed':r.status==='AMBIGUOUS · REVIEW'?'ambiguous':'developing';
    const targetText=r.outcomeUncertain?'Outcome sequence uncertain':r.targets.filter(t=>t.hit).length+'/'+r.targets.length+' targets reached';
    const entryText=r.entryReached?'Entry reached':'Entry pending';
-   return '<article class="scannerAlert signalRecord"><div class="row between"><b>'+esc(r.name)+' ['+esc(r.symbol)+'] · '+esc(r.side)+'</b><span class="scannerBadge '+state+'">'+esc(r.status)+'</span></div><div class="muted tiny">'+esc(r.strategy)+' · Confirmed '+new Date(r.createdAt).toLocaleString()+' · '+esc(r.source)+'</div><div class="scannerMarketGrid"><div><small>ENTRY</small><b>'+fmt(r.entry)+'</b></div><div><small>STOP / INVALIDATION</small><b>'+fmt(r.stop)+'</b></div><div><small>LAST RECORDED PRICE</small><b>'+fmt(r.lastPrice)+'</b></div><div><small>ENTRY STATE</small><b>'+entryText+'</b></div><div><small>4H CONTEXT</small><b>'+esc(r.bias4||'—')+'</b></div><div><small>TARGET PROGRESS</small><b>'+targetText+'</b></div></div><div>'+targets+'</div><div class="scannerReason">'+(r.status==='INVALIDATED'?esc(r.invalidReason):r.status==='COMPLETED'?'All recorded targets reached.':r.status==='AMBIGUOUS · REVIEW'?esc(r.ambiguousReason||'Outcome sequence is uncertain.'):'Signal remains under lifecycle tracking. Updates are captured while this browser remains open and connected.')+'</div><div class="muted tiny">CRT range snapshot: '+fmt(r.hi)+' / '+fmt(r.mid)+' / '+fmt(r.lo)+' · Best favourable movement: '+Number(r.bestFavourableR||0).toFixed(2)+'R · Worst adverse movement: '+Number(r.worstAdverseR||0).toFixed(2)+'R'+(r.counterTrend?' · Countertrend setup':'')+'</div><div class="signalCardActions"><button type="button" data-replay-index="'+i+'">'+(r.replayOpen?'Hide replay':'Replay signal history')+'</button></div><div class="signalReplayPanel" data-replay-panel="'+i+'" '+(r.replayOpen?'':'hidden')+'><div class="signalReplayTitle">Historical 5M replay · confirmation and outcome</div>'+replaySvg(r)+'<div class="signalReplayLegend"><span>Green: bullish candle</span><span>Coral: bearish candle</span><span>Dashed: original entry / SL / TP levels</span></div>'+replayEvents(r)+'</div></article>';
+   return '<article class="scannerAlert signalRecord"><div class="row between"><b>'+esc(r.name)+' ['+esc(r.symbol)+'] · '+esc(r.side)+'</b><span class="scannerBadge '+state+'">'+esc(r.status)+'</span></div><div class="muted tiny">'+esc(r.strategy)+' · Confirmed '+new Date(r.createdAt).toLocaleString()+' · '+esc(r.source)+'</div><div class="scannerMarketGrid"><div><small>ENTRY</small><b>'+fmt(r.entry)+'</b></div><div><small>STOP / INVALIDATION</small><b>'+fmt(r.stop)+'</b></div><div><small>LAST RECORDED PRICE</small><b>'+fmt(r.lastPrice)+'</b></div><div><small>ENTRY STATE</small><b>'+entryText+'</b></div><div><small>4H CONTEXT</small><b>'+esc(r.bias4||'—')+'</b></div><div><small>TARGET PROGRESS</small><b>'+targetText+'</b></div></div><div>'+targets+'</div><div class="scannerReason">'+(r.status==='INVALIDATED'?esc(r.invalidReason):r.status==='COMPLETED'?'All recorded targets reached.':r.status==='AMBIGUOUS · REVIEW'?esc(r.ambiguousReason||'Outcome sequence is uncertain.'):'Signal remains under lifecycle tracking. Updates are captured while this browser remains open and connected.')+'</div><div class="muted tiny">CRT range snapshot: '+fmt(r.hi)+' / '+fmt(r.mid)+' / '+fmt(r.lo)+' · Best favourable movement: '+Number(r.bestFavourableR||0).toFixed(2)+'R · Worst adverse movement: '+Number(r.worstAdverseR||0).toFixed(2)+'R'+(r.counterTrend?' · Countertrend setup':'')+'</div><div class="signalCardActions"><button type="button" data-open-signal-chart="'+esc(r.id)+'">Open original chart</button><button type="button" data-replay-index="'+i+'">'+(r.replayOpen?'Hide replay':'Replay signal history')+'</button></div><div class="signalReplayPanel" data-replay-panel="'+i+'" '+(r.replayOpen?'':'hidden')+'><div class="signalReplayTitle">Historical 5M replay · confirmation and outcome</div>'+replaySvg(r)+'<div class="signalReplayLegend"><span>Green: bullish candle</span><span>Coral: bearish candle</span><span>Dashed: original entry / SL / TP levels</span></div>'+replayEvents(r)+'</div></article>';
   }).join('');
  }
  const host=document.getElementById('confirmedSignalsList');
- host?.addEventListener('click',e=>{const btn=e.target.closest('button[data-replay-index]');if(!btn)return;const i=Number(btn.dataset.replayIndex);if(!Number.isInteger(i)||!records[i])return;records[i].replayOpen=!records[i].replayOpen;render();});
+ host?.addEventListener('click',e=>{
+  const openBtn=e.target.closest('button[data-open-signal-chart]');
+  if(openBtn){
+   const rec=records.find(x=>x.id===openBtn.dataset.openSignalChart);if(!rec)return;
+   pinnedConfirmedSignal=rec;
+   try{localStorage.setItem('tebza-crt-analyst-pinned-chart-id',rec.id);}catch(_){}
+   const select=document.getElementById('symbol');
+   if(select){select.value=rec.symbol;}
+   if(typeof loadMarket==='function'&&typeof socketOpen==='function'&&socketOpen())loadMarket(rec.symbol);
+   if(typeof window.TEBZA_NAVIGATE==='function')window.TEBZA_NAVIGATE('chart');
+   else document.querySelector('[data-view="chart"]')?.click();
+   setTimeout(()=>{try{renderChart(true);renderChartOverlays();}catch(_){}},450);
+   return;
+  }
+  const btn=e.target.closest('button[data-replay-index]');if(!btn)return;
+  const i=Number(btn.dataset.replayIndex);if(!Number.isInteger(i)||!records[i])return;
+  records[i].replayOpen=!records[i].replayOpen;render();
+ });
  const watched=new Set();let watcherSocket=null;
  function resetWatchers(){watched.clear();watcherSocket=null;}
  function syncWatchers(){
@@ -3088,7 +3116,7 @@ window.TEBZA_SCANNER_V19={start:scannerStart,pause:()=>scannerStop(true),state:s
 </script>
 
 <script>
-/* V1.9.9 workspace navigation, market identity and engine-grounded analyst companion. */
+/* V1.9.11 workspace navigation, market identity and engine-grounded analyst companion. */
 (function(){
  'use strict';
  const byId=id=>document.getElementById(id);
